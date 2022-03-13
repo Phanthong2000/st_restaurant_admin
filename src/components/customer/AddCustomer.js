@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import * as Yup from 'yup';
 import { useFormik, Form, FormikProvider } from 'formik';
 import DatePicker from 'react-datepicker';
@@ -24,12 +24,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Icon } from '@iconify/react';
 import axios from 'axios';
 import { Scrollbar } from 'smooth-scrollbar-react';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import api from '../../assets/api/api';
 import {
   actionCustomerModalAddCustomer,
   actionGetAllCustomerByKeyword
 } from '../../redux/actions/customerAction';
 import { actionUserSnackbar } from '../../redux/actions/userAction';
+import { storage } from '../../firebase-config';
 
 const BoxModal = styled(Card)(({ theme }) => ({
   position: 'absolute',
@@ -96,6 +98,7 @@ const ButtonAddEmployee = styled(Button)(({ theme }) => ({
   }
 }));
 function AddCustomer() {
+  const fileRef = useRef();
   const dispatch = useDispatch();
   const [gender, setGender] = useState('Nam');
   const [birthday, setBirthday] = useState('');
@@ -106,9 +109,26 @@ function AddCustomer() {
   const [avatar, setAvatar] = useState(
     'https://tinhdaunhuy.com/wp-content/uploads/2015/08/default-avatar.jpg'
   );
+  const [image, setImage] = useState({});
   const modalAddCustomer = useSelector((state) => state.customer.modalAddCustomer);
   const handleClose = () => {
     dispatch(actionCustomerModalAddCustomer(false));
+  };
+  const onChangeFile = (files) => {
+    if (files && files[0]) {
+      if (files[0].size < 2097152) {
+        setAvatar(URL.createObjectURL(files[0]));
+        setImage(files[0]);
+      } else {
+        dispatch(
+          actionUserSnackbar({
+            status: true,
+            content: 'Ảnh đại diện phải nhỏ hơn 2MB',
+            type: 'error'
+          })
+        );
+      }
+    }
   };
   const LoginSchema = Yup.object().shape({
     fullname: Yup.string().required('Vui lòng nhập họ tên'),
@@ -140,7 +160,9 @@ function AddCustomer() {
     onSubmit: () => {
       if (rePassword !== values.password) {
         setErrorRePassword('Xác nhận mật khẩu không trùng khớp');
-      } else {
+      } else if (
+        avatar === 'https://tinhdaunhuy.com/wp-content/uploads/2015/08/default-avatar.jpg'
+      ) {
         setErrorBirthday('');
         setErrorRePassword('');
         const customer = {
@@ -166,7 +188,7 @@ function AddCustomer() {
                   .post(`${api}taiKhoan/create/`, {
                     tenDangNhap: values.username,
                     matKhau: values.password,
-                    trangThai: 'Hoạt động',
+                    trangThai: 'Hiệu lực',
                     vaiTro: {
                       id: res.data.id
                     }
@@ -196,6 +218,73 @@ function AddCustomer() {
               })
               .catch((err) => console.log(err));
           });
+      } else {
+        const storageRef = ref(storage, `avatar/${values.fullname}.${new Date().getTime()}`);
+        const uploadTask = uploadBytesResumable(storageRef, image);
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {},
+          (error) => {},
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              setErrorBirthday('');
+              setErrorRePassword('');
+              const customer = {
+                anhDaiDien: downloadURL,
+                hoTen: values.fullname,
+                soDienThoai: values.phone,
+                email: values.email,
+                chungMinhThu: values.identification,
+                diaChi: values.address,
+                ngaySinh: birthday,
+                gioiTinh: gender
+              };
+              axios
+                .get(`${api}taiKhoan/detail/tenDangNhap/${values.username}`)
+                .then((res) => {
+                  setError('Tên đăng nhập đã tồn tại');
+                })
+                .catch((err) => {
+                  axios
+                    .get(`${api}vaiTro/detail/tenVaiTro/CUSTOMER`)
+                    .then((res) => {
+                      axios
+                        .post(`${api}taiKhoan/create/`, {
+                          tenDangNhap: values.username,
+                          matKhau: values.password,
+                          trangThai: 'Hiệu lực',
+                          vaiTro: {
+                            id: res.data.id
+                          }
+                        })
+                        .then((res) => {
+                          axios
+                            .post(`${api}khachHang/create`, {
+                              ...customer,
+                              taiKhoan: {
+                                id: res.data.id
+                              }
+                            })
+                            .then((res) => {
+                              dispatch(actionGetAllCustomerByKeyword(''));
+                              dispatch(
+                                actionUserSnackbar({
+                                  status: true,
+                                  content: 'Thêm khách hàng thành công',
+                                  type: 'success'
+                                })
+                              );
+                              handleClose();
+                            })
+                            .catch((err) => console.log(err));
+                        })
+                        .catch((err) => console.log(err));
+                    })
+                    .catch((err) => console.log(err));
+                });
+            });
+          }
+        );
       }
     }
   });
@@ -215,7 +304,9 @@ function AddCustomer() {
           <Scrollbar alwaysShowTracks>
             <BoxAvatar>
               <AvatarEmployee src={avatar} />
-              <ButtonChooseAvatar>Chọn ảnh</ButtonChooseAvatar>
+              <ButtonChooseAvatar onClick={() => fileRef.current.click()}>
+                Chọn ảnh
+              </ButtonChooseAvatar>
             </BoxAvatar>
             <FormikProvider value={formik}>
               <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
@@ -316,6 +407,16 @@ function AddCustomer() {
             </FormikProvider>
           </Scrollbar>
         </BoxContent>
+        <input
+          onClick={(e) => {
+            e.target.value = null;
+          }}
+          accept=".png, .jpg, .jpeg"
+          onChange={(e) => onChangeFile(e.target.files)}
+          ref={fileRef}
+          style={{ display: 'none' }}
+          type="file"
+        />
       </BoxModal>
     </Modal>
   );

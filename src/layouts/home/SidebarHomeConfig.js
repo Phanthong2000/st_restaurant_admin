@@ -6,7 +6,7 @@ const sidebarHomeConfig = [
   },
   {
     name: 'Đơn đặt bàn',
-    path: '/home/order',
+    path: '/home/book',
     icon: 'icon-park-outline:order'
   },
   {

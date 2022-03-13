@@ -63,13 +63,13 @@ export const actionGetAllFoodsByName = (name) => (dispatch) => {
       });
   } else {
     axios
-      .get(`${api}monAn/detail/tenMonAn`, {
+      .get(`${api}monAn/list/tenMonAn`, {
         params: {
           tenMonAn: name
         }
       })
       .then((res) => {
-        console.log(res.data);
+        dispatch(actionFoodGetAllFoodsByName(res.data));
       })
       .catch((err) => console.log(err));
   }

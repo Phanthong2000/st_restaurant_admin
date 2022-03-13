@@ -21,7 +21,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import FoodTableRow from '../components/food/FoodTableRow';
 import TypeFoodTableRow from '../components/food/TypeFoodTableRow';
 import ModalAddTypeFood from '../components/food/ModalAddTypeFood';
-import { actionFoodModalAddTypeFood } from '../redux/actions/foodAction';
+import { actionFoodModalAddTypeFood, actionGetAllFoodsByName } from '../redux/actions/foodAction';
 import ModalEditFood from '../components/food/ModalEditFood';
 import ModalEditTypeFood from '../components/food/ModalEditTypeFood';
 
@@ -75,19 +75,20 @@ function Food() {
   const [pageFood, setPageFood] = useState(0);
   const [pageType, setPageType] = useState(0);
   const typefoods = useSelector((state) => state.food.typefoods);
-  const foods = useSelector((state) => state.food.foods);
+  const foodsByName = useSelector((state) => state.food.foodsByName);
   const navigate = useNavigate();
   const [foodTable, setFoodTable] = useState([]);
   const [typeTable, setTypeTable] = useState([]);
+  const [search, setSearch] = useState('');
   const modalEditFood = useSelector((state) => state.food.modalEditFood);
   const modalEditTypeFood = useSelector((state) => state.food.modalEditTypeFood);
   const getFoodByPage = (page) => {
     const start = page * 5;
     const end = start + 5;
     const data = [];
-    for (let i = 0; i < foods.length; i += 1) {
+    for (let i = 0; i < foodsByName.length; i += 1) {
       if (i >= start && i < end) {
-        data.push(foods.at(i));
+        data.push(foodsByName.at(i));
       }
     }
     setFoodTable(data);
@@ -109,7 +110,7 @@ function Food() {
     return function () {
       return null;
     };
-  }, [foods]);
+  }, [foodsByName]);
   useEffect(() => {
     getTypeByPage(0);
     setPageType(0);
@@ -117,6 +118,10 @@ function Food() {
       return null;
     };
   }, [typefoods]);
+  const searchFood = (text) => {
+    setSearch(text);
+    dispatch(actionGetAllFoodsByName(text));
+  };
   const handleChangePage = (event, newValue) => {
     setPageFood(newValue);
     getFoodByPage(newValue);
@@ -128,7 +133,7 @@ function Food() {
   const headerFood = [
     { name: 'STT', minWidth: '10%' },
     { name: 'Hình ảnh', minWidth: '20%' },
-    { name: 'Tên món ăn', minWidth: '30%' },
+    { name: 'Tên món ăn', minWidth: '25%' },
     { name: 'Giá', minWidth: '10%' },
     { name: 'Loại', minWidth: '10%' },
     { name: 'Trạng thái', minWidth: '10%' },
@@ -146,7 +151,12 @@ function Food() {
     <RootStyle>
       <Scrollbar alwaysShowTracks>
         <BoxSearch>
-          <InputBase fullWidth placeholder="Tìm kiếm món ăn" />
+          <InputBase
+            value={search}
+            onChange={(e) => searchFood(e.target.value)}
+            fullWidth
+            placeholder="Tìm kiếm món ăn"
+          />
           <BoxButtonSearch>
             <Icon
               style={{ width: '30px', height: '30px', color: '#fff' }}
@@ -188,7 +198,7 @@ function Food() {
           <TablePagination
             rowsPerPageOptions={false}
             component="div"
-            count={foods.length}
+            count={foodsByName.length}
             rowsPerPage={5}
             page={pageFood}
             onPageChange={handleChangePage}

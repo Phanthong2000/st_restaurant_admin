@@ -92,7 +92,7 @@ function Customer() {
     getCustomerByPage(0);
     setPage(0);
     return function () {
-      return null;
+      // searchCustomer('');
     };
   }, [customers]);
   const header = [
@@ -122,6 +122,10 @@ function Customer() {
     },
     {
       name: 'Xem thông tin',
+      width: '10%'
+    },
+    {
+      name: 'Đặt bàn',
       width: '10%'
     }
   ];

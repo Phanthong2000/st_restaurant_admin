@@ -14,10 +14,10 @@ const RootStyle = styled(Stack)(({ theme }) => ({
 }));
 const BoxContent = styled(Box)(({ theme }) => ({
   width: '100%',
-  margin: '0px 50px',
-  [theme.breakpoints.down('md')]: {
-    margin: '0px 10px'
-  }
+  margin: '0px 50px'
+  // [theme.breakpoints.down('md')]: {
+  //   margin: '0px 10px'
+  // }
 }));
 const MainStyle = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -28,7 +28,7 @@ const MainStyle = styled(Box)(({ theme }) => ({
 function HomeLayout() {
   return (
     <RootStyle direction="row">
-      <Responsive width="mdDown">
+      <Responsive width="lgDown">
         <SidebarHome />
       </Responsive>
       <BoxContent>

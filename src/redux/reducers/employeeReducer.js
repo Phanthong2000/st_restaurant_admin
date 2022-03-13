@@ -1,7 +1,8 @@
 import {
   ACTION_EMPLOYEE_GET_ALL_EMPLOYEES,
   ACTION_EMPLOYEE_MODAL_ADD_EMPLOYEE,
-  ACTION_EMPLOYEE_MODAL_EDIT_EMPLOYEE
+  ACTION_EMPLOYEE_MODAL_EDIT_EMPLOYEE,
+  ACTION_EMPLOYEE_GET_EMPLOYEES_BY_KEYWORDS
 } from '../actions/types';
 
 const defaultState = {
@@ -10,7 +11,8 @@ const defaultState = {
   modalEditEmployee: {
     status: false,
     employee: {}
-  }
+  },
+  employeesKeyword: []
 };
 
 // eslint-disable-next-line default-param-last
@@ -30,6 +32,11 @@ const employeeReducer = (state = defaultState, action) => {
       return {
         ...state,
         modalEditEmployee: action.payload
+      };
+    case ACTION_EMPLOYEE_GET_EMPLOYEES_BY_KEYWORDS:
+      return {
+        ...state,
+        employeesKeyword: action.payload
       };
     default:
       return state;

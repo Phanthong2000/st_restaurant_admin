@@ -11,6 +11,9 @@ const RootStyle = styled(TableRow)(({ theme }) => ({
 const IconSeeInfo = styled(Icon)(({ theme }) => ({
   color: theme.palette.main
 }));
+const Cell = styled(TableCell)(() => ({
+  fontWeight: 'bold'
+}));
 EmployeeTableRow.prototype = {
   customer: PropTypes.object,
   index: PropTypes.number
@@ -19,15 +22,15 @@ function EmployeeTableRow({ employee, index }) {
   const dispatch = useDispatch();
   return (
     <RootStyle sx={{ background: index % 2 === 0 ? '#fff' : 'lightgrey' }}>
-      <TableCell>{index + 1}</TableCell>
-      <TableCell>
+      <Cell>{index + 1}</Cell>
+      <Cell>
         <Avatar src={employee.anhDaiDien} />
-      </TableCell>
-      <TableCell>{employee.hoTen}</TableCell>
-      <TableCell>{employee.soDienThoai}</TableCell>
-      <TableCell>{employee.gioiTinh}</TableCell>
-      <TableCell>{employee.taiKhoan.trangThai}</TableCell>
-      <TableCell>
+      </Cell>
+      <Cell>{employee.hoTen}</Cell>
+      <Cell>{employee.soDienThoai}</Cell>
+      <Cell>{employee.gioiTinh}</Cell>
+      <Cell>{employee.taiKhoan.trangThai}</Cell>
+      <Cell>
         <IconButton
           onClick={() =>
             dispatch(
@@ -40,7 +43,7 @@ function EmployeeTableRow({ employee, index }) {
         >
           <IconSeeInfo icon="el:eye-open" />
         </IconButton>
-      </TableCell>
+      </Cell>
     </RootStyle>
   );
 }

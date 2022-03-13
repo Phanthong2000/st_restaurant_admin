@@ -11,6 +11,10 @@ import Employee from './page/Employee';
 import Analytic from './page/Analytic';
 import Report from './page/Report';
 import CreateFoods from './components/food/CreateFoods';
+import OrderChooseFood from './page/OrderChooseFood';
+import Book from './page/Book';
+import Profile from './page/Profile';
+import Error from './page/Error';
 
 export default function Router() {
   return useRoutes([
@@ -22,6 +26,8 @@ export default function Router() {
       path: '/login',
       element: <Login />
     },
+    { path: '/error', element: <Error /> },
+    { path: '*', element: <Navigate to="/error" /> },
     {
       path: '/home',
       element: <HomeLayout />,
@@ -29,6 +35,7 @@ export default function Router() {
         { path: '', element: <Navigate to="/home/app" /> },
         { path: 'app', element: <Home /> },
         { path: 'order', element: <Order /> },
+        { path: 'book', element: <Book /> },
         {
           path: 'food',
           element: <Food />
@@ -40,7 +47,9 @@ export default function Router() {
         {
           path: 'food-create',
           element: <CreateFoods />
-        }
+        },
+        { path: 'order-choose-food', element: <OrderChooseFood /> },
+        { path: 'profile', element: <Profile /> }
       ]
     }
   ]);

@@ -1,7 +1,7 @@
 import { ACTION_AUTH_LOGGED_IN } from '../actions/types';
 
 const defaultState = {
-  loggedIn: localStorage.getItem('employee') !== null
+  loggedIn: localStorage.getItem('admin') !== null
 };
 
 // eslint-disable-next-line default-param-last

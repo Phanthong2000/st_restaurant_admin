@@ -1,29 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import { Icon } from '@iconify/react';
 import {
   Box,
   Button,
   InputBase,
   styled,
-  Table,
-  TableBody,
-  TableCell,
+  Typography,
   TableContainer,
+  Table,
+  TableCell,
   TableHead,
-  TablePagination,
   TableRow,
-  Typography
+  TableBody,
+  TablePagination,
+  Card
 } from '@mui/material';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Scrollbar } from 'smooth-scrollbar-react';
-import { Icon } from '@iconify/react';
-import CustomerTableRow from '../components/customer/CustomerTableRow';
-import AddEmployee from '../components/employee/AddEmployee';
-import {
-  actionEmployeeModalAddEmployee,
-  actionGetEmployeesByKeywords
-} from '../redux/actions/employeeAction';
-import EmployeeTableRow from '../components/employee/EmployeeTableRow';
-import ModalEditEmployee from '../components/employee/ModalEditEmployee';
+import { useNavigate } from 'react-router-dom';
+import TableRowBook from '../components/order/TableRowBook';
+import { actionGetBooksByKeyword } from '../redux/actions/orderAction';
+import ModalEditBook from '../components/order/ModalEditBook';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -53,14 +50,14 @@ const BoxButtonSearch = styled(Box)(({ theme }) => ({
     background: theme.palette.mainHover
   }
 }));
-const BoxListEmployee = styled(Box)(({ theme }) => ({
+const BoxListFood = styled(Box)(({ theme }) => ({
   width: '100%',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
   padding: theme.spacing(1, 2)
 }));
-const ButtonAddEmployee = styled(Button)(({ theme }) => ({
+const ButtonOrder = styled(Button)(({ theme }) => ({
   padding: theme.spacing(1, 3),
   textTransform: 'none',
   color: theme.palette.white,
@@ -70,77 +67,94 @@ const ButtonAddEmployee = styled(Button)(({ theme }) => ({
     background: theme.palette.mainHover
   }
 }));
-function Employee() {
-  const employees = useSelector((state) => state.employee.employeesKeyword);
-  const modalEditEmployee = useSelector((state) => state.employee.modalEditEmployee);
-  const [page, setPage] = useState(0);
-  const [employeeTable, setEmployeeTable] = useState([]);
+function Book() {
+  const booksByKeyword = useSelector((state) => state.order.booksByKeyword);
+  const modalEditBook = useSelector((state) => state.order.modalEditBook);
+  const [books, setBooks] = useState([]);
   const [search, setSearch] = useState('');
+  const [page, setPage] = useState(0);
   const dispatch = useDispatch();
-  const setEmployees = (page) => {
+  const navigate = useNavigate();
+  const getBooksByPage = (page) => {
     const start = page * 5;
     const end = start + 5;
     const data = [];
-    for (let i = 0; i < employees.length; i += 1) {
+    for (let i = 0; i < booksByKeyword.length; i += 1) {
       if (i >= start && i < end) {
-        data.push(employees.at(i));
+        data.push(booksByKeyword.at(i));
       }
     }
-    setEmployeeTable(data);
-  };
-  const searchEmployees = (text) => {
-    setSearch(text);
-    dispatch(actionGetEmployeesByKeywords(text));
+    setBooks(data);
   };
   useEffect(() => {
-    setEmployees(0);
+    getBooksByPage(0);
     setPage(0);
     return function () {
-      // searchEmployees('');
+      return null;
     };
-  }, [employees]);
+  }, [booksByKeyword]);
+  const handleChangePage = (event, newValue) => {
+    setPage(newValue);
+    getBooksByPage(newValue);
+  };
+  const searchBooks = (text) => {
+    setSearch(text);
+    dispatch(actionGetBooksByKeyword(text));
+  };
   const header = [
     {
       name: 'STT',
       width: '5%'
     },
     {
-      name: 'Ảnh đại diện',
-      width: '10%'
-    },
-    {
-      name: 'Họ tên',
-      width: '20%'
+      name: 'Tên khách hàng',
+      width: '15%'
     },
     {
       name: 'Số điện thoại',
-      width: '15%'
-    },
-    {
-      name: 'Giới tính',
       width: '10%'
     },
     {
-      name: 'Tình trạng',
-      width: '15%'
+      name: 'Thời gian nhận bàn',
+      width: '10%'
+    },
+    {
+      name: 'Thời gian đặt bàn',
+      width: '10%'
+    },
+    {
+      name: 'Số lượng món',
+      width: '10%'
+    },
+    {
+      name: 'Tổng tiền',
+      width: '10%'
+    },
+    {
+      name: 'Trạng thái',
+      width: '10%'
     },
     {
       name: 'Xem thông tin',
       width: '10%'
+    },
+    {
+      name: 'Tính tiền',
+      width: '10%'
     }
   ];
-  const handleChangePage = (event, newValue) => {
-    setPage(newValue);
-    setEmployees(newValue);
+  const order = () => {
+    navigate('/home/order');
   };
   return (
     <RootStyle>
       <Scrollbar alwaysShowTracks>
         <BoxSearch>
           <InputBase
-            onChange={(e) => searchEmployees(e.target.value)}
+            value={search}
+            onChange={(e) => searchBooks(e.target.value)}
             fullWidth
-            placeholder="Tìm kiếm khách hàng"
+            placeholder="Tìm kiếm đơn đặt bàn..."
           />
           <BoxButtonSearch>
             <Icon
@@ -149,28 +163,23 @@ function Employee() {
             />
           </BoxButtonSearch>
         </BoxSearch>
-        <Box sx={{ marginTop: '20px' }}>
-          <BoxListEmployee>
+        <Box>
+          <BoxListFood sx={{ marginTop: '20px' }}>
             <Typography sx={{ fontWeight: 'bold', fontSize: '20px' }}>
-              Danh sách nhân viên
+              Danh sách đơn đặt bàn
             </Typography>
-            <ButtonAddEmployee onClick={() => dispatch(actionEmployeeModalAddEmployee(true))}>
-              Thêm nhân viên
-            </ButtonAddEmployee>
-          </BoxListEmployee>
-          <TableContainer>
+            <ButtonOrder onClick={order}>Đặt bàn</ButtonOrder>
+          </BoxListFood>
+        </Box>
+        <Box sx={{ width: '100%' }}>
+          <TableContainer sx={{ borderRadius: '10px' }}>
             <Table>
               <TableHead>
-                <TableRow>
+                <TableRow sx={{ background: 'gray' }}>
                   {header.map((item, index) => (
                     <TableCell
                       key={index}
-                      sx={{
-                        width: item.minWidth,
-                        fontWeight: 'bold',
-                        background: 'gray',
-                        color: '#fff'
-                      }}
+                      sx={{ width: item.width, color: '#fff', fontWeight: 'bold' }}
                     >
                       {item.name}
                     </TableCell>
@@ -178,26 +187,25 @@ function Employee() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {employeeTable.map((item, index) => (
-                  <EmployeeTableRow key={index} employee={item} index={index + page * 5} />
+                {books.map((item, index) => (
+                  <TableRowBook key={index} index={index + page * 5} book={item} />
                 ))}
               </TableBody>
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={false}
+            rowsPerPageOptions
             component="div"
-            count={employees.length}
+            count={booksByKeyword.length}
             rowsPerPage={5}
             page={page}
             onPageChange={handleChangePage}
           />
         </Box>
       </Scrollbar>
-      <AddEmployee />
-      {modalEditEmployee.status && <ModalEditEmployee />}
+      {modalEditBook.status && <ModalEditBook />}
     </RootStyle>
   );
 }
 
-export default Employee;
+export default Book;

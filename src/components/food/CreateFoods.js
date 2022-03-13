@@ -122,6 +122,7 @@ function CreateFoods() {
   const [error, setError] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const user = useSelector((state) => state.user.user);
   const filterOptions = createFilterOptions({
     matchFrom: 'start',
     stringify: (option) => option.tenLoaiMonAn
@@ -158,7 +159,7 @@ function CreateFoods() {
           id: type.id
         },
         nguoiQuanLy: {
-          id: '62218ff4e2b13e0af35b0680'
+          id: user.id
         }
       };
       axios

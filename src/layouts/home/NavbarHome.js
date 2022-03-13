@@ -1,9 +1,23 @@
-import React from 'react';
-import { Box, styled, Typography, IconButton, Badge, Avatar } from '@mui/material';
+import React, { useState } from 'react';
+import {
+  Box,
+  styled,
+  Typography,
+  IconButton,
+  Badge,
+  Avatar,
+  SwipeableDrawer,
+  List,
+  ListItem,
+  ListItemButton
+} from '@mui/material';
 import { Icon } from '@iconify/react';
-import axios from 'axios';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import Responsive from '../../components/Reponsive';
-import api from '../../assets/api/api';
+import sidebarHomeConfig from './SidebarHomeConfig';
+import BoxProfile from '../../components/home/BoxProfile';
+import { actionUserBoxProfile } from '../../redux/actions/userAction';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -36,42 +50,86 @@ const BoxAvatar = styled(Box)(({ theme }) => ({
   alignItems: 'center'
 }));
 function NavbarHome() {
-  const click = () => {
-    axios
-      .get(`${api}monAn/list/loaiMonAn`, {
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json'
-        },
-        data: {
-          id: '6224bf98adedb93db17486b6'
-        }
-      })
-      .then((res) => console.log(res.data))
-      .catch((err) => console.log(err));
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const { pathname } = useLocation();
+  const boxProfile = useSelector((state) => state.user.boxProfile);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const openMenu = () => {
+    setOpenDrawer(true);
   };
   return (
     <RootStyle>
-      <Responsive width="mdUp">
+      <Responsive width="lgUp">
         <BoxLogo>
           <Box sx={{ textAlign: 'right' }}>
             <Logo>ST Restaurant</Logo>
             <Admin>Quản lý</Admin>
           </Box>
-          <IconButton sx={{ marginLeft: '10px' }}>
+          <IconButton onClick={openMenu} sx={{ marginLeft: '10px' }}>
             <Icon icon="majesticons:menu" />
           </IconButton>
         </BoxLogo>
       </Responsive>
       <Typography> </Typography>
-      <BoxAvatar>
-        <IconButton onClick={click} sx={{ marginRight: '20px' }}>
-          <Badge color="error" badgeContent={1}>
-            <Icon icon="clarity:notification-line" />
-          </Badge>
-        </IconButton>
-        <Avatar src="https://cdn-prod.medicalnewstoday.com/content/images/articles/325/325466/man-walking-dog.jpg" />
-      </BoxAvatar>
+      {!boxProfile ? (
+        <BoxAvatar>
+          <IconButton sx={{ marginRight: '20px' }}>
+            <Badge color="error" badgeContent={1}>
+              <Icon icon="clarity:notification-line" />
+            </Badge>
+          </IconButton>
+          <Avatar
+            sx={{ width: '40px', height: '40px', cursor: 'pointer' }}
+            onClick={() => dispatch(actionUserBoxProfile(true))}
+            src="https://cdn-prod.medicalnewstoday.com/content/images/articles/325/325466/man-walking-dog.jpg"
+          />
+        </BoxAvatar>
+      ) : (
+        <Box
+          onClick={() => dispatch(actionUserBoxProfile(false))}
+          sx={{
+            width: '40px',
+            height: '40px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            border: `1px solid blue`,
+            borderRadius: '40px',
+            cursor: 'pointer'
+          }}
+        >
+          <Icon
+            style={{ width: '30px', height: '30px', color: 'blue' }}
+            icon="bxs:caret-right-circle"
+          />
+        </Box>
+      )}
+      <SwipeableDrawer open={openDrawer} onClose={() => setOpenDrawer(false)}>
+        <List sx={{ width: '250px', minHeight: '100%', background: '#fff' }}>
+          {sidebarHomeConfig.map((item, index) => (
+            <ListItem key={index}>
+              <ListItemButton
+                onClick={() => {
+                  setOpenDrawer(false);
+                  navigate(`${item.path}`);
+                }}
+                sx={
+                  pathname.includes(item.path) && {
+                    background: '#3C58C9',
+                    color: '#fff',
+                    '&:hover': { background: '#4d91f7' }
+                  }
+                }
+              >
+                <Icon icon={item.icon} />
+                <Typography sx={{ marginLeft: '10px' }}>{item.name}</Typography>
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+      </SwipeableDrawer>
+      {boxProfile && <BoxProfile />}
     </RootStyle>
   );
 }

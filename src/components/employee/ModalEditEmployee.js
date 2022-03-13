@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as Yup from 'yup';
 import { useFormik, Form, FormikProvider } from 'formik';
 import DatePicker from 'react-datepicker';
@@ -24,12 +24,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Icon } from '@iconify/react';
 import axios from 'axios';
 import { Scrollbar } from 'smooth-scrollbar-react';
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import api from '../../assets/api/api';
 import { actionUserSnackbar } from '../../redux/actions/userAction';
 import {
-  actionGetAllEmployees,
+  actionGetEmployeesByKeywords,
   actionEmployeeModalEditEmployee
 } from '../../redux/actions/employeeAction';
+
+import { storage } from '../../firebase-config';
 
 const BoxModal = styled(Card)(({ theme }) => ({
   position: 'absolute',
@@ -97,18 +100,20 @@ const ButtonAddEmployee = styled(Button)(({ theme }) => ({
 }));
 function ModalEditEmployee() {
   const dispatch = useDispatch();
+  const fileRef = useRef();
   const [gender, setGender] = useState('');
   const [birthday, setBirthday] = useState('');
   const [errorBirthday, setErrorBirthday] = useState('');
   const [status, setStatus] = useState('');
   const [error, setError] = useState('');
-  const [avatar, setAvatar] = useState(
-    'https://images.cdn2.stockunlimited.net/clipart/employee_1565984.jpg'
-  );
+  const [avatar, setAvatar] = useState('');
+  const [image, setImage] = useState({});
   const modalEditEmployee = useSelector((state) => state.employee.modalEditEmployee);
   useEffect(() => {
     setGender(modalEditEmployee.employee.gioiTinh);
     setStatus(modalEditEmployee.employee.taiKhoan.trangThai);
+    setBirthday(modalEditEmployee.employee.ngaySinh);
+    setAvatar(modalEditEmployee.employee.anhDaiDien);
     return function () {
       return null;
     };
@@ -120,6 +125,22 @@ function ModalEditEmployee() {
         employee: {}
       })
     );
+  };
+  const onChangeFile = (files) => {
+    if (files && files[0]) {
+      if (files[0].size < 2097152) {
+        setAvatar(URL.createObjectURL(files[0]));
+        setImage(files[0]);
+      } else {
+        dispatch(
+          actionUserSnackbar({
+            status: true,
+            content: 'Ảnh đại diện phải nhỏ hơn 2MB',
+            type: 'error'
+          })
+        );
+      }
+    }
   };
   const CustomerSchema = Yup.object().shape({
     fullname: Yup.string().required('Vui lòng nhập họ tên'),
@@ -149,63 +170,135 @@ function ModalEditEmployee() {
     },
     validationSchema: CustomerSchema,
     onSubmit: () => {
-      const employee = {
-        anhDaiDien: avatar,
-        hoTen: values.fullname,
-        soDienThoai: values.phone,
-        email: values.email,
-        chungMinhThu: values.identification,
-        diaChi: values.address,
-        ngaySinh: birthday,
-        gioiTinh: gender
-      };
-      if (modalEditEmployee.employee.taiKhoan.trangThai !== status) {
-        axios
-          .put(`${api}taiKhoan/edit`, {
-            ...modalEditEmployee.employee.taiKhoan,
-            trangThai: status
-          })
-          .then((res) => {
-            axios
-              .put(`${api}nhanVien/edit`, {
-                ...modalEditEmployee.employee,
-                ...employee,
-                taiKhoan: {
-                  ...res.data
-                }
-              })
-              .then((res) => {
-                dispatch(actionGetAllEmployees());
-                dispatch(
-                  actionUserSnackbar({
-                    status: true,
-                    content: 'Sửa thông tin nhân viên thành công',
-                    type: 'success'
-                  })
-                );
-                handleClose();
-              })
-              .catch((err) => console.log(err));
-          })
-          .catch((err) => console.log(err));
+      if (avatar === modalEditEmployee.employee.anhDaiDien) {
+        const employee = {
+          anhDaiDien: avatar,
+          hoTen: values.fullname,
+          soDienThoai: values.phone,
+          email: values.email,
+          chungMinhThu: values.identification,
+          diaChi: values.address,
+          ngaySinh: birthday,
+          gioiTinh: gender
+        };
+        if (modalEditEmployee.employee.taiKhoan.trangThai !== status) {
+          axios
+            .put(`${api}taiKhoan/edit`, {
+              ...modalEditEmployee.employee.taiKhoan,
+              trangThai: status
+            })
+            .then((res) => {
+              axios
+                .put(`${api}nhanVien/edit`, {
+                  ...modalEditEmployee.employee,
+                  ...employee,
+                  taiKhoan: {
+                    ...res.data
+                  }
+                })
+                .then((res) => {
+                  dispatch(actionGetEmployeesByKeywords(''));
+                  dispatch(
+                    actionUserSnackbar({
+                      status: true,
+                      content: 'Sửa thông tin nhân viên thành công',
+                      type: 'success'
+                    })
+                  );
+                  handleClose();
+                })
+                .catch((err) => console.log(err));
+            })
+            .catch((err) => console.log(err));
+        } else {
+          axios
+            .put(`${api}nhanVien/edit`, {
+              ...modalEditEmployee.employee,
+              ...employee
+            })
+            .then((res) => {
+              dispatch(actionGetEmployeesByKeywords(''));
+              dispatch(
+                actionUserSnackbar({
+                  status: true,
+                  content: 'Sửa thông tin nhân viên thành công',
+                  type: 'success'
+                })
+              );
+              handleClose();
+            })
+            .catch((err) => console.log(err));
+        }
       } else {
-        axios
-          .put(`${api}nhanVien/edit`, {
-            ...modalEditEmployee.employee,
-            ...employee
-          })
-          .then((res) => {
-            dispatch(actionGetAllEmployees());
-            dispatch(
-              actionUserSnackbar({
-                status: true,
-                content: 'Sửa thông tin nhân viên thành công',
-                type: 'success'
-              })
-            );
-            handleClose();
-          })
-          .catch((err) => console.log(err));
+        const storageRef = ref(storage, `avatar/${values.fullname}.${new Date().getTime()}`);
+        const uploadTask = uploadBytesResumable(storageRef, image);
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {},
+          (error) => {},
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              const employee = {
+                anhDaiDien: downloadURL,
+                hoTen: values.fullname,
+                soDienThoai: values.phone,
+                email: values.email,
+                chungMinhThu: values.identification,
+                diaChi: values.address,
+                ngaySinh: birthday,
+                gioiTinh: gender
+              };
+              if (modalEditEmployee.employee.taiKhoan.trangThai !== status) {
+                axios
+                  .put(`${api}taiKhoan/edit`, {
+                    ...modalEditEmployee.employee.taiKhoan,
+                    trangThai: status
+                  })
+                  .then((res) => {
+                    axios
+                      .put(`${api}nhanVien/edit`, {
+                        ...modalEditEmployee.employee,
+                        ...employee,
+                        taiKhoan: {
+                          ...res.data
+                        }
+                      })
+                      .then((res) => {
+                        dispatch(actionGetEmployeesByKeywords(''));
+                        dispatch(
+                          actionUserSnackbar({
+                            status: true,
+                            content: 'Sửa thông tin nhân viên thành công',
+                            type: 'success'
+                          })
+                        );
+                        handleClose();
+                      })
+                      .catch((err) => console.log(err));
+                  })
+                  .catch((err) => console.log(err));
+              } else {
+                axios
+                  .put(`${api}nhanVien/edit`, {
+                    ...modalEditEmployee.employee,
+                    ...employee
+                  })
+                  .then((res) => {
+                    dispatch(actionGetEmployeesByKeywords(''));
+                    dispatch(
+                      actionUserSnackbar({
+                        status: true,
+                        content: 'Sửa thông tin nhân viên thành công',
+                        type: 'success'
+                      })
+                    );
+                    handleClose();
+                  })
+                  .catch((err) => console.log(err));
+              }
+            });
+          }
+        );
       }
     }
   });
@@ -226,7 +319,9 @@ function ModalEditEmployee() {
           <Scrollbar alwaysShowTracks>
             <BoxAvatar>
               <AvatarEmployee src={avatar} />
-              <ButtonChooseAvatar>Chọn ảnh</ButtonChooseAvatar>
+              <ButtonChooseAvatar onClick={() => fileRef.current.click()}>
+                Chọn ảnh
+              </ButtonChooseAvatar>
             </BoxAvatar>
             <FormikProvider value={formik}>
               <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
@@ -275,7 +370,7 @@ function ModalEditEmployee() {
                         fullWidth
                       />
                     }
-                    selected={birthday}
+                    selected={Date.parse(birthday)}
                     dateFormat="dd/MM/yyyy"
                     onChange={(newValue) => {
                       console.log(newValue);
@@ -335,6 +430,16 @@ function ModalEditEmployee() {
             </FormikProvider>
           </Scrollbar>
         </BoxContent>
+        <input
+          onClick={(e) => {
+            e.target.value = null;
+          }}
+          accept=".png, .jpg, .jpeg"
+          onChange={(e) => onChangeFile(e.target.files)}
+          ref={fileRef}
+          style={{ display: 'none' }}
+          type="file"
+        />
       </BoxModal>
     </Modal>
   );
