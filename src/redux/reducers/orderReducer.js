@@ -7,7 +7,11 @@ import {
   ACTION_ORDER_GET_USER,
   ACTION_ORDER_GET_BOOKS_BY_KEYWORD,
   ACTION_ORDER_SET_FOOD,
-  ACTION_ORDER_MODAL_EDIT_BOOK
+  ACTION_ORDER_MODAL_EDIT_BOOK,
+  ACTION_ORDER_SORT_BOOK,
+  ACTION_ORDER_NEW_BOOKS,
+  ACTION_ORDER_UPDATE_FOODS_FOR_BOOK,
+  ACTION_ORDER_BOOK_PAY_ORDER
 } from '../actions/types';
 
 const defaultState = {
@@ -30,7 +34,11 @@ const defaultState = {
   modalEditBook: {
     status: false,
     book: {}
-  }
+  },
+  sortBook: 'all',
+  newBooks: [],
+  updateFoodsForBook: {},
+  bookPayOrder: {}
 };
 
 // eslint-disable-next-line default-param-last
@@ -85,12 +93,32 @@ const orderReducer = (state = defaultState, action) => {
         ...state,
         booksByKeyword: action.payload
       };
-    case ACTION_ORDER_MODAL_EDIT_BOOK: {
+    case ACTION_ORDER_MODAL_EDIT_BOOK:
       return {
         ...state,
         modalEditBook: action.payload
       };
-    }
+
+    case ACTION_ORDER_SORT_BOOK:
+      return {
+        ...state,
+        sortBook: action.payload
+      };
+    case ACTION_ORDER_NEW_BOOKS:
+      return {
+        ...state,
+        newBooks: action.payload
+      };
+    case ACTION_ORDER_UPDATE_FOODS_FOR_BOOK:
+      return {
+        ...state,
+        updateFoodsForBook: action.payload
+      };
+    case ACTION_ORDER_BOOK_PAY_ORDER:
+      return {
+        ...state,
+        bookPayOrder: action.payload
+      };
     default:
       return state;
   }

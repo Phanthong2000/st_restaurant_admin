@@ -3,15 +3,18 @@ import {
   Box,
   Button,
   Card,
+  IconButton,
   InputBase,
   styled,
   Table,
   TableBody,
   TableCell,
   TableContainer,
+  TableFooter,
   TableHead,
   TablePagination,
   TableRow,
+  Tooltip,
   Typography
 } from '@mui/material';
 import { Icon } from '@iconify/react';
@@ -24,6 +27,7 @@ import ModalAddTypeFood from '../components/food/ModalAddTypeFood';
 import { actionFoodModalAddTypeFood, actionGetAllFoodsByName } from '../redux/actions/foodAction';
 import ModalEditFood from '../components/food/ModalEditFood';
 import ModalEditTypeFood from '../components/food/ModalEditTypeFood';
+import BoxSort from '../components/food/BoxSort';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -82,13 +86,25 @@ function Food() {
   const [search, setSearch] = useState('');
   const modalEditFood = useSelector((state) => state.food.modalEditFood);
   const modalEditTypeFood = useSelector((state) => state.food.modalEditTypeFood);
+  const sortFood = useSelector((state) => state.food.sortFood);
+  const [quantity, setQuantity] = useState(0);
+  const modalAddTypeFood = useSelector((state) => state.food.modalAddTypeFood);
   const getFoodByPage = (page) => {
+    const notPages = [];
+    foodsByName.forEach((food) => {
+      if (sortFood === 'all') {
+        notPages.push(food);
+      } else if (sortFood === food.trangThai) {
+        notPages.push(food);
+      }
+    });
+    setQuantity(notPages.length);
     const start = page * 5;
     const end = start + 5;
     const data = [];
-    for (let i = 0; i < foodsByName.length; i += 1) {
+    for (let i = 0; i < notPages.length; i += 1) {
       if (i >= start && i < end) {
-        data.push(foodsByName.at(i));
+        data.push(notPages.at(i));
       }
     }
     setFoodTable(data);
@@ -110,7 +126,7 @@ function Food() {
     return function () {
       return null;
     };
-  }, [foodsByName]);
+  }, [foodsByName, sortFood]);
   useEffect(() => {
     getTypeByPage(0);
     setPageType(0);
@@ -147,6 +163,17 @@ function Food() {
   const goToCreateFood = () => {
     navigate('/home/food-create');
   };
+  const goToStartTable = () => {
+    setPageFood(0);
+    getFoodByPage(0);
+  };
+  const goToEndTable = () => {
+    const page = ((foodsByName.length - 1) / 5)
+      .toString()
+      .substring(0, ((foodsByName.length - 1) / 5).toFixed(1).toString().indexOf('.'));
+    setPageFood(parseInt(page, 10));
+    getFoodByPage(parseInt(page, 10));
+  };
   return (
     <RootStyle>
       <Scrollbar alwaysShowTracks>
@@ -164,6 +191,7 @@ function Food() {
             />
           </BoxButtonSearch>
         </BoxSearch>
+        <BoxSort />
         <Box sx={{ marginTop: '20px' }}>
           <BoxListFood>
             <Typography sx={{ fontWeight: 'bold', fontSize: '20px' }}>Danh sách món ăn</Typography>
@@ -193,12 +221,38 @@ function Food() {
                   <FoodTableRow key={index} food={item} index={index + pageFood * 5} />
                 ))}
               </TableBody>
+              <TableFooter>
+                <TableRow>
+                  <TableCell colSpan={11}>
+                    <Tooltip title="Về đầu bảng">
+                      <IconButton onClick={goToStartTable} disabled={pageFood === 0}>
+                        <Icon icon="bi:skip-start-fill" />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Đến cuối bảng">
+                      <IconButton
+                        disabled={
+                          ((foodsByName.length - 1) / 5)
+                            .toString()
+                            .substring(
+                              0,
+                              ((foodsByName.length - 1) / 5).toFixed(1).toString().indexOf('.')
+                            ) === `${pageFood}`
+                        }
+                        onClick={goToEndTable}
+                      >
+                        <Icon icon="bi:skip-end-fill" />
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
+                </TableRow>
+              </TableFooter>
             </Table>
           </TableContainer>
           <TablePagination
             rowsPerPageOptions={false}
             component="div"
-            count={foodsByName.length}
+            count={quantity}
             rowsPerPage={5}
             page={pageFood}
             onPageChange={handleChangePage}
@@ -261,7 +315,7 @@ function Food() {
           />
         </Box>
       </Scrollbar>
-      <ModalAddTypeFood />
+      {modalAddTypeFood && <ModalAddTypeFood />}
       {modalEditFood.status && <ModalEditFood />}
       {modalEditTypeFood.status && <ModalEditTypeFood />}
     </RootStyle>

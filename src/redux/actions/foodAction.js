@@ -7,7 +7,8 @@ import {
   ACTION_FOOD_GET_ALL_FOODS,
   ACTION_FOOD_GET_ALL_FOODS_BY_NAME,
   ACTION_FOOD_MODAL_EDIT_FOOD,
-  ACTION_FOOD_MODAL_EDIT_TYPE_FOOD
+  ACTION_FOOD_MODAL_EDIT_TYPE_FOOD,
+  ACTION_FOOD_SORT_FOOD
 } from './types';
 
 export const actionFoodGetAllFoods = (data) => ({
@@ -40,6 +41,12 @@ export const actionFoodModalEditTypeFood = (data) => ({
   type: ACTION_FOOD_MODAL_EDIT_TYPE_FOOD,
   payload: data
 });
+
+export const actionFoodSortFood = (data) => ({
+  type: ACTION_FOOD_SORT_FOOD,
+  payload: data
+});
+
 export const actionGetAllFoods = () => (dispatch) => {
   axios
     .get(`${api}monAn/list`)

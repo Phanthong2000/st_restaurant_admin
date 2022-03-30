@@ -9,7 +9,11 @@ import {
   ACTION_ORDER_GET_USER,
   ACTION_ORDER_GET_BOOKS_BY_KEYWORD,
   ACTION_ORDER_SET_FOOD,
-  ACTION_ORDER_MODAL_EDIT_BOOK
+  ACTION_ORDER_MODAL_EDIT_BOOK,
+  ACTION_ORDER_SORT_BOOK,
+  ACTION_ORDER_NEW_BOOKS,
+  ACTION_ORDER_UPDATE_FOODS_FOR_BOOK,
+  ACTION_ORDER_BOOK_PAY_ORDER
 } from './types';
 
 export const actionOrderGetOrder = (data) => ({
@@ -52,12 +56,27 @@ export const actionOrderModalEditBook = (data) => ({
   payload: data
 });
 
+export const actionOrderSortBook = (data) => ({
+  type: ACTION_ORDER_SORT_BOOK,
+  payload: data
+});
+export const actionOrderNewBooks = (data) => ({
+  type: ACTION_ORDER_NEW_BOOKS,
+  payload: data
+});
+export const actionOrderUpdateFoodsForBook = (data) => ({
+  type: ACTION_ORDER_UPDATE_FOODS_FOR_BOOK,
+  payload: data
+});
+export const actionOrderBookPayOrder = (data) => ({
+  type: ACTION_ORDER_BOOK_PAY_ORDER,
+  payload: data
+});
 export const actionGetBooksByKeyword = (keyword) => (dispatch) => {
   if (keyword === '') {
     axios
       .get(`${api}donDatBan/list`)
       .then((res) => {
-        console.log('all', res.data);
         dispatch(actionOrderGetBooksByKeyWord(res.data));
       })
       .catch((err) => console.log(err));
@@ -69,9 +88,16 @@ export const actionGetBooksByKeyword = (keyword) => (dispatch) => {
         }
       })
       .then((res) => {
-        console.log('keyword', res.data);
         dispatch(actionOrderGetBooksByKeyWord(res.data));
       })
       .catch((err) => console.log(err));
   }
+};
+export const actionNewBooks = () => (dispatch) => {
+  axios.get(`${api}donDatBan/list`).then((res) => {
+    const { data } = res;
+    const booksSort = data.sort((a, b) => Date.parse(b.createAt) - Date.parse(a.createAt));
+    console.log(booksSort);
+    dispatch(actionOrderNewBooks(booksSort));
+  });
 };

@@ -109,7 +109,7 @@ function Profile() {
     <RootStyle>
       <BoxDetail>
         <BoxTitle>
-          <Title>Thông tin nhân viên</Title>
+          <Title>Thông tin quản lý</Title>
           <Box sx={{ width: '100%', textAlign: 'center', marginTop: '20px' }}>
             <AvatarUser src={avatar} />
           </Box>

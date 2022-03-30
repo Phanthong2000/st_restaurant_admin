@@ -25,12 +25,12 @@ const sidebarHomeConfig = [
     icon: 'clarity:employee-line'
   },
   {
-    name: 'Thống kê',
+    name: 'Số liệu',
     path: '/home/analytic',
     icon: 'carbon:analytics'
   },
   {
-    name: 'Xuất báo cáo',
+    name: 'Báo cáo',
     path: '/home/report',
     icon: 'tabler:report-money'
   }

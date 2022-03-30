@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Avatar, Box, List, ListItemButton, styled, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { Icon } from '@iconify/react';
 import { useNavigate } from 'react-router-dom';
 import { actionAuthLoggedIn } from '../../redux/actions/authAction';
+import { actionUserBoxProfile } from '../../redux/actions/userAction';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '300px',
@@ -32,6 +33,14 @@ function BoxProfile() {
   const user = useSelector((state) => state.user.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  useEffect(() => {
+    window.addEventListener('click', () => {
+      dispatch(actionUserBoxProfile(false));
+    });
+    return function () {
+      return null;
+    };
+  }, []);
   const logout = () => {
     localStorage.removeItem('admin');
     dispatch(actionAuthLoggedIn(false));

@@ -38,6 +38,7 @@ const ButtonViewAll = styled(Button)(({ theme }) => ({
 }));
 function NewBooks() {
   const booksByKeyword = useSelector((state) => state.order.booksByKeyword);
+  const newBooks = useSelector((state) => state.order.newBooks);
   const navigate = useNavigate();
   const header = [
     {
@@ -94,12 +95,12 @@ function NewBooks() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {booksByKeyword.map((item, index) => (
+            {newBooks.slice(0, 5).map((item, index) => (
               <TableRowBook key={index} index={index} book={item} />
             ))}
           </TableBody>
           <TableFooter>
-            <TableRow>
+            <TableRow sx={{ background: 'gray' }}>
               <TableCell colSpan={9} sx={{ textAlign: 'right' }}>
                 <ButtonViewAll onClick={viewAll}>Xem tất cả</ButtonViewAll>
               </TableCell>

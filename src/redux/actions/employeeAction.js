@@ -4,7 +4,8 @@ import {
   ACTION_EMPLOYEE_GET_ALL_EMPLOYEES,
   ACTION_EMPLOYEE_MODAL_ADD_EMPLOYEE,
   ACTION_EMPLOYEE_MODAL_EDIT_EMPLOYEE,
-  ACTION_EMPLOYEE_GET_EMPLOYEES_BY_KEYWORDS
+  ACTION_EMPLOYEE_GET_EMPLOYEES_BY_KEYWORDS,
+  ACTION_EMPLOYEE_SORT_EMPLOYEE
 } from './types';
 
 export const actionEmployeeGetAllEmployees = (data) => ({
@@ -23,6 +24,10 @@ export const actionEmployeeModalEditEmployee = (data) => ({
 });
 export const actionEmployeeGetEmployeesByKeywords = (data) => ({
   type: ACTION_EMPLOYEE_GET_EMPLOYEES_BY_KEYWORDS,
+  payload: data
+});
+export const actionEmployeeSortEmployee = (data) => ({
+  type: ACTION_EMPLOYEE_SORT_EMPLOYEE,
   payload: data
 });
 export const actionGetAllEmployees = () => (dispatch) => {

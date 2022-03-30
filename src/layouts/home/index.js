@@ -5,6 +5,7 @@ import SidebarHome from './SidebarHome';
 import NavbarHome from './NavbarHome';
 import Responsive from '../../components/Reponsive';
 import Snack from '../../components/Snack';
+import BackdropUser from '../../components/Backdrop';
 
 const heightScreen = window.innerHeight - 1;
 const RootStyle = styled(Stack)(({ theme }) => ({
@@ -37,6 +38,7 @@ function HomeLayout() {
           <Outlet />
         </MainStyle>
       </BoxContent>
+      <BackdropUser />
       <Snack />
     </RootStyle>
   );

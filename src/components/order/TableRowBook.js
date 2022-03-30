@@ -1,11 +1,31 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { IconButton, styled, TableCell, TableRow } from '@mui/material';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { Icon } from '@iconify/react';
-import { useDispatch } from 'react-redux';
-import { actionOrderModalEditBook } from '../../redux/actions/orderAction';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { keyframes } from '@emotion/react';
+import {
+  actionOrderModalEditBook,
+  actionOrderUpdateFoodsForBook,
+  actionOrderBookPayOrder
+} from '../../redux/actions/orderAction';
+import { actionUserChooseNotification } from '../../redux/actions/userAction';
 
+const bounce = keyframes`
+  from{
+    transform: scale(1)
+  }
+
+  50% {
+    transform: scale(1.2)
+  }
+
+  to {
+    ttransform: scale(1.3)
+  }
+`;
 const RootStyle = styled(TableRow)(({ theme }) => ({
   width: '100%'
 }));
@@ -20,7 +40,9 @@ TableRowBook.prototype = {
   index: PropTypes.number
 };
 function TableRowBook({ book, index }) {
+  const chooseNotification = useSelector((state) => state.user.chooseNotification);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const getTotal = () => {
     let total = 0;
     book.listChiTietDonDatBan.forEach((don) => {
@@ -46,8 +68,21 @@ function TableRowBook({ book, index }) {
       return `Đã quá hạn`;
     if (book.trangThai === '2') return 'Đang sử dụng';
   };
+  const updateBook = () => {
+    dispatch(actionOrderUpdateFoodsForBook(book));
+    navigate('/home/update-foods-book');
+  };
+  const goToPayOrder = () => {
+    dispatch(actionOrderBookPayOrder(book));
+    navigate('/home/pay-order');
+  };
   return (
-    <RootStyle sx={{ background: index % 2 === 0 ? '#fff' : 'lightgrey' }}>
+    <RootStyle
+      sx={{
+        background: index % 2 === 0 ? '#fff' : 'lightgrey',
+        animation: book.id === chooseNotification.id && `${bounce} 3s alternate`
+      }}
+    >
       <Cell>{index + 1}</Cell>
       <Cell>{book.khachHang.hoTen}</Cell>
       <Cell>{book.khachHang.soDienThoai}</Cell>
@@ -72,7 +107,18 @@ function TableRowBook({ book, index }) {
       </Cell>
       <Cell>
         {checkStatus() === 'Đang sử dụng' ? (
+          <IconButton onClick={updateBook}>
+            <IconSeeInfo style={{ color: 'green' }} icon="bxs:bookmark-plus" />
+          </IconButton>
+        ) : (
           <IconButton>
+            <Icon style={{ color: 'red' }} icon="ep:close-bold" />
+          </IconButton>
+        )}
+      </Cell>
+      <Cell>
+        {checkStatus() === 'Đang sử dụng' ? (
+          <IconButton onClick={goToPayOrder}>
             <IconSeeInfo icon="emojione-v1:money-bag" />
           </IconButton>
         ) : (

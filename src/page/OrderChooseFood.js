@@ -32,6 +32,7 @@ import { actionUserShowHotToast, actionUserSnackbar } from '../redux/actions/use
 import ModalInformationFood from '../components/order/ModalInformationFood';
 import {
   actionGetBooksByKeyword,
+  actionNewBooks,
   actionOrderGetOrder,
   actionOrderGetUser,
   actionOrderSetFood
@@ -276,6 +277,7 @@ function OrderChooseFood() {
         })
         .then((res) => {
           dispatch(actionGetBooksByKeyword(''));
+          dispatch(actionNewBooks());
           dispatch(
             actionUserSnackbar({
               status: true,
@@ -310,11 +312,25 @@ function OrderChooseFood() {
             <InputInfo disabled value={book.phone} fullWidth placeholder="0123456789" />
           </InputWapper>
           <InputWapper item xs={6} sm={6} md={6} lg={3} xl={3}>
-            <Typography sx={{ fontSize: '16px' }}>Ngày tháng, giờ:</Typography>
+            <Typography sx={{ fontSize: '16px' }}>Thời gian nhận bàn:</Typography>
             <DatePicker
               disabled
               customInput={<InputInfo fullWidth />}
-              selected={new Date()}
+              selected={book.date}
+              showTimeSelect
+              dateFormat="dd/MM/yyyy, hh:mm a"
+              // onChange={(newValue) => {
+              //   console.log(newValue.getTime());
+              //   setDateUse(newValue);
+              // }}
+            />
+          </InputWapper>
+          <InputWapper item xs={6} sm={6} md={6} lg={3} xl={3}>
+            <Typography sx={{ fontSize: '16px' }}>Thời gian đặt bàn:</Typography>
+            <DatePicker
+              disabled
+              customInput={<InputInfo fullWidth />}
+              selected={new Date().getTime()}
               showTimeSelect
               dateFormat="dd/MM/yyyy, hh:mm a"
               // onChange={(newValue) => {
@@ -331,7 +347,7 @@ function OrderChooseFood() {
             <Typography sx={{ fontSize: '16px' }}>Thời gian sử dụng:</Typography>
             <InputInfo disabled value={book.timeUse.label} fullWidth placeholder="0" />
           </InputWapper>
-          <InputWapper item xs={12} sm={12} md={12} lg={6} xl={6}>
+          <InputWapper item xs={6} sm={6} md={6} lg={3} xl={3}>
             <Typography sx={{ fontSize: '16px' }}>Ghi chú:</Typography>
             <InputInfo disabled value={book.description} fullWidth placeholder="Aa" />
           </InputWapper>

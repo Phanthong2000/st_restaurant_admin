@@ -7,7 +7,8 @@ import {
   ACTION_CUSTOMER_MODAL_EDIT_CUSTOMER,
   ACTION_CUSTOMER_GET_ALL_CUSTOMERS_BY_KEYWORDS,
   ACTION_CUSTOMER_GET_NEW_CUSTOMER_IN_WEEK,
-  ACTION_CUSTOMER_GET_GENDER_CUSTOMER
+  ACTION_CUSTOMER_GET_GENDER_CUSTOMER,
+  ACTION_CUSTOMER_GET_SORT_CUSTOMER
 } from './types';
 import api from '../../assets/api/api';
 
@@ -31,6 +32,11 @@ export const actionCustomerGetAllCustomersByKeyword = (data) => ({
   type: ACTION_CUSTOMER_GET_ALL_CUSTOMERS_BY_KEYWORDS,
   payload: data
 });
+export const actionCustomerSortCustomer = (data) => ({
+  type: ACTION_CUSTOMER_GET_SORT_CUSTOMER,
+  payload: data
+});
+
 export const actionGetAllCustomers = () => (dispatch) => {
   axios
     .get(`${api}khachHang/list`)

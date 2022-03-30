@@ -12,12 +12,14 @@ import {
 } from '@mui/material';
 import React, { useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import axios from 'axios';
 import validator from 'validator';
 import { useNavigate } from 'react-router-dom';
 import { actionUserSnackbar } from '../../redux/actions/userAction';
 import api from '../../assets/api/api';
-import { actionGetAllFoods } from '../../redux/actions/foodAction';
+import { actionGetAllFoods, actionGetAllFoodsByName } from '../../redux/actions/foodAction';
+import { storage } from '../../firebase-config';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -149,44 +151,62 @@ function CreateFoods() {
     else if (type.id === undefined) setError('Vui lòng chọn loại món ăn');
     else if (description === '') setError('Vui lòng nhập mô tả');
     else {
-      const food = {
-        tenMonAn: name,
-        donGia: parseFloat(price),
-        moTa: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-        hinhAnh: ['https://cdn.dayphache.edu.vn/wp-content/uploads/2019/12/kem-bo.jpg'],
-        trangThai: 'Đang bán',
-        loaiMonAn: {
-          id: type.id
-        },
-        nguoiQuanLy: {
-          id: user.id
-        }
-      };
-      axios
-        .get(`${api}monAn/detail/tenMonAn`, {
-          params: {
-            tenMonAn: name
+      setError('');
+      const hinhAnh = [];
+      images.forEach((img) => {
+        const storageRef = ref(storage, `food/${new Date().getTime()}`);
+        const uploadTask = uploadBytesResumable(storageRef, img);
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {},
+          (error) => {},
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              hinhAnh.push(downloadURL);
+              if (hinhAnh.length === images.length) {
+                const food = {
+                  tenMonAn: name,
+                  donGia: parseFloat(price),
+                  moTa: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                  hinhAnh,
+                  trangThai: 'Đang bán',
+                  loaiMonAn: {
+                    id: type.id
+                  },
+                  nguoiQuanLy: {
+                    id: user.id
+                  }
+                };
+                axios
+                  .get(`${api}monAn/detail/tenMonAn`, {
+                    params: {
+                      tenMonAn: name
+                    }
+                  })
+                  .then((res) => {
+                    setError('Tên món ăn đã tồn tại');
+                  })
+                  .catch((err) => {
+                    axios
+                      .post(`${api}monAn/create`, food)
+                      .then((res) => {
+                        dispatch(actionGetAllFoodsByName(''));
+                        dispatch(
+                          actionUserSnackbar({
+                            status: true,
+                            content: 'Thêm món ăn thành công',
+                            type: 'success'
+                          })
+                        );
+                      })
+                      .then(() => navigate('/home/food'))
+                      .catch((err) => console.log(err));
+                  });
+              }
+            });
           }
-        })
-        .then((res) => {
-          setError('Tên món ăn đã tồn tại');
-        })
-        .catch((err) => {
-          axios
-            .post(`${api}monAn/create`, food)
-            .then((res) => {
-              dispatch(actionGetAllFoods());
-              dispatch(
-                actionUserSnackbar({
-                  status: true,
-                  content: 'Thêm món ăn thành công',
-                  type: 'success'
-                })
-              );
-            })
-            .then(() => navigate('/home/food'))
-            .catch((err) => console.log(err));
-        });
+        );
+      });
     }
   };
   return (

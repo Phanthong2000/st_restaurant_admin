@@ -5,7 +5,11 @@ import {
   ACTION_USER_SHOW_HOT_TOAST,
   ACTION_USER_SNACKBAR,
   ACTION_USER_GET_USER,
-  ACTION_USER_BOX_PROFILE
+  ACTION_USER_BOX_PROFILE,
+  ACTION_USER_BOX_NOTIFICATION,
+  ACTION_USER_BACKDROP,
+  ACTION_USER_CHOOSE_NOTIFICATION,
+  ACTION_USER_SUPPORT_CHOOSE_NOTIFICATION
 } from './types';
 
 export const actionUserOpenChatBox = (data) => ({
@@ -29,7 +33,21 @@ export const actionUserBoxProfile = (data) => ({
   type: ACTION_USER_BOX_PROFILE,
   payload: data
 });
-
+export const actionUserBoxNotification = (data) => ({
+  type: ACTION_USER_BOX_NOTIFICATION,
+  payload: data
+});
+export const actionUserBackdrop = (data) => ({
+  type: ACTION_USER_BACKDROP,
+  payload: data
+});
+export const actionUserChooseNotification = (data) => ({
+  type: ACTION_USER_CHOOSE_NOTIFICATION,
+  payload: data
+});
+export const actionUserSupportChooseNotification = () => ({
+  type: ACTION_USER_SUPPORT_CHOOSE_NOTIFICATION
+});
 export const actionGetUser = (id) => (dispatch) => {
   axios
     .get(`${api}nguoiQuanLy/detail/${id}`)

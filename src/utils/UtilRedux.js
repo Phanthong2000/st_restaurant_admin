@@ -16,7 +16,7 @@ import {
   actionGetEmployeesByKeywords
 } from '../redux/actions/employeeAction';
 import { actionGetUser } from '../redux/actions/userAction';
-import { actionGetBooksByKeyword } from '../redux/actions/orderAction';
+import { actionGetBooksByKeyword, actionNewBooks } from '../redux/actions/orderAction';
 
 function UtilRedux() {
   const dispatch = useDispatch();
@@ -32,6 +32,7 @@ function UtilRedux() {
     dispatch(actionGetGenderCustomer());
     dispatch(actionGetNewCustomerInWeek());
     dispatch(actionGetBooksByKeyword(''));
+    dispatch(actionNewBooks());
     if (loggedIn) dispatch(actionGetUser(JSON.parse(localStorage.getItem('admin')).id));
     return function () {
       return null;

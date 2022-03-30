@@ -17,7 +17,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import Responsive from '../../components/Reponsive';
 import sidebarHomeConfig from './SidebarHomeConfig';
 import BoxProfile from '../../components/home/BoxProfile';
-import { actionUserBoxProfile } from '../../redux/actions/userAction';
+import { actionUserBoxNotification, actionUserBoxProfile } from '../../redux/actions/userAction';
+import BoxNotification from '../../components/home/BoxNotification';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -53,6 +54,7 @@ function NavbarHome() {
   const [openDrawer, setOpenDrawer] = useState(false);
   const { pathname } = useLocation();
   const boxProfile = useSelector((state) => state.user.boxProfile);
+  const boxNotification = useSelector((state) => state.user.boxNotification);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const openMenu = () => {
@@ -74,14 +76,23 @@ function NavbarHome() {
       <Typography> </Typography>
       {!boxProfile ? (
         <BoxAvatar>
-          <IconButton sx={{ marginRight: '20px' }}>
+          <IconButton
+            onClick={(e) => {
+              e.stopPropagation();
+              dispatch(actionUserBoxNotification(!boxNotification));
+            }}
+            sx={{ marginRight: '20px' }}
+          >
             <Badge color="error" badgeContent={1}>
               <Icon icon="clarity:notification-line" />
             </Badge>
           </IconButton>
           <Avatar
             sx={{ width: '40px', height: '40px', cursor: 'pointer' }}
-            onClick={() => dispatch(actionUserBoxProfile(true))}
+            onClick={(e) => {
+              e.stopPropagation();
+              dispatch(actionUserBoxProfile(true));
+            }}
             src="https://cdn-prod.medicalnewstoday.com/content/images/articles/325/325466/man-walking-dog.jpg"
           />
         </BoxAvatar>
@@ -130,6 +141,7 @@ function NavbarHome() {
         </List>
       </SwipeableDrawer>
       {boxProfile && <BoxProfile />}
+      {boxNotification && <BoxNotification />}
     </RootStyle>
   );
 }

@@ -2,15 +2,18 @@ import React, { useEffect, useState } from 'react';
 import {
   Box,
   Button,
+  IconButton,
   InputBase,
   styled,
   Table,
   TableBody,
   TableCell,
   TableContainer,
+  TableFooter,
   TableHead,
   TablePagination,
   TableRow,
+  Tooltip,
   Typography
 } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
@@ -24,6 +27,7 @@ import {
   actionGetAllCustomerByKeyword
 } from '../redux/actions/customerAction';
 import ModalEditCustomer from '../components/customer/ModalEditCustomer';
+import BoxSort from '../components/customer/BoxSort';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -73,17 +77,28 @@ const ButtonAddCustomer = styled(Button)(({ theme }) => ({
 function Customer() {
   const customers = useSelector((state) => state.customer.customersKeyword);
   const modalEditCustomer = useSelector((state) => state.customer.modalEditCustomer);
+  const sortCustomer = useSelector((state) => state.customer.sortCustomer);
   const [page, setPage] = useState(0);
   const [customerTable, setCustomerTable] = useState([]);
   const [search, setSearch] = useState('');
   const dispatch = useDispatch();
+  const [quantity, setQuantity] = useState(0);
   const getCustomerByPage = (page) => {
+    const notPages = [];
+    customers.forEach((customer) => {
+      if (sortCustomer === 'all') {
+        notPages.push(customer);
+      } else if (customer.taiKhoan.trangThai === sortCustomer) {
+        notPages.push(customer);
+      }
+    });
+    setQuantity(notPages.length);
     const start = page * 5;
     const end = start + 5;
     const data = [];
-    for (let i = 0; i < customers.length; i += 1) {
+    for (let i = 0; i < notPages.length; i += 1) {
       if (i >= start && i < end) {
-        data.push(customers.at(i));
+        data.push(notPages.at(i));
       }
     }
     setCustomerTable(data);
@@ -94,7 +109,7 @@ function Customer() {
     return function () {
       // searchCustomer('');
     };
-  }, [customers]);
+  }, [customers, sortCustomer]);
   const header = [
     {
       name: 'STT',
@@ -137,6 +152,17 @@ function Customer() {
     setSearch(text);
     dispatch(actionGetAllCustomerByKeyword(text));
   };
+  const goToStartTable = () => {
+    setPage(0);
+    getCustomerByPage(0);
+  };
+  const goToEndTable = () => {
+    const page = ((customers.length - 1) / 5)
+      .toString()
+      .substring(0, ((customers.length - 1) / 5).toFixed(1).toString().indexOf('.'));
+    setPage(parseInt(page, 10));
+    getCustomerByPage(parseInt(page, 10));
+  };
   return (
     <RootStyle>
       <Scrollbar alwaysShowTracks>
@@ -154,6 +180,7 @@ function Customer() {
             />
           </BoxButtonSearch>
         </BoxSearch>
+        <BoxSort />
         <Box sx={{ marginTop: '20px' }}>
           <BoxListCustomer>
             <Typography sx={{ fontWeight: 'bold', fontSize: '20px' }}>
@@ -200,12 +227,38 @@ function Customer() {
                   ))}
                 </TableBody>
               )}
+              <TableFooter>
+                <TableRow>
+                  <TableCell colSpan={11}>
+                    <Tooltip title="Về đầu bảng">
+                      <IconButton onClick={goToStartTable} disabled={page === 0}>
+                        <Icon icon="bi:skip-start-fill" />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Đến cuối bảng">
+                      <IconButton
+                        disabled={
+                          ((customers.length - 1) / 5)
+                            .toString()
+                            .substring(
+                              0,
+                              ((customers.length - 1) / 5).toFixed(1).toString().indexOf('.')
+                            ) === `${page}`
+                        }
+                        onClick={goToEndTable}
+                      >
+                        <Icon icon="bi:skip-end-fill" />
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
+                </TableRow>
+              </TableFooter>
             </Table>
           </TableContainer>
           <TablePagination
             rowsPerPageOptions
             component="div"
-            count={customers.length}
+            count={quantity}
             rowsPerPage={5}
             page={page}
             onPageChange={handleChangePage}

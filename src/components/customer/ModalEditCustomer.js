@@ -198,6 +198,7 @@ function ModalEditCustomer() {
                   }
                 })
                 .then((res) => {
+                  handleClose();
                   dispatch(actionGetAllCustomerByKeyword(''));
                   dispatch(
                     actionUserSnackbar({
@@ -206,7 +207,6 @@ function ModalEditCustomer() {
                       type: 'success'
                     })
                   );
-                  handleClose();
                 })
                 .catch((err) => console.log(err));
             })
@@ -218,15 +218,15 @@ function ModalEditCustomer() {
               ...customer
             })
             .then((res) => {
+              handleClose();
               dispatch(actionGetAllCustomerByKeyword(''));
               dispatch(
                 actionUserSnackbar({
-                  status: true,
+                  status: false,
                   content: 'Sửa thông tin khách hàng thành công',
                   type: 'success'
                 })
               );
-              handleClose();
             })
             .catch((err) => console.log(err));
         }
@@ -265,15 +265,15 @@ function ModalEditCustomer() {
                         }
                       })
                       .then((res) => {
+                        handleClose();
                         dispatch(actionGetAllCustomerByKeyword(''));
                         dispatch(
                           actionUserSnackbar({
-                            status: true,
+                            status: false,
                             content: 'Sửa thông tin khách hàng thành công',
                             type: 'success'
                           })
                         );
-                        handleClose();
                       })
                       .catch((err) => console.log(err));
                   })
@@ -285,6 +285,7 @@ function ModalEditCustomer() {
                     ...customer
                   })
                   .then((res) => {
+                    handleClose();
                     dispatch(actionGetAllCustomerByKeyword(''));
                     dispatch(
                       actionUserSnackbar({
@@ -293,7 +294,6 @@ function ModalEditCustomer() {
                         type: 'success'
                       })
                     );
-                    handleClose();
                   })
                   .catch((err) => console.log(err));
               }
@@ -322,9 +322,11 @@ function ModalEditCustomer() {
           <Scrollbar alwaysShowTracks>
             <BoxAvatar>
               <AvatarEmployee src={avatar} />
-              <ButtonChooseAvatar onClick={() => fileRef.current.click()}>
-                Chọn ảnh
-              </ButtonChooseAvatar>
+              {modalEditCustomer.customer.taiKhoan.trangThai === 'Hiệu lực' && (
+                <ButtonChooseAvatar onClick={() => fileRef.current.click()}>
+                  Chọn ảnh
+                </ButtonChooseAvatar>
+              )}
             </BoxAvatar>
             <FormikProvider value={formik}>
               <Form autoComplete="off" noValidate onSubmit={handleSubmit}>

@@ -173,7 +173,7 @@ function ModalEditBook() {
           <Scrollbar alwaysShowTracks>
             <Box> </Box>
             <Typography sx={{ color: 'gray', fontWeight: 'bold', fontSize: '14px' }}>
-              Thời gian đặt bàn :{' '}
+              Thời gian đặt bàn :
               {`${moment(modalEditBook.book.createAt).format('hh:mm a DD/MM/YYYY')}`}
             </Typography>
             <Input
@@ -272,11 +272,6 @@ function ModalEditBook() {
                       value="0"
                       control={<Radio onClick={() => setStatus('0')} checked={status === '0'} />}
                       label="Chưa sử dụng"
-                    />
-                    <FormControlLabel
-                      value="1"
-                      control={<Radio onClick={() => setStatus('1')} checked={status === '1'} />}
-                      label="Đã sử dụng"
                     />
                     <FormControlLabel
                       disabled={checkStatus() === 'Đã sử dụng'}

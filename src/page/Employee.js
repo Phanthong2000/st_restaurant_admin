@@ -2,15 +2,18 @@ import React, { useEffect, useState } from 'react';
 import {
   Box,
   Button,
+  IconButton,
   InputBase,
   styled,
   Table,
   TableBody,
   TableCell,
   TableContainer,
+  TableFooter,
   TableHead,
   TablePagination,
   TableRow,
+  Tooltip,
   Typography
 } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
@@ -24,6 +27,7 @@ import {
 } from '../redux/actions/employeeAction';
 import EmployeeTableRow from '../components/employee/EmployeeTableRow';
 import ModalEditEmployee from '../components/employee/ModalEditEmployee';
+import BoxSort from '../components/employee/BoxSort';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -73,17 +77,28 @@ const ButtonAddEmployee = styled(Button)(({ theme }) => ({
 function Employee() {
   const employees = useSelector((state) => state.employee.employeesKeyword);
   const modalEditEmployee = useSelector((state) => state.employee.modalEditEmployee);
+  const sortEmployee = useSelector((state) => state.employee.sortEmployee);
   const [page, setPage] = useState(0);
   const [employeeTable, setEmployeeTable] = useState([]);
   const [search, setSearch] = useState('');
   const dispatch = useDispatch();
+  const [quantity, setQuantity] = useState(0);
   const setEmployees = (page) => {
+    const notPages = [];
+    employees.forEach((customer) => {
+      if (sortEmployee === 'all') {
+        notPages.push(customer);
+      } else if (customer.taiKhoan.trangThai === sortEmployee) {
+        notPages.push(customer);
+      }
+    });
+    setQuantity(notPages.length);
     const start = page * 5;
     const end = start + 5;
     const data = [];
-    for (let i = 0; i < employees.length; i += 1) {
+    for (let i = 0; i < notPages.length; i += 1) {
       if (i >= start && i < end) {
-        data.push(employees.at(i));
+        data.push(notPages.at(i));
       }
     }
     setEmployeeTable(data);
@@ -98,7 +113,7 @@ function Employee() {
     return function () {
       // searchEmployees('');
     };
-  }, [employees]);
+  }, [employees, sortEmployee]);
   const header = [
     {
       name: 'STT',
@@ -133,6 +148,17 @@ function Employee() {
     setPage(newValue);
     setEmployees(newValue);
   };
+  const goToStartTable = () => {
+    setPage(0);
+    setEmployees(0);
+  };
+  const goToEndTable = () => {
+    const page = ((employees.length - 1) / 5)
+      .toString()
+      .substring(0, ((employees.length - 1) / 5).toFixed(1).toString().indexOf('.'));
+    setPage(parseInt(page, 10));
+    setEmployees(parseInt(page, 10));
+  };
   return (
     <RootStyle>
       <Scrollbar alwaysShowTracks>
@@ -149,6 +175,7 @@ function Employee() {
             />
           </BoxButtonSearch>
         </BoxSearch>
+        <BoxSort />
         <Box sx={{ marginTop: '20px' }}>
           <BoxListEmployee>
             <Typography sx={{ fontWeight: 'bold', fontSize: '20px' }}>
@@ -182,12 +209,38 @@ function Employee() {
                   <EmployeeTableRow key={index} employee={item} index={index + page * 5} />
                 ))}
               </TableBody>
+              <TableFooter>
+                <TableRow>
+                  <TableCell colSpan={11}>
+                    <Tooltip title="Về đầu bảng">
+                      <IconButton onClick={goToStartTable} disabled={page === 0}>
+                        <Icon icon="bi:skip-start-fill" />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Đến cuối bảng">
+                      <IconButton
+                        disabled={
+                          ((employees.length - 1) / 5)
+                            .toString()
+                            .substring(
+                              0,
+                              ((employees.length - 1) / 5).toFixed(1).toString().indexOf('.')
+                            ) === `${page}`
+                        }
+                        onClick={goToEndTable}
+                      >
+                        <Icon icon="bi:skip-end-fill" />
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
+                </TableRow>
+              </TableFooter>
             </Table>
           </TableContainer>
           <TablePagination
             rowsPerPageOptions={false}
             component="div"
-            count={employees.length}
+            count={quantity}
             rowsPerPage={5}
             page={page}
             onPageChange={handleChangePage}

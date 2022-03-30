@@ -15,6 +15,8 @@ import OrderChooseFood from './page/OrderChooseFood';
 import Book from './page/Book';
 import Profile from './page/Profile';
 import Error from './page/Error';
+import UpdateFoodsForBook from './page/UpdateFoodsForBook';
+import PayOrder from './page/PayOrder';
 
 export default function Router() {
   return useRoutes([
@@ -44,6 +46,8 @@ export default function Router() {
         { path: 'employee', element: <Employee /> },
         { path: 'analytic', element: <Analytic /> },
         { path: 'report', element: <Report /> },
+        { path: 'update-foods-book', element: <UpdateFoodsForBook /> },
+        { path: 'pay-order', element: <PayOrder /> },
         {
           path: 'food-create',
           element: <CreateFoods />
