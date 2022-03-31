@@ -166,7 +166,7 @@ function ModalEditTypeFood() {
                 </BoxInput>
                 <Box sx={{ width: '100%', textAlign: 'center' }}>
                   <Typography sx={{ color: 'red' }}>{error}</Typography>
-                  <ButtonAddEmployee type="submit">Sửa thông tin loại mon ăn</ButtonAddEmployee>
+                  <ButtonAddEmployee type="submit">Sửa thông tin loại món ăn</ButtonAddEmployee>
                 </Box>
               </Form>
             </FormikProvider>

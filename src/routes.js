@@ -17,6 +17,7 @@ import Profile from './page/Profile';
 import Error from './page/Error';
 import UpdateFoodsForBook from './page/UpdateFoodsForBook';
 import PayOrder from './page/PayOrder';
+import Area from './page/Area';
 
 export default function Router() {
   return useRoutes([
@@ -53,7 +54,8 @@ export default function Router() {
           element: <CreateFoods />
         },
         { path: 'order-choose-food', element: <OrderChooseFood /> },
-        { path: 'profile', element: <Profile /> }
+        { path: 'profile', element: <Profile /> },
+        { path: 'area', element: <Area /> }
       ]
     }
   ]);

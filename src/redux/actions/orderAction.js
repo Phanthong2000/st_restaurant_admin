@@ -97,7 +97,6 @@ export const actionNewBooks = () => (dispatch) => {
   axios.get(`${api}donDatBan/list`).then((res) => {
     const { data } = res;
     const booksSort = data.sort((a, b) => Date.parse(b.createAt) - Date.parse(a.createAt));
-    console.log(booksSort);
     dispatch(actionOrderNewBooks(booksSort));
   });
 };

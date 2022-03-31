@@ -25,6 +25,11 @@ const sidebarHomeConfig = [
     icon: 'clarity:employee-line'
   },
   {
+    name: 'Khu vực',
+    path: '/home/area',
+    icon: 'tabler:chart-area-line'
+  },
+  {
     name: 'Số liệu',
     path: '/home/analytic',
     icon: 'carbon:analytics'

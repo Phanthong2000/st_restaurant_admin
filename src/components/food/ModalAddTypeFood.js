@@ -115,8 +115,8 @@ function ModalAddTypeFood() {
           <Typography sx={{ color: 'red', width: '100%', textAlign: 'center' }}>{error}</Typography>
         </BoxInput>
         <Divider sx={{ margin: '20px 0px' }} />
-        <Box sx={{ width: '100%', textAlign: 'right' }}>
-          <ButtonAdd onClick={add}>Thêm</ButtonAdd>
+        <Box sx={{ width: '100%', textAlign: 'center' }}>
+          <ButtonAdd onClick={add}>Thêm loại món ăn</ButtonAdd>
         </Box>
       </BoxModal>
     </Modal>

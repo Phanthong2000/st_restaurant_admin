@@ -1,5 +1,6 @@
 import { applyMiddleware, createStore, combineReducers } from 'redux';
 import thunk from 'redux-thunk';
+import areaReducer from './reducers/areaReducer';
 import authReducer from './reducers/authReducer';
 import customerReducer from './reducers/customerReducer';
 import employeeReducer from './reducers/employeeReducer';
@@ -13,7 +14,8 @@ const rootReducer = combineReducers({
   order: orderReducer,
   auth: authReducer,
   customer: customerReducer,
-  employee: employeeReducer
+  employee: employeeReducer,
+  area: areaReducer
 });
 const store = createStore(rootReducer, applyMiddleware(thunk));
 export default store;
