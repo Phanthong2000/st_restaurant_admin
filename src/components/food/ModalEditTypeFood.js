@@ -19,12 +19,13 @@ import {
   RadioGroup,
   styled,
   TextField,
+  Tooltip,
   Typography
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { Icon } from '@iconify/react';
 import axios from 'axios';
-import moment from 'moment';
+import PropTypes from 'prop-types';
 import { Scrollbar } from 'smooth-scrollbar-react';
 import {
   actionFoodModalEditFood,
@@ -78,11 +79,26 @@ const ButtonAddEmployee = styled(Button)(({ theme }) => ({
     background: theme.palette.mainHover
   }
 }));
-function ModalEditTypeFood() {
+const ImageTypeFood = styled('img')(({ theme }) => ({
+  width: '100%',
+  height: '300px'
+}));
+const ButtonAdd = styled(Button)(({ theme }) => ({
+  textTransform: 'none',
+  fontWeight: 'bold',
+  color: theme.palette.white,
+  background: theme.palette.main,
+  ':hover': {
+    background: theme.palette.mainHover
+  }
+}));
+function ModalEditTypeFood({ editTypeFood }) {
+  const fileRef = useRef();
   const dispatch = useDispatch();
   const typefoods = useSelector((state) => state.food.typefoods);
   const modalEditTypeFood = useSelector((state) => state.food.modalEditTypeFood);
   const [error, setError] = useState('');
+  const [imageNew, setImageNew] = useState();
   const handleClose = () => {
     dispatch(
       actionFoodModalEditTypeFood({
@@ -91,7 +107,21 @@ function ModalEditTypeFood() {
       })
     );
   };
-
+  const onChangeFile = (files) => {
+    if (files && files[0]) {
+      if (files[0].size < 2097152) {
+        setImageNew(files[0]);
+      } else {
+        dispatch(
+          actionUserSnackbar({
+            status: true,
+            content: 'Hình ảnh loại thức ăn phải nhỏ hơn 2MB',
+            type: 'error'
+          })
+        );
+      }
+    }
+  };
   const FoodSchema = Yup.object().shape({
     name: Yup.string().required('Vui lòng nhập tên món ăn')
   });
@@ -101,38 +131,42 @@ function ModalEditTypeFood() {
     },
     validationSchema: FoodSchema,
     onSubmit: () => {
-      if (values.name === modalEditTypeFood.typefood.tenLoaiMonAn) {
-        setError('Tên trùng với tên hiện tại');
-      } else {
-        let flag = false;
-        typefoods.forEach((food) => {
-          if (food.tenLoaiMonAn === values.name) {
-            flag = true;
-          }
-        });
-        if (flag) {
-          setError('Tên loại món đã tồn tại');
-        } else {
-          axios
-            .put(`${api}loaiMonAn/edit`, {
-              ...modalEditTypeFood.typefood,
-              tenLoaiMonAn: values.name
-            })
-            .then((res) => {
-              setError('');
-              dispatch(actionGetAllFoods());
-              dispatch(actionGetAllTypeFoods());
-              dispatch(
-                actionUserSnackbar({
-                  status: true,
-                  content: 'Cập nhật thông tin loại món thành công',
-                  type: 'success'
-                })
-              );
-              handleClose();
-            })
-            .catch((err) => console.log(err));
+      let flag = false;
+      typefoods.forEach((food) => {
+        if (food.tenLoaiMonAn === values.name && food.id !== modalEditTypeFood.typefood.id) {
+          flag = true;
         }
+      });
+      if (flag) {
+        setError('Tên loại món đã tồn tại');
+      } else if (!imageNew) {
+        axios
+          .put(`${api}loaiMonAn/edit`, {
+            ...modalEditTypeFood.typefood,
+            tenLoaiMonAn: values.name
+          })
+          .then((res) => {
+            setError('');
+            dispatch(actionGetAllFoods());
+            dispatch(actionGetAllTypeFoods());
+            dispatch(
+              actionUserSnackbar({
+                status: true,
+                content: 'Sửa thông tin loại món thành công',
+                type: 'success'
+              })
+            );
+            handleClose();
+          })
+          .catch((err) => console.log(err));
+      } else {
+        const typefoodNew = {
+          ...modalEditTypeFood.typefood,
+          tenLoaiMonAn: values.name
+        };
+        setError('');
+        editTypeFood(typefoodNew, imageNew);
+        handleClose();
       }
     }
   });
@@ -150,6 +184,30 @@ function ModalEditTypeFood() {
           </IconButton>
         </BoxTitle>
         <Divider sx={{ margin: '10px 0px' }} />
+        <Box sx={{ width: '100%', textAlign: 'center' }}>
+          {imageNew ? (
+            <>
+              <ImageTypeFood src={URL.createObjectURL(imageNew)} />
+              <Box sx={{ width: '100%', textAlign: 'center' }}>
+                <IconButton onClick={() => setImageNew(null)}>
+                  <Tooltip title="Bỏ chọn hình ảnh">
+                    <Icon
+                      style={{ color: 'red', width: '40px', height: '40px' }}
+                      icon="ant-design:close-square-filled"
+                    />
+                  </Tooltip>
+                </IconButton>
+              </Box>
+            </>
+          ) : (
+            <>
+              <ImageTypeFood src={modalEditTypeFood.typefood.hinhAnh} />
+              <Box sx={{ width: '100%', textAlign: 'center' }}>
+                <ButtonAdd onClick={() => fileRef.current.click()}>Chọn hình ảnh mới</ButtonAdd>
+              </Box>
+            </>
+          )}
+        </Box>
         <BoxContent>
           <Scrollbar alwaysShowTracks>
             <Box> </Box>
@@ -166,12 +224,27 @@ function ModalEditTypeFood() {
                 </BoxInput>
                 <Box sx={{ width: '100%', textAlign: 'center' }}>
                   <Typography sx={{ color: 'red' }}>{error}</Typography>
-                  <ButtonAddEmployee type="submit">Sửa thông tin loại món ăn</ButtonAddEmployee>
+                  <ButtonAddEmployee
+                    disabled={values.name === modalEditTypeFood.typefood.tenLoaiMonAn && !imageNew}
+                    type="submit"
+                  >
+                    Sửa thông tin loại món ăn
+                  </ButtonAddEmployee>
                 </Box>
               </Form>
             </FormikProvider>
           </Scrollbar>
         </BoxContent>
+        <input
+          onClick={(e) => {
+            e.target.value = null;
+          }}
+          accept=".png, .jpg, .jpeg"
+          onChange={(e) => onChangeFile(e.target.files)}
+          ref={fileRef}
+          style={{ display: 'none' }}
+          type="file"
+        />
       </BoxModal>
     </Modal>
   );

@@ -10,7 +10,9 @@ import api from '../../assets/api/api';
 import {
   actionUserBoxNotification,
   actionUserChooseNotification,
-  actionUserSupportChooseNotification
+  actionUserDeleteBadgeNotification,
+  actionUserSupportChooseNotification,
+  actionUserUpdateNotification
 } from '../../redux/actions/userAction';
 
 const RootStyle = styled(ListItemButton)(({ theme }) => ({
@@ -34,67 +36,61 @@ const Time = styled(Typography)(({ theme }) => ({
   fontSize: '12px'
 }));
 Notification.prototype = {
-  notification: PropTypes.object
+  notification: PropTypes.object,
+  index: PropTypes.number
 };
-function Notification({ notification }) {
+function Notification({ notification, index }) {
   const booksByKeyword = useSelector((state) => state.order.booksByKeyword);
-  const [book, setBook] = useState({});
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const getBook = (id) => {
-    axios.get(`${api}donDatBan/detail/${id}`).then((res) => {
-      setBook(res.data);
-    });
-  };
-  useEffect(() => {
-    getBook(notification.noiDung);
-    return function () {
-      return null;
-    };
-  }, []);
   const chooseNotification = () => {
-    const index = booksByKeyword.findIndex((item) => item.id === book.id);
+    const index = booksByKeyword.findIndex((item) => item.id === notification.donDatBan.id);
     const page = (index / 5)
       .toString()
       .substring(0, (index / 5).toFixed(1).toString().indexOf('.'));
     dispatch(
       actionUserChooseNotification({
-        id: book.id,
+        id: notification.donDatBan.id,
         page: parseInt(page, 10)
       })
     );
     navigate('/home/book');
     dispatch(actionUserSupportChooseNotification());
-    dispatch(actionUserBoxNotification(false));
+    if (notification.trangThai === 'Chưa đọc') {
+      dispatch(actionUserDeleteBadgeNotification());
+      axios
+        .put(`${api}thongBao/edit`, {
+          ...notification,
+          trangThai: 'Đã đọc'
+        })
+        .then((res) => {
+          dispatch(
+            actionUserUpdateNotification({
+              index,
+              notification: res.data
+            })
+          );
+          dispatch(actionUserBoxNotification(false));
+        });
+    } else {
+      dispatch(actionUserBoxNotification(false));
+    }
   };
-  if (book.thoiGianNhanBan === undefined)
-    return (
-      <RootStyle>
-        <Box sx={{ display: 'flex' }}>
-          <Skeleton sx={{ width: '60px', height: '60px' }} variant="circular" />
-          <Box sx={{ marginLeft: '10px' }}>
-            <Skeleton variant="text" sx={{ width: '100px' }} />
-            <Skeleton variant="text" sx={{ width: '100px' }} />
-            <Skeleton variant="text" sx={{ width: '100px' }} />
-          </Box>
-        </Box>
-      </RootStyle>
-    );
   return (
     <RootStyle onClick={chooseNotification}>
       <Box sx={{ display: 'flex' }}>
-        <AvatarUser src={notification.nguoiGui.anhDaiDien} />
+        <AvatarUser src={notification.khachHang.anhDaiDien} />
         <Box sx={{ marginLeft: '10px' }}>
           <Username>
-            <b>{notification.nguoiGui.hoTen}</b> đã đặt bàn
+            <b>{notification.khachHang.hoTen}</b> đã đặt bàn
           </Username>
           <Time>
             <b>Nhận bàn vào lúc: </b>
-            {moment(book.thoiGianNhanBan).format(`hh:mm a DD/MM/yyyy`)}
+            {moment(notification.donDatBan.thoiGianNhanBan).format(`hh:mm a DD/MM/yyyy`)}
           </Time>
           <Time>
             <b>Đặt bàn vào lúc: </b>
-            {moment(Date.parse(book.createAt)).format(`hh:mm a DD/MM/yyyy`)}
+            {moment(Date.parse(notification.donDatBan.createAt)).format(`hh:mm a DD/MM/yyyy`)}
           </Time>
         </Box>
       </Box>

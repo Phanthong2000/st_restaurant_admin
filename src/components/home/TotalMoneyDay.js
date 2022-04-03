@@ -1,12 +1,13 @@
 import React from 'react';
 import { Box, Card, styled, Typography } from '@mui/material';
 import { Icon } from '@iconify/react';
+import { useSelector } from 'react-redux';
 import AnimatedNumber from 'react-animated-number/build/AnimatedNumber';
 import { fShortenNumber } from '../../utils/formatNumber';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
-  padding: theme.spacing(5, 0),
+  padding: theme.spacing(2, 0),
   color: '#04297A',
   background: '#D0F2FF',
   textAlign: 'center',
@@ -20,7 +21,7 @@ const WrapperIcon = styled('div')(({ theme }) => ({
   width: theme.spacing(8),
   height: theme.spacing(8),
   justifyContent: 'center',
-  marginBottom: theme.spacing(3),
+  marginBottom: theme.spacing(1),
   color: '#0C53B7',
   backgroundImage: `linear-gradient(135deg, rgba(12, 83, 183, 0) 0%, rgba(12, 83, 183, 0.24) 100%)`
 }));
@@ -35,6 +36,7 @@ const Title = styled(Typography)(({ theme }) => ({
   fontFamily: 'inherit'
 }));
 function TotalMoneyDay() {
+  const totalNow = useSelector((state) => state.order.totalNow);
   return (
     <RootStyle>
       <WrapperIcon>
@@ -44,7 +46,7 @@ function TotalMoneyDay() {
         <AnimatedNumber
           component="text"
           frameStyle={(perc) => (perc === 100 ? {} : { backgroundColor: '#D0F2FF' })}
-          value={2000}
+          value={totalNow}
           stepPrecision={0}
           style={{
             transition: '0.8s ease-out',

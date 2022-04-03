@@ -11,7 +11,11 @@ import {
   ACTION_ORDER_SORT_BOOK,
   ACTION_ORDER_NEW_BOOKS,
   ACTION_ORDER_UPDATE_FOODS_FOR_BOOK,
-  ACTION_ORDER_BOOK_PAY_ORDER
+  ACTION_ORDER_BOOK_PAY_ORDER,
+  ACTION_ORDER_GET_ALL_WAY_PAY,
+  ACTION_ORDER_GET_ORDER_NOW,
+  ACTION_ORDER_GET_BOOKS_NOW,
+  ACTION_ORDER_GET_TOTAL_NOW
 } from '../actions/types';
 
 const defaultState = {
@@ -22,6 +26,7 @@ const defaultState = {
     date: 0,
     quantityCustomer: 0,
     timeUse: 0,
+    area: {},
     description: ''
   },
   foods: [],
@@ -38,7 +43,11 @@ const defaultState = {
   sortBook: 'all',
   newBooks: [],
   updateFoodsForBook: {},
-  bookPayOrder: {}
+  bookPayOrder: {},
+  allWayPay: [],
+  ordersNow: [],
+  booksNow: [],
+  totalNow: 0
 };
 
 // eslint-disable-next-line default-param-last
@@ -118,6 +127,26 @@ const orderReducer = (state = defaultState, action) => {
       return {
         ...state,
         bookPayOrder: action.payload
+      };
+    case ACTION_ORDER_GET_ALL_WAY_PAY:
+      return {
+        ...state,
+        allWayPay: action.payload
+      };
+    case ACTION_ORDER_GET_ORDER_NOW:
+      return {
+        ...state,
+        ordersNow: action.payload
+      };
+    case ACTION_ORDER_GET_BOOKS_NOW:
+      return {
+        ...state,
+        booksNow: action.payload
+      };
+    case ACTION_ORDER_GET_TOTAL_NOW:
+      return {
+        ...state,
+        totalNow: action.payload
       };
     default:
       return state;

@@ -7,8 +7,8 @@ import { actionOrderSortBook } from '../../redux/actions/orderAction';
 const RootStyle = styled(Card)(({ theme }) => ({
   width: '60%',
   background: theme.palette.white,
-  margin: '10px 0px 20px 20%',
-  padding: theme.spacing(2),
+  margin: '10px 0px 10px 20%',
+  padding: theme.spacing(1, 2),
   [theme.breakpoints.down('md')]: {
     width: '80%',
     margin: '10px 10%'
@@ -16,7 +16,7 @@ const RootStyle = styled(Card)(({ theme }) => ({
 }));
 const Title = styled(Typography)(({ theme }) => ({
   fontWeight: 'bold',
-  fontSize: '16px',
+  fontSize: '14px',
   fontFamily: theme.typography.fontFamily.primary
 }));
 const BoxContent = styled(Box)(({ theme }) => ({

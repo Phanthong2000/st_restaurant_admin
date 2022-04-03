@@ -1,12 +1,13 @@
 import React from 'react';
 import { Box, Card, styled, Typography } from '@mui/material';
 import { Icon } from '@iconify/react';
+import { useSelector } from 'react-redux';
 import AnimatedNumber from 'react-animated-number/build/AnimatedNumber';
 import { fShortenNumber } from '../../utils/formatNumber';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
-  padding: theme.spacing(5, 0),
+  padding: theme.spacing(2, 0),
   color: '#7A0C2E',
   background: '#FFE7D9',
   textAlign: 'center',
@@ -20,7 +21,7 @@ const WrapperIcon = styled('div')(({ theme }) => ({
   width: theme.spacing(8),
   height: theme.spacing(8),
   justifyContent: 'center',
-  marginBottom: theme.spacing(3),
+  marginBottom: theme.spacing(1),
   color: '#B72136',
   backgroundImage: `linear-gradient(135deg, rgba(183, 33, 54, 0) 0%, rgba(183, 33, 54, 0.24) 100%)`
 }));
@@ -35,6 +36,7 @@ const Title = styled(Typography)(({ theme }) => ({
   fontFamily: 'inherit'
 }));
 function TotalBookDay() {
+  const booksNow = useSelector((state) => state.order.booksNow);
   return (
     <RootStyle>
       <WrapperIcon>
@@ -44,7 +46,7 @@ function TotalBookDay() {
         <AnimatedNumber
           component="text"
           frameStyle={(perc) => (perc === 100 ? {} : { backgroundColor: '#FFE7D9' })}
-          value={2000}
+          value={booksNow.length}
           stepPrecision={0}
           style={{
             transition: '0.8s ease-out',

@@ -44,7 +44,11 @@ export const actionGetEmployeesByKeywords = (keywords) => (dispatch) => {
     axios
       .get(`${api}nhanVien/list`)
       .then((res) => {
-        dispatch(actionEmployeeGetEmployeesByKeywords(res.data));
+        dispatch(
+          actionEmployeeGetEmployeesByKeywords(
+            res.data.sort((a, b) => Date.parse(b.createAt) - Date.parse(a.createAt))
+          )
+        );
       })
       .catch((err) => console.log(err));
   } else {
@@ -55,7 +59,11 @@ export const actionGetEmployeesByKeywords = (keywords) => (dispatch) => {
         }
       })
       .then((res) => {
-        dispatch(actionEmployeeGetEmployeesByKeywords(res.data));
+        dispatch(
+          actionEmployeeGetEmployeesByKeywords(
+            res.data.sort((a, b) => Date.parse(b.createAt) - Date.parse(a.createAt))
+          )
+        );
       })
       .catch((err) => console.log(err));
   }

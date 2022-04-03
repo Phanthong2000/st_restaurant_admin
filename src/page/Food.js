@@ -20,14 +20,23 @@ import {
 import { Icon } from '@iconify/react';
 import { useNavigate } from 'react-router-dom';
 import { Scrollbar } from 'smooth-scrollbar-react';
+import axios from 'axios';
+import { getDownloadURL, uploadBytesResumable, ref } from 'firebase/storage';
 import { useDispatch, useSelector } from 'react-redux';
 import FoodTableRow from '../components/food/FoodTableRow';
 import TypeFoodTableRow from '../components/food/TypeFoodTableRow';
 import ModalAddTypeFood from '../components/food/ModalAddTypeFood';
-import { actionFoodModalAddTypeFood, actionGetAllFoodsByName } from '../redux/actions/foodAction';
+import {
+  actionFoodModalAddTypeFood,
+  actionGetAllFoodsByName,
+  actionGetAllTypeFoods
+} from '../redux/actions/foodAction';
 import ModalEditFood from '../components/food/ModalEditFood';
 import ModalEditTypeFood from '../components/food/ModalEditTypeFood';
 import BoxSort from '../components/food/BoxSort';
+import api from '../assets/api/api';
+import { actionUserSnackbar, actionUserBackdrop } from '../redux/actions/userAction';
+import { storage } from '../firebase-config';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -148,8 +157,9 @@ function Food() {
   };
   const headerFood = [
     { name: 'STT', minWidth: '10%' },
-    { name: 'Hình ảnh', minWidth: '20%' },
-    { name: 'Tên món ăn', minWidth: '25%' },
+    { name: 'Hình ảnh', minWidth: '15%' },
+    { name: 'Tên món ăn', minWidth: '20%' },
+    { name: 'Yêu thích', minWidth: '10%' },
     { name: 'Giá', minWidth: '10%' },
     { name: 'Loại', minWidth: '10%' },
     { name: 'Trạng thái', minWidth: '10%' },
@@ -157,7 +167,8 @@ function Food() {
   ];
   const headerType = [
     { name: 'STT', minWidth: '10%' },
-    { name: 'Tên loại', minWidth: '40%' },
+    { name: 'Hình ảnh', minWidth: '30%' },
+    { name: 'Tên loại', minWidth: '30%' },
     { name: 'Xem thông tin', minWidth: '30%' }
   ];
   const goToCreateFood = () => {
@@ -173,6 +184,89 @@ function Food() {
       .substring(0, ((foodsByName.length - 1) / 5).toFixed(1).toString().indexOf('.'));
     setPageFood(parseInt(page, 10));
     getFoodByPage(parseInt(page, 10));
+  };
+  const addTypeFood = (name, image) => {
+    dispatch(
+      actionUserBackdrop({
+        status: true,
+        content: 'Thêm loại món ăn'
+      })
+    );
+    const storageRef = ref(storage, `foods/${name}.${new Date().getTime()}`);
+    const uploadTask = uploadBytesResumable(storageRef, image);
+    uploadTask.on(
+      'state_changed',
+      (snapshot) => {},
+      (error) => {},
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          axios
+            .post(`${api}loaiMonAn/create`, {
+              tenLoaiMonAn: name,
+              hinhAnh: downloadURL
+            })
+            .then((res) => {
+              dispatch(actionGetAllTypeFoods());
+              dispatch(
+                actionUserBackdrop({
+                  status: false,
+                  content: 'Thêm loại món ăn'
+                })
+              );
+              dispatch(
+                actionUserSnackbar({
+                  status: true,
+                  content: 'Thêm loại món thành công',
+                  type: 'success'
+                })
+              );
+            })
+            .catch((err) => console.log(err));
+        });
+      }
+    );
+  };
+  const editTypeFood = (typefood, image) => {
+    dispatch(
+      actionUserBackdrop({
+        status: true,
+        content: 'Sửa thông tin loại món ăn'
+      })
+    );
+    const storageRef = ref(storage, `foods/${typefood.tenLoaiMonAn}.${new Date().getTime()}`);
+    const uploadTask = uploadBytesResumable(storageRef, image);
+    uploadTask.on(
+      'state_changed',
+      (snapshot) => {},
+      (error) => {},
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          axios
+            .put(`${api}loaiMonAn/edit`, {
+              ...typefood,
+              hinhAnh: downloadURL
+            })
+            .then((res) => {
+              dispatch(actionGetAllTypeFoods());
+              dispatch(actionGetAllFoodsByName(''));
+              dispatch(
+                actionUserBackdrop({
+                  status: false,
+                  content: 'Sửa thông tin loại món ăn'
+                })
+              );
+              dispatch(
+                actionUserSnackbar({
+                  status: true,
+                  content: 'Sửa thông tin loại món thành công',
+                  type: 'success'
+                })
+              );
+            })
+            .catch((err) => console.log(err));
+        });
+      }
+    );
   };
   return (
     <RootStyle>
@@ -258,7 +352,7 @@ function Food() {
             onPageChange={handleChangePage}
           />
         </Box>
-        <Box sx={{ margin: '20px 0px', width: '50%', marginLeft: '25%' }}>
+        <Box sx={{ margin: '20px 0px', width: '70%', marginLeft: '15%' }}>
           <BoxListFood>
             <Typography sx={{ fontWeight: 'bold', fontSize: '20px' }}>
               Danh sách loại món ăn
@@ -315,9 +409,9 @@ function Food() {
           />
         </Box>
       </Scrollbar>
-      {modalAddTypeFood && <ModalAddTypeFood />}
+      {modalAddTypeFood && <ModalAddTypeFood addTypeFood={addTypeFood} />}
       {modalEditFood.status && <ModalEditFood />}
-      {modalEditTypeFood.status && <ModalEditTypeFood />}
+      {modalEditTypeFood.status && <ModalEditTypeFood editTypeFood={editTypeFood} />}
     </RootStyle>
   );
 }

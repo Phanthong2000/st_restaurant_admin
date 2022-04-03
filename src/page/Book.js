@@ -144,6 +144,12 @@ function Book() {
   const handleChangePage = (event, newValue) => {
     setPage(newValue);
     getBooksByPage(newValue);
+    dispatch(
+      actionUserChooseNotification({
+        id: '',
+        page: 0
+      })
+    );
   };
   const searchBooks = (text) => {
     setSearch(text);
@@ -172,6 +178,10 @@ function Book() {
     },
     {
       name: 'Số lượng món',
+      width: '10%'
+    },
+    {
+      name: 'Khu vực',
       width: '10%'
     },
     {

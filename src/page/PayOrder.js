@@ -17,6 +17,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
   Typography
 } from '@mui/material';
 import moment from 'moment';
@@ -27,7 +28,12 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { actionUserBackdrop, actionUserSnackbar } from '../redux/actions/userAction';
 import api from '../assets/api/api';
-import { actionGetBooksByKeyword, actionNewBooks } from '../redux/actions/orderAction';
+import {
+  actionGetBooksByKeyword,
+  actionGetOrdersNow,
+  actionGetTotalNow,
+  actionNewBooks
+} from '../redux/actions/orderAction';
 
 const heightScreen = window.innerHeight - 1;
 const RootStyle = styled(Box)(({ theme }) => ({
@@ -55,7 +61,7 @@ const BoxRight = styled(Grid)(({ theme }) => ({
 const InputWrapper = styled(Box)(({ theme }) => ({
   width: '100%',
   alignItems: 'center',
-  padding: theme.spacing(1),
+  padding: theme.spacing(0.5, 1),
   borderRadius: '20px'
 }));
 const TitleInformation = styled(Typography)(({ theme }) => ({
@@ -121,6 +127,7 @@ function TableRowFood({ food, index }) {
       <Cell>{index + 1}</Cell>
       <Cell>{food.monAn.tenMonAn}</Cell>
       <Cell>{`${food.monAn.donGia.toLocaleString('es-US')} vnđ`}</Cell>
+      <Cell>{food.ghiChu}</Cell>
       <Cell>{`${(food.monAn.donGia * food.soLuong).toLocaleString('es-US')} vnđ`}</Cell>
     </RootStyle>
   );
@@ -134,7 +141,7 @@ function PaymentItem({ payment, click, handleClose }) {
       }}
       sx={{ borderRadius: '5px' }}
     >
-      {payment.name}
+      {payment.tenHinhThucThanhToan}
     </ListItemButton>
   );
 }
@@ -195,11 +202,13 @@ function ModalConfirm({ open, close, confirm }) {
 function PayOrder() {
   const user = useSelector((state) => state.user.user);
   const bookPayOrder = useSelector((state) => state.order.bookPayOrder);
-  const [modalConfirm, setModalConfirm] = useState(false);
+  const allWayPay = useSelector((state) => state.order.allWayPay);
   const [wayPay, setWayPay] = useState({});
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [description, setDescription] = useState('');
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [modalConfirm, setModalConfirm] = useState(false);
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popper' : undefined;
   useEffect(() => {
@@ -224,18 +233,16 @@ function PayOrder() {
     { name: 'STT', minWidth: '10%' },
     { name: 'Tên món ăn', minWidth: '25%' },
     { name: 'Giá', minWidth: '20%' },
+    { name: 'Ghi chú', minWidth: '20%' },
     { name: 'Thành tiền', minWidth: '20%' }
   ];
-  const payments = [
-    {
-      id: 1,
-      name: 'Thanh toán bằng tiền mặt'
-    },
-    {
-      id: 2,
-      name: 'Thanh toán bằng thẻ ATM'
-    }
-  ];
+  const getDeposit = () => {
+    let result = 0;
+    bookPayOrder.listChiTietDonDatBan.forEach((don) => {
+      if (don.ghiChu === 'Ban đầu' || !don.ghiChu) result += don.monAn.donGia * don.soLuong;
+    });
+    return result * 0.3;
+  };
   const getTotal = () => {
     let total = 0;
     bookPayOrder.listChiTietDonDatBan.forEach((don) => {
@@ -266,22 +273,40 @@ function PayOrder() {
         ...bookNew
       })
       .then(() => {
-        dispatch(actionGetBooksByKeyword(''));
-        dispatch(actionNewBooks());
-        dispatch(
-          actionUserBackdrop({
-            status: false,
-            content: 'Đang xử lý thanh toán'
+        axios
+          .post(`${api}hoaDon/create`, {
+            donDatBan: {
+              id: bookPayOrder.id
+            },
+            ghiChu: description,
+            ngayLap: moment(new Date().getTime()).format(),
+            nguoiQuanLy: {
+              id: user.id
+            },
+            hinhThucThanhToan: {
+              id: wayPay.id
+            }
           })
-        );
-        dispatch(
-          actionUserSnackbar({
-            status: true,
-            content: `Thanh toán cho khách hàng ${bookPayOrder.khachHang.hoTen} thành công`,
-            type: 'success'
-          })
-        );
-        navigate('/home');
+          .then(() => {
+            dispatch(actionGetOrdersNow());
+            dispatch(actionGetBooksByKeyword(''));
+            dispatch(actionGetTotalNow());
+            dispatch(actionNewBooks());
+            dispatch(
+              actionUserBackdrop({
+                status: false,
+                content: 'Đang xử lý thanh toán'
+              })
+            );
+            dispatch(
+              actionUserSnackbar({
+                status: true,
+                content: `Thanh toán cho khách hàng ${bookPayOrder.khachHang.hoTen} thành công`,
+                type: 'success'
+              })
+            );
+            navigate('/home');
+          });
       });
   };
   if (bookPayOrder.id === undefined) return null;
@@ -354,7 +379,7 @@ function PayOrder() {
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <ButtonWayPay onClick={handleClick}>
                       <Typography sx={{ fontWeight: 'bold', fontSize: '16px' }}>
-                        {wayPay.name}
+                        {wayPay.tenHinhThucThanhToan}
                       </Typography>
                       <Icon style={{ width: '30px', height: '30px' }} icon="bx:chevron-down" />
                     </ButtonWayPay>
@@ -367,7 +392,7 @@ function PayOrder() {
 
                 <Popper id={id} open={open} anchorEl={anchorEl}>
                   <Card sx={{ width: '300px', padding: '10px', background: '#fff' }}>
-                    {payments.map((item, index) => (
+                    {allWayPay.map((item, index) => (
                       <PaymentItem
                         click={chooseWayPay}
                         handleClose={handleClick}
@@ -377,6 +402,18 @@ function PayOrder() {
                     ))}
                   </Card>
                 </Popper>
+                <TextField
+                  sx={{ marginTop: '20px' }}
+                  fullWidth
+                  multiline
+                  minRows={5}
+                  maxRows={5}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  id="filled-basic"
+                  label="Ghi chú"
+                  variant="filled"
+                />
               </Grid>
               <Grid sx={{ padding: '10px' }} item xs={12} sm={12} md={12} lg={6} xl={6}>
                 <BoxPrice>
@@ -392,12 +429,25 @@ function PayOrder() {
                 </BoxPrice>
                 <BoxPrice>
                   <PriceDetail>Tiền cọc: </PriceDetail>
-                  <PriceDetail>{` ${(getTotal() * 0.3).toLocaleString(`es-US`)}`}</PriceDetail>
+                  <PriceDetail>{` ${getDeposit().toLocaleString(`es-US`)}`}</PriceDetail>
+                </BoxPrice>
+                <BoxPrice>
+                  <PriceDetail> </PriceDetail>
+                  <PriceDetail> </PriceDetail>
+                  <PriceDetail> </PriceDetail>
+                  <PriceDetail>+</PriceDetail>
+                  <PriceDetail> </PriceDetail>
+                </BoxPrice>
+                <BoxPrice>
+                  <PriceDetail>Thuế VAT(10%): </PriceDetail>
+                  <PriceDetail>{` ${(getTotal() * 0.1).toLocaleString(`es-US`)}`}</PriceDetail>
                 </BoxPrice>
                 <Divider sx={{ margin: '10px 0px' }} />
                 <BoxPrice>
                   <PriceDetail>Tổng tiền còn lại: </PriceDetail>
-                  <PriceDetail>{` ${(getTotal() * 0.7).toLocaleString(`es-US`)} vnđ`}</PriceDetail>
+                  <PriceDetail>{` ${(getTotal() + getTotal() * 0.1 - getDeposit()).toLocaleString(
+                    `es-US`
+                  )} vnđ`}</PriceDetail>
                 </BoxPrice>
               </Grid>
             </Grid>
@@ -423,14 +473,14 @@ function PayOrder() {
                 <TitleInformation>Thời gian nhận bàn</TitleInformation>
                 <InputInfo
                   value={moment(Date.parse(bookPayOrder.thoiGianNhanBan)).format(
-                    `hh:mm a DD/MM/yyyy `
+                    `hh:mm a DD/MM/yyyy`
                   )}
                 />
               </InputWrapper>
               <InputWrapper>
                 <TitleInformation>Thời gian đặt bàn</TitleInformation>
                 <InputInfo
-                  value={moment(Date.parse(bookPayOrder.createAt)).format(`hh:mm a DD/MM/yyyy `)}
+                  value={moment(Date.parse(bookPayOrder.createAt)).format(`hh:mm a DD/MM/yyyy`)}
                 />
               </InputWrapper>
               <InputWrapper>
@@ -440,6 +490,10 @@ function PayOrder() {
               <InputWrapper>
                 <TitleInformation>Thời gian đặt bàn</TitleInformation>
                 <InputInfo value={`${bookPayOrder.thoiGianDuKienSuDung}p`} />
+              </InputWrapper>
+              <InputWrapper>
+                <TitleInformation>Khu vực</TitleInformation>
+                <InputInfo value={`${bookPayOrder.khuVuc ? bookPayOrder.khuVuc.tenKhuVuc : ''}`} />
               </InputWrapper>
               <ButtonConfirm onClick={openModalConfirm} disabled={wayPay.id === undefined}>
                 Xác nhận thanh toán

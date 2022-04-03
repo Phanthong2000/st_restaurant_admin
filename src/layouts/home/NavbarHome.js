@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   styled,
@@ -17,8 +17,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import Responsive from '../../components/Reponsive';
 import sidebarHomeConfig from './SidebarHomeConfig';
 import BoxProfile from '../../components/home/BoxProfile';
-import { actionUserBoxNotification, actionUserBoxProfile } from '../../redux/actions/userAction';
+import {
+  actionUserBoxFeedBack,
+  actionUserBoxNotification,
+  actionUserBoxProfile
+} from '../../redux/actions/userAction';
 import BoxNotification from '../../components/home/BoxNotification';
+import BoxFeedback from '../../components/home/BoxFeedback';
+import { registerUser } from '../../utils/wssConnection';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -55,11 +61,27 @@ function NavbarHome() {
   const { pathname } = useLocation();
   const boxProfile = useSelector((state) => state.user.boxProfile);
   const boxNotification = useSelector((state) => state.user.boxNotification);
+  const boxFeedBack = useSelector((state) => state.user.boxFeedBack);
+  const badgeNotification = useSelector((state) => state.user.badgeNotification);
+  const badgeFeedback = useSelector((state) => state.user.badgeFeedback);
+  const me = useSelector((state) => state.socket.me);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const openMenu = () => {
     setOpenDrawer(true);
   };
+  useEffect(() => {
+    if (me !== '') {
+      registerUser({
+        userId: JSON.parse(localStorage.getItem('admin')).id,
+        socketId: me,
+        type: 'admin'
+      });
+    }
+    return function () {
+      return null;
+    };
+  }, [me]);
   return (
     <RootStyle>
       <Responsive width="lgUp">
@@ -79,11 +101,22 @@ function NavbarHome() {
           <IconButton
             onClick={(e) => {
               e.stopPropagation();
+              dispatch(actionUserBoxFeedBack(!boxFeedBack));
+            }}
+            sx={{ marginRight: '20px' }}
+          >
+            <Badge color="error" badgeContent={badgeFeedback}>
+              <Icon icon="codicon:feedback" />
+            </Badge>
+          </IconButton>
+          <IconButton
+            onClick={(e) => {
+              e.stopPropagation();
               dispatch(actionUserBoxNotification(!boxNotification));
             }}
             sx={{ marginRight: '20px' }}
           >
-            <Badge color="error" badgeContent={1}>
+            <Badge color="error" badgeContent={badgeNotification}>
               <Icon icon="clarity:notification-line" />
             </Badge>
           </IconButton>
@@ -142,6 +175,7 @@ function NavbarHome() {
       </SwipeableDrawer>
       {boxProfile && <BoxProfile />}
       {boxNotification && <BoxNotification />}
+      {boxFeedBack && <BoxFeedback />}
     </RootStyle>
   );
 }

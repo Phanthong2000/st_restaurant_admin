@@ -80,6 +80,7 @@ function TableRowFood({ food, index }) {
       <Cell>{index + 1}</Cell>
       <Cell>{food.monAn.tenMonAn}</Cell>
       <Cell>{`${food.monAn.donGia.toLocaleString('es-US')} vnđ`}</Cell>
+      <Cell>{food.ghiChu}</Cell>
       <Cell>{`${(food.monAn.donGia * food.soLuong).toLocaleString('es-US')} vnđ`}</Cell>
     </RootStyle>
   );
@@ -113,6 +114,7 @@ function ModalEditBook() {
     { name: 'STT', minWidth: '10%' },
     { name: 'Tên món ăn', minWidth: '25%' },
     { name: 'Giá', minWidth: '20%' },
+    { name: 'Ghi chú', minWidth: '20%' },
     { name: 'Thành tiền', minWidth: '20%' }
   ];
   const checkStatus = () => {
@@ -173,8 +175,8 @@ function ModalEditBook() {
           <Scrollbar alwaysShowTracks>
             <Box> </Box>
             <Typography sx={{ color: 'gray', fontWeight: 'bold', fontSize: '14px' }}>
-              Thời gian đặt bàn :
-              {`${moment(modalEditBook.book.createAt).format('hh:mm a DD/MM/YYYY')}`}
+              Thời gian đặt bàn:
+              {` ${moment(modalEditBook.book.createAt).format('hh:mm a DD/MM/YYYY')}`}
             </Typography>
             <Input
               fullWidth
@@ -205,6 +207,12 @@ function ModalEditBook() {
               disabled
               label="Số điện thoại"
               value={modalEditBook.book.khachHang.soDienThoai}
+            />
+            <Input
+              fullWidth
+              disabled
+              label="Khu vực"
+              value={modalEditBook.book.khuVuc && modalEditBook.book.khuVuc.tenKhuVuc}
             />
             <Input
               multiline

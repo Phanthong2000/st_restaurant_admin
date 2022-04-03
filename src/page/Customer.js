@@ -19,15 +19,23 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 import { Scrollbar } from 'smooth-scrollbar-react';
 import { Icon } from '@iconify/react';
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
+import axios from 'axios';
+// import ReactHtmlTableToExcel from 'react-html-table-to-excel';
 import CustomerTableRow from '../components/customer/CustomerTableRow';
 import AddCustomer from '../components/customer/AddCustomer';
 import {
   actionCustomerModalAddCustomer,
   actionCustomerGetAllCustomersByKeyword,
-  actionGetAllCustomerByKeyword
+  actionGetAllCustomerByKeyword,
+  actionGetNewCustomerInWeek
 } from '../redux/actions/customerAction';
 import ModalEditCustomer from '../components/customer/ModalEditCustomer';
 import BoxSort from '../components/customer/BoxSort';
+
+import api from '../assets/api/api';
+import { storage } from '../firebase-config';
+import { actionUserSnackbar, actionUserBackdrop } from '../redux/actions/userAction';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -107,7 +115,7 @@ function Customer() {
     getCustomerByPage(0);
     setPage(0);
     return function () {
-      // searchCustomer('');
+      return null;
     };
   }, [customers, sortCustomer]);
   const header = [
@@ -163,6 +171,51 @@ function Customer() {
     setPage(parseInt(page, 10));
     getCustomerByPage(parseInt(page, 10));
   };
+  const addCustomer = (account, customer, image) => {
+    dispatch(
+      actionUserBackdrop({
+        status: true,
+        content: 'Thêm khách hàng'
+      })
+    );
+    const storageRef = ref(storage, `avatar/${customer.hoTen}.${new Date().getTime()}`);
+    const uploadTask = uploadBytesResumable(storageRef, image);
+    uploadTask.on(
+      'state_changed',
+      (snapshot) => {},
+      (error) => {},
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          axios
+            .post(`${api}khachHang/create`, {
+              ...customer,
+              anhDaiDien: downloadURL,
+              taiKhoan: {
+                id: account.id
+              }
+            })
+            .then((res) => {
+              dispatch(actionGetNewCustomerInWeek());
+              dispatch(actionGetAllCustomerByKeyword(''));
+              dispatch(
+                actionUserBackdrop({
+                  status: false,
+                  content: 'Thêm khách hàng'
+                })
+              );
+              dispatch(
+                actionUserSnackbar({
+                  status: true,
+                  content: 'Thêm khách hàng thành công',
+                  type: 'success'
+                })
+              );
+            })
+            .catch((err) => console.log(err));
+        });
+      }
+    );
+  };
   return (
     <RootStyle>
       <Scrollbar alwaysShowTracks>
@@ -191,7 +244,7 @@ function Customer() {
             </ButtonAddCustomer>
           </BoxListCustomer>
           <TableContainer>
-            <Table>
+            <Table id="tb">
               <TableHead>
                 <TableRow>
                   {header.map((item, index) => (
@@ -264,8 +317,9 @@ function Customer() {
             onPageChange={handleChangePage}
           />
         </Box>
+        {/* <ReactHtmlTableToExcel table="tb" filename="test" sheet="Sheet" buttonText="btn test" /> */}
       </Scrollbar>
-      <AddCustomer />
+      <AddCustomer add={addCustomer} />
       {modalEditCustomer.status && <ModalEditCustomer />}
     </RootStyle>
   );

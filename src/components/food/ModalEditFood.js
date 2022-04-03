@@ -26,7 +26,11 @@ import { Icon } from '@iconify/react';
 import axios from 'axios';
 import moment from 'moment';
 import { Scrollbar } from 'smooth-scrollbar-react';
-import { actionFoodModalEditFood, actionGetAllFoods } from '../../redux/actions/foodAction';
+import {
+  actionFoodModalEditFood,
+  actionGetAllFoods,
+  actionGetAllFoodsByName
+} from '../../redux/actions/foodAction';
 import api from '../../assets/api/api';
 import { actionUserSnackbar } from '../../redux/actions/userAction';
 
@@ -157,7 +161,7 @@ function ModalEditFood() {
             ...food
           })
           .then(() => {
-            dispatch(actionGetAllFoods());
+            dispatch(actionGetAllFoodsByName(''));
             handleClose();
             dispatch(
               actionUserSnackbar({
@@ -241,7 +245,12 @@ function ModalEditFood() {
                       Ngày thêm : {`${moment(modalEditFood.food.createAt).format('DD/MM/YYYY')}`}
                     </Typography>
                   </Box>
-
+                  <Typography sx={{ color: 'gray', fontWeight: 'bold', fontSize: '14px' }}>
+                    Yêu thích:
+                    {!modalEditFood.food.thich || modalEditFood.food.thich.length === 0
+                      ? ` 0 `
+                      : ` ${modalEditFood.food.thich.length} yêu thích`}
+                  </Typography>
                   <Input
                     fullWidth
                     {...getFieldProps('name')}

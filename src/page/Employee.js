@@ -19,15 +19,21 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 import { Scrollbar } from 'smooth-scrollbar-react';
 import { Icon } from '@iconify/react';
+import axios from 'axios';
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import CustomerTableRow from '../components/customer/CustomerTableRow';
 import AddEmployee from '../components/employee/AddEmployee';
 import {
   actionEmployeeModalAddEmployee,
+  actionGetAllEmployees,
   actionGetEmployeesByKeywords
 } from '../redux/actions/employeeAction';
 import EmployeeTableRow from '../components/employee/EmployeeTableRow';
 import ModalEditEmployee from '../components/employee/ModalEditEmployee';
 import BoxSort from '../components/employee/BoxSort';
+import { actionUserBackdrop, actionUserSnackbar } from '../redux/actions/userAction';
+import { storage } from '../firebase-config';
+import api from '../assets/api/api';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -159,6 +165,50 @@ function Employee() {
     setPage(parseInt(page, 10));
     setEmployees(parseInt(page, 10));
   };
+  const addEmployee = (account, employee, image) => {
+    dispatch(
+      actionUserBackdrop({
+        status: true,
+        content: 'Thêm nhân viên'
+      })
+    );
+    const storageRef = ref(storage, `avatar/${employee.hoTen}.${new Date().getTime()}`);
+    const uploadTask = uploadBytesResumable(storageRef, image);
+    uploadTask.on(
+      'state_changed',
+      (snapshot) => {},
+      (error) => {},
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          axios
+            .post(`${api}nhanVien/create`, {
+              ...employee,
+              anhDaiDien: downloadURL,
+              taiKhoan: {
+                id: account.id
+              }
+            })
+            .then((res) => {
+              dispatch(actionGetEmployeesByKeywords(''));
+              dispatch(
+                actionUserBackdrop({
+                  status: false,
+                  content: 'Thêm nhân viên'
+                })
+              );
+              dispatch(
+                actionUserSnackbar({
+                  status: true,
+                  content: 'Thêm nhân viên thành công',
+                  type: 'success'
+                })
+              );
+            })
+            .catch((err) => console.log(err));
+        });
+      }
+    );
+  };
   return (
     <RootStyle>
       <Scrollbar alwaysShowTracks>
@@ -247,7 +297,7 @@ function Employee() {
           />
         </Box>
       </Scrollbar>
-      <AddEmployee />
+      <AddEmployee addEmployee={addEmployee} />
       {modalEditEmployee.status && <ModalEditEmployee />}
     </RootStyle>
   );

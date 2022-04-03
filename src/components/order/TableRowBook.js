@@ -89,6 +89,7 @@ function TableRowBook({ book, index }) {
       <Cell>{moment(book.thoiGianNhanBan).format(`hh:mm a DD/MM/yyyy`)}</Cell>
       <Cell>{moment(book.createAt).format(`hh:mm a DD/MM/yyyy`)}</Cell>
       <Cell>{book.listChiTietDonDatBan.length}</Cell>
+      <Cell>{book.khuVuc && book.khuVuc.tenKhuVuc}</Cell>
       <Cell>{getTotal().toLocaleString(`es-US`)} vnđ</Cell>
       <Cell>{checkStatus()}</Cell>
       <Cell>

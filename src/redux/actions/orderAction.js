@@ -1,3 +1,4 @@
+import moment from 'moment';
 import axios from 'axios';
 import api from '../../assets/api/api';
 import {
@@ -13,7 +14,11 @@ import {
   ACTION_ORDER_SORT_BOOK,
   ACTION_ORDER_NEW_BOOKS,
   ACTION_ORDER_UPDATE_FOODS_FOR_BOOK,
-  ACTION_ORDER_BOOK_PAY_ORDER
+  ACTION_ORDER_BOOK_PAY_ORDER,
+  ACTION_ORDER_GET_ALL_WAY_PAY,
+  ACTION_ORDER_GET_ORDER_NOW,
+  ACTION_ORDER_GET_BOOKS_NOW,
+  ACTION_ORDER_GET_TOTAL_NOW
 } from './types';
 
 export const actionOrderGetOrder = (data) => ({
@@ -72,12 +77,32 @@ export const actionOrderBookPayOrder = (data) => ({
   type: ACTION_ORDER_BOOK_PAY_ORDER,
   payload: data
 });
+export const actionOrderGetAllWayPay = (data) => ({
+  type: ACTION_ORDER_GET_ALL_WAY_PAY,
+  payload: data
+});
+export const actionOrderGetOrdersNow = (data) => ({
+  type: ACTION_ORDER_GET_ORDER_NOW,
+  payload: data
+});
+export const actionOrderGetBooksNow = (data) => ({
+  type: ACTION_ORDER_GET_BOOKS_NOW,
+  payload: data
+});
+export const actionOrderGetTotalNow = (data) => ({
+  type: ACTION_ORDER_GET_TOTAL_NOW,
+  payload: data
+});
 export const actionGetBooksByKeyword = (keyword) => (dispatch) => {
   if (keyword === '') {
     axios
       .get(`${api}donDatBan/list`)
       .then((res) => {
-        dispatch(actionOrderGetBooksByKeyWord(res.data));
+        dispatch(
+          actionOrderGetBooksByKeyWord(
+            res.data.sort((a, b) => Date.parse(b.createAt) - Date.parse(a.createAt))
+          )
+        );
       })
       .catch((err) => console.log(err));
   } else {
@@ -88,7 +113,11 @@ export const actionGetBooksByKeyword = (keyword) => (dispatch) => {
         }
       })
       .then((res) => {
-        dispatch(actionOrderGetBooksByKeyWord(res.data));
+        dispatch(
+          actionOrderGetBooksByKeyWord(
+            res.data.sort((a, b) => Date.parse(b.createAt) - Date.parse(a.createAt))
+          )
+        );
       })
       .catch((err) => console.log(err));
   }
@@ -98,5 +127,51 @@ export const actionNewBooks = () => (dispatch) => {
     const { data } = res;
     const booksSort = data.sort((a, b) => Date.parse(b.createAt) - Date.parse(a.createAt));
     dispatch(actionOrderNewBooks(booksSort));
+  });
+};
+
+export const actionGetAllWayPay = () => (dispatch) => {
+  axios.get(`${api}hinhThucThanhToan/list`).then((res) => {
+    dispatch(actionOrderGetAllWayPay(res.data));
+  });
+};
+export const actionGetOrdersNow = () => (dispatch) => {
+  axios.get(`${api}hoaDon/list`).then((res) => {
+    dispatch(
+      actionOrderGetOrdersNow(
+        res.data.filter(
+          (order) =>
+            order.createAt.substring(0, 10) === moment(new Date().getTime()).format(`YYYY-MM-DD`)
+        )
+      )
+    );
+  });
+};
+
+export const actionGetBooksNow = () => (dispatch) => {
+  axios.get(`${api}donDatBan/list`).then((res) => {
+    dispatch(
+      actionOrderGetBooksNow(
+        res.data.filter(
+          (book) =>
+            book.createAt.substring(0, 10) === moment(new Date().getTime()).format(`YYYY-MM-DD`)
+        )
+      )
+    );
+  });
+};
+export const actionGetTotalNow = () => (dispatch) => {
+  axios.get(`${api}hoaDon/list`).then((res) => {
+    const allOrders = res.data.filter(
+      (order) =>
+        order.createAt.substring(0, 10) === moment(new Date().getTime()).format(`YYYY-MM-DD`)
+    );
+    let total = 0;
+    allOrders.forEach((order) => {
+      order.donDatBan.listChiTietDonDatBan.forEach((ct) => {
+        total += ct.soLuong * ct.monAn.donGia;
+      });
+    });
+    dispatch(actionOrderGetTotalNow(total));
   });
 };

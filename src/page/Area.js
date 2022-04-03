@@ -16,7 +16,7 @@ import {
   Tooltip,
   Typography
 } from '@mui/material';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Scrollbar } from 'smooth-scrollbar-react';
 import axios from 'axios';
@@ -79,7 +79,27 @@ function Area() {
   const modalAddArea = useSelector((state) => state.area.modalAddArea);
   const modalEditArea = useSelector((state) => state.area.modalEditArea);
   const allAreas = useSelector((state) => state.area.allAreas);
+  const [page, setPage] = useState(0);
+  const [areas, setAreas] = useState([]);
   const dispatch = useDispatch();
+  const getAreasByPage = (page) => {
+    const start = page * 5;
+    const end = start + 5;
+    const data = [];
+    for (let i = 0; i < allAreas.length; i += 1) {
+      if (i >= start && i < end) {
+        data.push(allAreas.at(i));
+      }
+    }
+    setAreas(data.sort((a, b) => Date.parse(b.createAt) - Date.parse(a.createAt)));
+  };
+  useEffect(() => {
+    getAreasByPage(0);
+    setPage(0);
+    return function () {
+      return null;
+    };
+  }, [allAreas]);
   const header = [
     {
       name: 'STT',
@@ -207,6 +227,21 @@ function Area() {
       );
     }
   };
+  const handleChangePage = (event, newValue) => {
+    setPage(newValue);
+    getAreasByPage(newValue);
+  };
+  const goToStartTable = () => {
+    setPage(0);
+    getAreasByPage(0);
+  };
+  const goToEndTable = () => {
+    const page = ((allAreas.length - 1) / 5)
+      .toString()
+      .substring(0, ((allAreas.length - 1) / 5).toFixed(1).toString().indexOf('.'));
+    setPage(parseInt(page, 10));
+    getAreasByPage(parseInt(page, 10));
+  };
   return (
     <RootStyle>
       <Scrollbar alwaysShowTracks>
@@ -243,20 +278,30 @@ function Area() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {allAreas.map((item, index) => (
-                  <AreaTableRow key={index} index={index} area={item} />
+                {areas.map((item, index) => (
+                  <AreaTableRow key={index} index={index + page * 5} area={item} />
                 ))}
               </TableBody>
               <TableFooter>
                 <TableRow>
                   <TableCell colSpan={11}>
                     <Tooltip title="Về đầu bảng">
-                      <IconButton>
+                      <IconButton onClick={goToStartTable} disabled={page === 0}>
                         <Icon icon="bi:skip-start-fill" />
                       </IconButton>
                     </Tooltip>
                     <Tooltip title="Đến cuối bảng">
-                      <IconButton>
+                      <IconButton
+                        disabled={
+                          ((allAreas.length - 1) / 5)
+                            .toString()
+                            .substring(
+                              0,
+                              ((allAreas.length - 1) / 5).toFixed(1).toString().indexOf('.')
+                            ) === `${page}`
+                        }
+                        onClick={goToEndTable}
+                      >
                         <Icon icon="bi:skip-end-fill" />
                       </IconButton>
                     </Tooltip>
@@ -265,14 +310,14 @@ function Area() {
               </TableFooter>
             </Table>
           </TableContainer>
-          {/* <TablePagination
+          <TablePagination
             rowsPerPageOptions
             component="div"
-            count={quantity}
+            count={allAreas.length}
             rowsPerPage={5}
             page={page}
             onPageChange={handleChangePage}
-          /> */}
+          />
         </Box>
       </Scrollbar>
       {modalAddArea && <ModalAddArea click={handleAddArea} />}

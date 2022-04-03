@@ -164,6 +164,7 @@ function TableRowFood({ food, index }) {
       <Cell>{index + 1}</Cell>
       <Cell>{food.monAn.tenMonAn}</Cell>
       <Cell>{`${food.monAn.donGia.toLocaleString('es-US')} vnđ`}</Cell>
+      <Cell>{food.ghiChu}</Cell>
       <Cell>{`${(food.monAn.donGia * food.soLuong).toLocaleString('es-US')} vnđ`}</Cell>
     </RootStyle>
   );
@@ -181,6 +182,7 @@ function UpdateFoodsForBook() {
     { name: 'STT', minWidth: '10%' },
     { name: 'Tên món ăn', minWidth: '25%' },
     { name: 'Giá', minWidth: '20%' },
+    { name: 'Ghi chú', minWidth: '20%' },
     { name: 'Thành tiền', minWidth: '20%' }
   ];
   const headers = [
@@ -274,7 +276,8 @@ function UpdateFoodsForBook() {
     foods.forEach((food) => {
       foodsNew.push({
         monAn: food.food,
-        soLuong: food.quantity
+        soLuong: food.quantity,
+        ghiChu: 'Thêm sau'
       });
     });
     const bookNew = {
@@ -316,7 +319,7 @@ function UpdateFoodsForBook() {
               Thông tin khách hàng đặt bàn
             </Typography>
           </Grid>
-          <InputWapper item xs={6} sm={6} md={6} lg={3} xl={3}>
+          <InputWapper item xs={6} sm={6} md={6} lg={4} xl={4}>
             <TitleInformation sx={{ fontSize: '16px' }}>Họ tên:</TitleInformation>
             <InputInfo
               disabled
@@ -325,7 +328,7 @@ function UpdateFoodsForBook() {
               placeholder="Aa"
             />
           </InputWapper>
-          <InputWapper item xs={6} sm={6} md={6} lg={3} xl={3}>
+          <InputWapper item xs={6} sm={6} md={6} lg={4} xl={4}>
             <TitleInformation sx={{ fontSize: '16px' }}>Email:</TitleInformation>
             <InputInfo
               disabled
@@ -334,7 +337,7 @@ function UpdateFoodsForBook() {
               placeholder="Aa"
             />
           </InputWapper>
-          <InputWapper item xs={6} sm={6} md={6} lg={3} xl={3}>
+          <InputWapper item xs={6} sm={6} md={6} lg={4} xl={4}>
             <TitleInformation sx={{ fontSize: '16px' }}>Số điện thoại:</TitleInformation>
             <InputInfo
               disabled
@@ -343,7 +346,7 @@ function UpdateFoodsForBook() {
               placeholder="0123456789"
             />
           </InputWapper>
-          <InputWapper item xs={6} sm={6} md={6} lg={3} xl={3}>
+          <InputWapper item xs={6} sm={6} md={6} lg={4} xl={4}>
             <Typography sx={{ fontSize: '16px' }}>Thời gian nhận bàn:</Typography>
             <DatePicker
               disabled
@@ -353,7 +356,7 @@ function UpdateFoodsForBook() {
               dateFormat="dd/MM/yyyy, hh:mm a"
             />
           </InputWapper>
-          <InputWapper item xs={6} sm={6} md={6} lg={3} xl={3}>
+          <InputWapper item xs={6} sm={6} md={6} lg={4} xl={4}>
             <Typography sx={{ fontSize: '16px' }}>Thời gian đặt bàn:</Typography>
             <DatePicker
               disabled
@@ -363,17 +366,26 @@ function UpdateFoodsForBook() {
               dateFormat="dd/MM/yyyy, hh:mm a"
             />
           </InputWapper>
-          <InputWapper item xs={6} sm={6} md={6} lg={3} xl={3}>
+          <InputWapper item xs={6} sm={6} md={6} lg={4} xl={4}>
             <Typography sx={{ fontSize: '16px' }}>Số khách:</Typography>
             <InputInfo disabled value={updateFoodsForBook.soLuongKhach} fullWidth placeholder="0" />
           </InputWapper>
-          <InputWapper item xs={6} sm={6} md={6} lg={3} xl={3}>
+          <InputWapper item xs={6} sm={6} md={6} lg={4} xl={4}>
             <Typography sx={{ fontSize: '16px' }}>Thời gian sử dụng:</Typography>
             <InputInfo
               disabled
               value={`${updateFoodsForBook.thoiGianDuKienSuDung}p`}
               fullWidth
               placeholder="0"
+            />
+          </InputWapper>
+          <InputWapper item xs={6} sm={6} md={6} lg={4} xl={4}>
+            <Typography sx={{ fontSize: '16px' }}>Khu vực:</Typography>
+            <InputInfo
+              disabled
+              value={updateFoodsForBook.khuVuc && updateFoodsForBook.khuVuc.tenKhuVuc}
+              fullWidth
+              placeholder="Aa"
             />
           </InputWapper>
           <InputWapper item xs={6} sm={6} md={6} lg={3} xl={3}>
@@ -423,7 +435,7 @@ function UpdateFoodsForBook() {
                     Tổng tiền:
                   </TableCell>
                   <TableCell
-                    colSpan={3}
+                    colSpan={4}
                     sx={{ fontWeight: 'bold', fontSize: '16px', color: '#000' }}
                   >
                     {`${getTotal().toLocaleString('es-US')} vnd`}

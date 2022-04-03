@@ -32,6 +32,7 @@ import { actionUserShowHotToast, actionUserSnackbar } from '../redux/actions/use
 import ModalInformationFood from '../components/order/ModalInformationFood';
 import {
   actionGetBooksByKeyword,
+  actionGetBooksNow,
   actionNewBooks,
   actionOrderGetOrder,
   actionOrderGetUser,
@@ -183,6 +184,7 @@ function OrderChooseFood() {
           quantityCustomer: 0,
           timeUse: 0,
           description: '',
+          area: {},
           customerId: ''
         })
       );
@@ -257,7 +259,8 @@ function OrderChooseFood() {
           monAn: {
             id: food.food.id
           },
-          soLuong: food.quantity
+          soLuong: food.quantity,
+          ghiChu: 'Ban đầu'
         });
       });
       const order = {
@@ -276,6 +279,7 @@ function OrderChooseFood() {
           ...order
         })
         .then((res) => {
+          dispatch(actionGetBooksNow());
           dispatch(actionGetBooksByKeyword(''));
           dispatch(actionNewBooks());
           dispatch(
@@ -299,19 +303,19 @@ function OrderChooseFood() {
               Thông tin khách hàng đặt bàn
             </Typography>
           </Grid>
-          <InputWapper item xs={6} sm={6} md={6} lg={3} xl={3}>
+          <InputWapper item xs={6} sm={6} md={6} lg={4} xl={4}>
             <TitleInformation sx={{ fontSize: '16px' }}>Họ tên:</TitleInformation>
             <InputInfo disabled value={book.customerName} fullWidth placeholder="Aa" />
           </InputWapper>
-          <InputWapper item xs={6} sm={6} md={6} lg={3} xl={3}>
+          <InputWapper item xs={6} sm={6} md={6} lg={4} xl={4}>
             <TitleInformation sx={{ fontSize: '16px' }}>Email:</TitleInformation>
             <InputInfo disabled value={book.email} fullWidth placeholder="Aa" />
           </InputWapper>
-          <InputWapper item xs={6} sm={6} md={6} lg={3} xl={3}>
+          <InputWapper item xs={6} sm={6} md={6} lg={4} xl={4}>
             <TitleInformation sx={{ fontSize: '16px' }}>Số điện thoại:</TitleInformation>
             <InputInfo disabled value={book.phone} fullWidth placeholder="0123456789" />
           </InputWapper>
-          <InputWapper item xs={6} sm={6} md={6} lg={3} xl={3}>
+          <InputWapper item xs={6} sm={6} md={6} lg={4} xl={4}>
             <Typography sx={{ fontSize: '16px' }}>Thời gian nhận bàn:</Typography>
             <DatePicker
               disabled
@@ -325,7 +329,7 @@ function OrderChooseFood() {
               // }}
             />
           </InputWapper>
-          <InputWapper item xs={6} sm={6} md={6} lg={3} xl={3}>
+          <InputWapper item xs={6} sm={6} md={6} lg={4} xl={4}>
             <Typography sx={{ fontSize: '16px' }}>Thời gian đặt bàn:</Typography>
             <DatePicker
               disabled
@@ -339,15 +343,19 @@ function OrderChooseFood() {
               // }}
             />
           </InputWapper>
-          <InputWapper item xs={6} sm={6} md={6} lg={3} xl={3}>
+          <InputWapper item xs={6} sm={6} md={6} lg={4} xl={4}>
             <Typography sx={{ fontSize: '16px' }}>Số khách:</Typography>
             <InputInfo disabled value={book.quantityCustomer} fullWidth placeholder="0" />
           </InputWapper>
-          <InputWapper item xs={6} sm={6} md={6} lg={3} xl={3}>
+          <InputWapper item xs={6} sm={6} md={6} lg={4} xl={4}>
             <Typography sx={{ fontSize: '16px' }}>Thời gian sử dụng:</Typography>
             <InputInfo disabled value={book.timeUse.label} fullWidth placeholder="0" />
           </InputWapper>
-          <InputWapper item xs={6} sm={6} md={6} lg={3} xl={3}>
+          <InputWapper item xs={6} sm={6} md={6} lg={4} xl={4}>
+            <Typography sx={{ fontSize: '16px' }}>Khu vực:</Typography>
+            <InputInfo disabled value={book.area.tenKhuVuc} fullWidth placeholder="0" />
+          </InputWapper>
+          <InputWapper item xs={6} sm={6} md={6} lg={4} xl={4}>
             <Typography sx={{ fontSize: '16px' }}>Ghi chú:</Typography>
             <InputInfo disabled value={book.description} fullWidth placeholder="Aa" />
           </InputWapper>

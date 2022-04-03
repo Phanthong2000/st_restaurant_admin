@@ -1,11 +1,13 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { Box, Stack, styled } from '@mui/material';
+import { useSelector } from 'react-redux';
 import SidebarHome from './SidebarHome';
 import NavbarHome from './NavbarHome';
 import Responsive from '../../components/Reponsive';
 import Snack from '../../components/Snack';
 import BackdropUser from '../../components/Backdrop';
+import ModalFeedback from '../../components/home/ModalFeedback';
 
 const heightScreen = window.innerHeight - 1;
 const RootStyle = styled(Stack)(({ theme }) => ({
@@ -27,6 +29,7 @@ const MainStyle = styled(Box)(({ theme }) => ({
   minHeight: `${heightScreen - 100}px`
 }));
 function HomeLayout() {
+  const modalFeedback = useSelector((state) => state.user.modalFeedback);
   return (
     <RootStyle direction="row">
       <Responsive width="lgDown">
@@ -38,6 +41,7 @@ function HomeLayout() {
           <Outlet />
         </MainStyle>
       </BoxContent>
+      {modalFeedback.status && <ModalFeedback />}
       <BackdropUser />
       <Snack />
     </RootStyle>

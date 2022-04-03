@@ -65,9 +65,9 @@ const BoxAvatar = styled(Box)(({ theme }) => ({
   textAlign: 'center'
 }));
 const AvatarEmployee = styled(Avatar)(({ theme }) => ({
-  width: '20%',
+  width: '100px',
   marginLeft: '40%',
-  height: '20%',
+  height: '100px',
   border: `1px solid ${theme.palette.main}`
 }));
 const ButtonChooseAvatar = styled(Button)(({ theme }) => ({
@@ -198,6 +198,7 @@ function ModalEditCustomer() {
                   }
                 })
                 .then((res) => {
+                  dispatch(actionGetAllCustomers());
                   handleClose();
                   dispatch(actionGetAllCustomerByKeyword(''));
                   dispatch(
@@ -265,8 +266,9 @@ function ModalEditCustomer() {
                         }
                       })
                       .then((res) => {
-                        handleClose();
+                        dispatch(actionGetAllCustomers());
                         dispatch(actionGetAllCustomerByKeyword(''));
+                        handleClose();
                         dispatch(
                           actionUserSnackbar({
                             status: false,

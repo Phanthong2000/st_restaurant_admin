@@ -66,6 +66,10 @@ function NewBooks() {
       width: '10%'
     },
     {
+      name: 'Khu vực',
+      width: '10%'
+    },
+    {
       name: 'Tổng tiền',
       width: '10%'
     },

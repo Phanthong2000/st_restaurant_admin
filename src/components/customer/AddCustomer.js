@@ -21,6 +21,7 @@ import {
   Typography
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
 import axios from 'axios';
 import { Scrollbar } from 'smooth-scrollbar-react';
@@ -28,7 +29,9 @@ import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import api from '../../assets/api/api';
 import {
   actionCustomerModalAddCustomer,
-  actionGetAllCustomerByKeyword
+  actionGetAllCustomerByKeyword,
+  actionGetAllCustomers,
+  actionGetNewCustomerInWeek
 } from '../../redux/actions/customerAction';
 import { actionUserSnackbar } from '../../redux/actions/userAction';
 import { storage } from '../../firebase-config';
@@ -63,9 +66,9 @@ const BoxAvatar = styled(Box)(({ theme }) => ({
   textAlign: 'center'
 }));
 const AvatarEmployee = styled(Avatar)(({ theme }) => ({
-  width: '20%',
+  width: '100px',
   marginLeft: '40%',
-  height: '20%',
+  height: '100px',
   border: `1px solid ${theme.palette.main}`
 }));
 const ButtonChooseAvatar = styled(Button)(({ theme }) => ({
@@ -97,7 +100,10 @@ const ButtonAddEmployee = styled(Button)(({ theme }) => ({
     background: theme.palette.mainHover
   }
 }));
-function AddCustomer() {
+AddCustomer.prototype = {
+  add: PropTypes.func
+};
+function AddCustomer({ add }) {
   const fileRef = useRef();
   const dispatch = useDispatch();
   const [gender, setGender] = useState('Nam');
@@ -160,9 +166,7 @@ function AddCustomer() {
     onSubmit: () => {
       if (rePassword !== values.password) {
         setErrorRePassword('Xác nhận mật khẩu không trùng khớp');
-      } else if (
-        avatar === 'https://tinhdaunhuy.com/wp-content/uploads/2015/08/default-avatar.jpg'
-      ) {
+      } else {
         setErrorBirthday('');
         setErrorRePassword('');
         const customer = {
@@ -194,97 +198,51 @@ function AddCustomer() {
                     }
                   })
                   .then((res) => {
-                    axios
-                      .post(`${api}khachHang/create`, {
-                        ...customer,
-                        taiKhoan: {
-                          id: res.data.id
-                        }
-                      })
-                      .then((res) => {
-                        dispatch(actionGetAllCustomerByKeyword(''));
-                        dispatch(
-                          actionUserSnackbar({
-                            status: true,
-                            content: 'Thêm khách hàng thành công',
-                            type: 'success'
-                          })
-                        );
-                        handleClose();
-                      })
-                      .catch((err) => console.log(err));
+                    if (
+                      avatar ===
+                      'https://tinhdaunhuy.com/wp-content/uploads/2015/08/default-avatar.jpg'
+                    ) {
+                      axios
+                        .post(`${api}khachHang/create`, {
+                          ...customer,
+                          taiKhoan: {
+                            id: res.data.id
+                          }
+                        })
+                        .then((res) => {
+                          dispatch(actionGetAllCustomers());
+                          dispatch(actionGetNewCustomerInWeek());
+                          dispatch(actionGetAllCustomerByKeyword(''));
+                          dispatch(
+                            actionUserSnackbar({
+                              status: true,
+                              content: 'Thêm khách hàng thành công',
+                              type: 'success'
+                            })
+                          );
+                          handleClose();
+                        })
+                        .catch((err) => console.log(err));
+                    } else {
+                      setErrorBirthday('');
+                      setErrorRePassword('');
+                      const customer = {
+                        hoTen: values.fullname,
+                        soDienThoai: values.phone,
+                        email: values.email,
+                        chungMinhThu: values.identification,
+                        diaChi: values.address,
+                        ngaySinh: birthday,
+                        gioiTinh: gender
+                      };
+                      add(res.data, customer, image);
+                      handleClose();
+                    }
                   })
                   .catch((err) => console.log(err));
               })
               .catch((err) => console.log(err));
           });
-      } else {
-        const storageRef = ref(storage, `avatar/${values.fullname}.${new Date().getTime()}`);
-        const uploadTask = uploadBytesResumable(storageRef, image);
-        uploadTask.on(
-          'state_changed',
-          (snapshot) => {},
-          (error) => {},
-          () => {
-            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-              setErrorBirthday('');
-              setErrorRePassword('');
-              const customer = {
-                anhDaiDien: downloadURL,
-                hoTen: values.fullname,
-                soDienThoai: values.phone,
-                email: values.email,
-                chungMinhThu: values.identification,
-                diaChi: values.address,
-                ngaySinh: birthday,
-                gioiTinh: gender
-              };
-              axios
-                .get(`${api}taiKhoan/detail/tenDangNhap/${values.username}`)
-                .then((res) => {
-                  setError('Tên đăng nhập đã tồn tại');
-                })
-                .catch((err) => {
-                  axios
-                    .get(`${api}vaiTro/detail/tenVaiTro/CUSTOMER`)
-                    .then((res) => {
-                      axios
-                        .post(`${api}taiKhoan/create/`, {
-                          tenDangNhap: values.username,
-                          matKhau: values.password,
-                          trangThai: 'Hiệu lực',
-                          vaiTro: {
-                            id: res.data.id
-                          }
-                        })
-                        .then((res) => {
-                          axios
-                            .post(`${api}khachHang/create`, {
-                              ...customer,
-                              taiKhoan: {
-                                id: res.data.id
-                              }
-                            })
-                            .then((res) => {
-                              dispatch(actionGetAllCustomerByKeyword(''));
-                              dispatch(
-                                actionUserSnackbar({
-                                  status: true,
-                                  content: 'Thêm khách hàng thành công',
-                                  type: 'success'
-                                })
-                              );
-                              handleClose();
-                            })
-                            .catch((err) => console.log(err));
-                        })
-                        .catch((err) => console.log(err));
-                    })
-                    .catch((err) => console.log(err));
-                });
-            });
-          }
-        );
       }
     }
   });

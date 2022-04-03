@@ -31,6 +31,7 @@ function FoodTableRow({ food, index }) {
         <ImageFood src={food.hinhAnh.at(0)} />
       </Cell>
       <Cell>{food.tenMonAn}</Cell>
+      <Cell>{!food.thich || food.thich.length === 0 ? `0` : food.thich.length} yêu thích</Cell>
       <Cell>{`${food.donGia.toLocaleString('es-US')} vnđ`}</Cell>
       <Cell>{food.loaiMonAn.tenLoaiMonAn}</Cell>
       <Cell>{food.trangThai}</Cell>

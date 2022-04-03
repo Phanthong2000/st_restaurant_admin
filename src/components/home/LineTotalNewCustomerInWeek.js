@@ -15,11 +15,11 @@ function LineTotalNewCustomerInWeek() {
       ],
       options: {
         chart: {
-          height: 350,
+          height: 200,
           type: 'line'
         },
         stroke: {
-          width: 5,
+          width: 2,
           curve: 'smooth'
         },
         xaxis: {
@@ -48,7 +48,7 @@ function LineTotalNewCustomerInWeek() {
         },
         yaxis: {
           min: 0,
-          max: newCustomer.total + 10
+          max: newCustomer.total + 5
         }
       }
     });
@@ -62,7 +62,7 @@ function LineTotalNewCustomerInWeek() {
       options={optionsNewCustomer.options}
       series={optionsNewCustomer.series}
       type="line"
-      height={350}
+      height={250}
     />
   );
 }

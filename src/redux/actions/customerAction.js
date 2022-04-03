@@ -8,7 +8,9 @@ import {
   ACTION_CUSTOMER_GET_ALL_CUSTOMERS_BY_KEYWORDS,
   ACTION_CUSTOMER_GET_NEW_CUSTOMER_IN_WEEK,
   ACTION_CUSTOMER_GET_GENDER_CUSTOMER,
-  ACTION_CUSTOMER_GET_SORT_CUSTOMER
+  ACTION_CUSTOMER_GET_SORT_CUSTOMER,
+  ACTION_CUSTOMER_GET_CUSTOMER_BLOCK,
+  ACTION_CUSTOMER_GET_CUSTOMER_EFFECT
 } from './types';
 import api from '../../assets/api/api';
 
@@ -37,6 +39,14 @@ export const actionCustomerSortCustomer = (data) => ({
   payload: data
 });
 
+export const actionCustomerGetCustomerBlock = (data) => ({
+  type: ACTION_CUSTOMER_GET_CUSTOMER_BLOCK,
+  payload: data
+});
+export const actionCustomerGetCustomerEffect = (data) => ({
+  type: ACTION_CUSTOMER_GET_CUSTOMER_EFFECT,
+  payload: data
+});
 export const actionGetAllCustomers = () => (dispatch) => {
   axios
     .get(`${api}khachHang/list`)
@@ -44,6 +54,16 @@ export const actionGetAllCustomers = () => (dispatch) => {
       const { data } = res;
       dispatch(actionCustomerGetAllCustomers(data));
       dispatch(actionCustomerGetQuantityCustomers(data));
+      dispatch(
+        actionCustomerGetCustomerBlock(
+          data.filter((customer) => customer.taiKhoan.trangThai === 'Đã khoá')
+        )
+      );
+      dispatch(
+        actionCustomerGetCustomerEffect(
+          data.filter((customer) => customer.taiKhoan.trangThai === 'Hiệu lực')
+        )
+      );
     })
     .catch((err) => console.log(err));
 };
@@ -52,7 +72,11 @@ export const actionGetAllCustomerByKeyword = (keyword) => (dispatch) => {
     axios
       .get(`${api}khachHang/list`)
       .then((res) => {
-        dispatch(actionCustomerGetAllCustomersByKeyword(res.data));
+        dispatch(
+          actionCustomerGetAllCustomersByKeyword(
+            res.data.sort((a, b) => Date.parse(b.createAt) - Date.parse(a.createAt))
+          )
+        );
       })
       .catch((err) => console.log(err));
   } else {
@@ -64,7 +88,11 @@ export const actionGetAllCustomerByKeyword = (keyword) => (dispatch) => {
       })
       .then((res) => {
         console.log('keyword', res.data);
-        dispatch(actionCustomerGetAllCustomersByKeyword(res.data));
+        dispatch(
+          actionCustomerGetAllCustomersByKeyword(
+            res.data.sort((a, b) => Date.parse(b.createAt) - Date.parse(a.createAt))
+          )
+        );
       })
       .catch((err) => console.log(err));
   }

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Card, styled, Typography } from '@mui/material';
 import { Icon } from '@iconify/react';
+import { Box, styled, Typography } from '@mui/material';
+import React from 'react';
 import AnimatedNumber from 'react-animated-number/build/AnimatedNumber';
 import { useSelector } from 'react-redux';
 import { fShortenNumber } from '../../utils/formatNumber';
@@ -8,8 +8,8 @@ import { fShortenNumber } from '../../utils/formatNumber';
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
   padding: theme.spacing(2, 0),
-  color: '#212B36',
-  background: '#C8FACD',
+  color: '#452730',
+  background: '#eac5fa',
   textAlign: 'center',
   borderRadius: '20px'
 }));
@@ -22,8 +22,8 @@ const WrapperIcon = styled('div')(({ theme }) => ({
   height: theme.spacing(8),
   justifyContent: 'center',
   marginBottom: theme.spacing(1),
-  color: '#007B55',
-  backgroundImage: `linear-gradient(135deg, rgba(0, 123, 85, 0) 0%, rgba(0, 123, 85, 0.24) 100%)`
+  color: '#452730',
+  backgroundImage: `linear-gradient(135deg, rgba(183, 33, 54, 0) 0%, rgba(183, 33, 54, 0.24) 100%)`
 }));
 const Total = styled(Typography)(({ theme }) => ({
   fontWeight: 'bold',
@@ -35,27 +35,18 @@ const Title = styled(Typography)(({ theme }) => ({
   fontWeight: 'bold',
   fontFamily: 'inherit'
 }));
-function TotalNewUserWeek() {
-  const newCustomer = useSelector((state) => state.customer.newCustomer);
-  const [total, setTotal] = useState(-1);
-  useEffect(() => {
-    let sum = 0;
-    newCustomer.data.forEach((value) => (sum += value));
-    setTotal(sum);
-    return function () {
-      return null;
-    };
-  }, [newCustomer]);
+function BoxUserJoin() {
+  const usersJoin = useSelector((state) => state.socket.usersJoin);
   return (
     <RootStyle>
       <WrapperIcon>
-        <Icon style={{ width: '30px', height: '30px', color: '' }} icon="gridicons:user" />
+        <Icon style={{ width: '30px', height: '30px', color: '' }} icon="ri:user-shared-fill" />
       </WrapperIcon>
       <Total>
         <AnimatedNumber
           component="text"
-          frameStyle={(perc) => (perc === 100 ? {} : { backgroundColor: '#C8FACD' })}
-          value={total}
+          frameStyle={(perc) => (perc === 100 ? {} : { backgroundColor: '#eac5fa' })}
+          value={usersJoin.length}
           stepPrecision={0}
           style={{
             transition: '0.8s ease-out',
@@ -65,9 +56,9 @@ function TotalNewUserWeek() {
           formatValue={(n) => fShortenNumber(n)}
         />
       </Total>
-      <Title>Người dùng mới trong tuần</Title>
+      <Title>Đang truy cập vào website</Title>
     </RootStyle>
   );
 }
 
-export default TotalNewUserWeek;
+export default BoxUserJoin;
