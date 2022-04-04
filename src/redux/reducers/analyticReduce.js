@@ -16,7 +16,14 @@ import {
   ACTION_ANALYTIC_ORDER_YEAR_LAST,
   ACTION_ANALYTIC_ORDER_YEAR_NOW,
   ACTION_ANALYTIC_REVENUE_YEAR_NOW,
-  ACTION_ANALYTIC_REVENUE_YEAR_LAST
+  ACTION_ANALYTIC_REVENUE_YEAR_LAST,
+  ACTION_ANALYTIC_COLUMN_TYPEFOOD_FOOD,
+  ACTION_ANALYTIC_FOODS_SELLING,
+  ACTION_ANALYTIC_FOODS_STOP_SELL,
+  ACTION_ANALYTIC_COLUMN_CUSTOMERS_YEAR,
+  ACTION_ANALYTIC_COLUMN_REVENUE_BOOK,
+  ACTION_ANALYTIC_COLUMN_REVENUE_ORDER,
+  ACTION_ANALYTIC_COLUMN_REVENUE_REVENUE
 } from '../actions/types';
 
 const defaultState = {
@@ -37,7 +44,21 @@ const defaultState = {
   bookYearNow: 0,
   bookYearLast: 0,
   orderYearNow: 0,
-  orderYearLast: 0
+  orderYearLast: 0,
+  columnTypefoodFood: {
+    name: [],
+    data: []
+  },
+  foodsSelling: 0,
+  foodsStopSell: 0,
+  columnCustomersYear: {
+    total: [],
+    male: [],
+    female: []
+  },
+  columnRevenueBook: [],
+  columnRevenueOrder: [],
+  columnRevenueRevenue: []
 };
 
 // eslint-disable-next-line default-param-last
@@ -133,6 +154,41 @@ const analyticReduce = (state = defaultState, action) => {
       return {
         ...state,
         orderYearNow: action.payload
+      };
+    case ACTION_ANALYTIC_COLUMN_TYPEFOOD_FOOD:
+      return {
+        ...state,
+        columnTypefoodFood: action.payload
+      };
+    case ACTION_ANALYTIC_FOODS_SELLING:
+      return {
+        ...state,
+        foodsSelling: action.payload
+      };
+    case ACTION_ANALYTIC_FOODS_STOP_SELL:
+      return {
+        ...state,
+        foodsStopSell: action.payload
+      };
+    case ACTION_ANALYTIC_COLUMN_CUSTOMERS_YEAR:
+      return {
+        ...state,
+        columnCustomersYear: action.payload
+      };
+    case ACTION_ANALYTIC_COLUMN_REVENUE_BOOK:
+      return {
+        ...state,
+        columnRevenueBook: action.payload
+      };
+    case ACTION_ANALYTIC_COLUMN_REVENUE_ORDER:
+      return {
+        ...state,
+        columnRevenueOrder: action.payload
+      };
+    case ACTION_ANALYTIC_COLUMN_REVENUE_REVENUE:
+      return {
+        ...state,
+        columnRevenueRevenue: action.payload
       };
     default:
       return state;

@@ -32,6 +32,7 @@ const BoxIconRight = styled(Box)(({ theme }) => ({
   position: 'fixed',
   zIndex: 100,
   top: 150,
+  right: 50,
   cursor: 'pointer',
   borderRadius: '2px',
   ':hover': {
@@ -47,36 +48,30 @@ const BoxMenu = styled(Box)(({ theme }) => ({
   width: '200px',
   position: 'fixed',
   top: 150,
-  left: 332,
+  right: 50,
   background: theme.palette.white,
   border: `1px solid lightgrey`,
   borderRadius: '2px 0px 2px 2px',
   padding: '10px',
-  zIndex: 10,
-  [theme.breakpoints.down('lg')]: {
-    left: 50
-  }
+  zIndex: 10
 }));
 const BoxIconLeft = styled(Box)(({ theme }) => ({
   width: '40px',
   height: '40px',
   background: theme.palette.white,
   border: `1px solid lightgrey`,
-  borderLeft: '0px',
+  borderRight: '0px',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
   position: 'fixed',
   zIndex: 100,
   top: 150,
-  left: 530,
+  right: 249,
   cursor: 'pointer',
   borderRadius: '0px 2px 2px 2px',
   ':hover': {
     background: theme.palette.lightgrey
-  },
-  [theme.breakpoints.down('lg')]: {
-    left: 249
   }
 }));
 const Title = styled(Typography)(({ theme }) => ({
@@ -105,11 +100,12 @@ function BoxType({ type, chosen, choose }) {
   );
 }
 function Analytic() {
-  const [menu, setMenu] = useState(true);
+  const [menu, setMenu] = useState(false);
   const [choose, setChoose] = useState('Khách hàng');
   const data = ['Doanh thu', 'Khách hàng', 'Món ăn'];
   const handleChoose = (type) => {
     setChoose(type);
+    setMenu(false);
   };
   const handleMenu = (status) => {
     setMenu(status);
@@ -125,12 +121,12 @@ function Analytic() {
         </BoxMenu>
       ) : (
         <BoxIconRight onClick={() => handleMenu(true)}>
-          <IconRight icon="ci:chevron-duo-right" />
+          <IconRight icon="ci:chevron-duo-left" />
         </BoxIconRight>
       )}
       {menu && (
         <BoxIconLeft onClick={() => handleMenu(false)}>
-          <IconRight icon="ci:chevron-duo-left" />
+          <IconRight icon="ci:chevron-duo-right" />
         </BoxIconLeft>
       )}
       <Scrollbar alwaysShowTracks>

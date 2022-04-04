@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { get } from 'lodash';
 import moment from 'moment';
 import api from '../../assets/api/api';
 import {
@@ -19,7 +20,14 @@ import {
   ACTION_ANALYTIC_REVENUE_YEAR_LAST,
   ACTION_ANALYTIC_REVENUE_YEAR_NOW,
   ACTION_ANALYTIC_ORDER_YEAR_LAST,
-  ACTION_ANALYTIC_ORDER_YEAR_NOW
+  ACTION_ANALYTIC_ORDER_YEAR_NOW,
+  ACTION_ANALYTIC_COLUMN_TYPEFOOD_FOOD,
+  ACTION_ANALYTIC_FOODS_STOP_SELL,
+  ACTION_ANALYTIC_FOODS_SELLING,
+  ACTION_ANALYTIC_COLUMN_CUSTOMERS_YEAR,
+  ACTION_ANALYTIC_COLUMN_REVENUE_BOOK,
+  ACTION_ANALYTIC_COLUMN_REVENUE_ORDER,
+  ACTION_ANALYTIC_COLUMN_REVENUE_REVENUE
 } from './types';
 
 export const actionAnalyticRevenueDateNow = (data) => ({
@@ -94,6 +102,34 @@ export const actionAnalyticOrderYearLast = (data) => ({
 });
 export const actionAnalyticOrderYearNow = (data) => ({
   type: ACTION_ANALYTIC_ORDER_YEAR_NOW,
+  payload: data
+});
+export const actionAnalyticColumnTypefoodFood = (data) => ({
+  type: ACTION_ANALYTIC_COLUMN_TYPEFOOD_FOOD,
+  payload: data
+});
+export const actionAnalyticFoodsSelling = (data) => ({
+  type: ACTION_ANALYTIC_FOODS_SELLING,
+  payload: data
+});
+export const actionAnalyticFoodsStopSell = (data) => ({
+  type: ACTION_ANALYTIC_FOODS_STOP_SELL,
+  payload: data
+});
+export const actionAnalyticColumnCustomersYear = (data) => ({
+  type: ACTION_ANALYTIC_COLUMN_CUSTOMERS_YEAR,
+  payload: data
+});
+export const actionAnalyticColumnRevenueOrder = (data) => ({
+  type: ACTION_ANALYTIC_COLUMN_REVENUE_ORDER,
+  payload: data
+});
+export const actionAnalyticColumnRevenueBook = (data) => ({
+  type: ACTION_ANALYTIC_COLUMN_REVENUE_BOOK,
+  payload: data
+});
+export const actionAnalyticColumnRevenueRevenue = (data) => ({
+  type: ACTION_ANALYTIC_COLUMN_REVENUE_REVENUE,
   payload: data
 });
 export const actionRevenueDateNow = () => (dispatch) => {
@@ -242,4 +278,278 @@ export const actionOrderYearNow = () => (dispatch) => {
     dispatch(actionAnalyticOrderYearNow(allOrders.length));
     dispatch(actionAnalyticOrderYearLast(allOrdersLast.length));
   });
+};
+
+export const actionColumnTypefoodFood = () => async (dispatch) => {
+  const typefoodQuery = await axios.get(`${api}loaiMonAn/list`);
+  const resType = typefoodQuery.data;
+  const columnName = [];
+  const columnData = [];
+  resType.forEach((type) => {
+    columnName.push(type.tenLoaiMonAn);
+    const data = axios.get(`${api}monAn/list/loaiMonAn?maLoaiMonAn=${type.id}`);
+    data.then((res) => {
+      columnData.push(res.data.length);
+    });
+  });
+  dispatch(
+    actionAnalyticColumnTypefoodFood({
+      name: columnName,
+      data: columnData
+    })
+  );
+};
+
+export const actionColumnCustomersYear = (year) => async (dispatch) => {
+  const m1 = `${year}-01`;
+  const m2 = `${year}-02`;
+  const m3 = `${year}-03`;
+  const m4 = `${year}-04`;
+  const m5 = `${year}-05`;
+  const m6 = `${year}-06`;
+  const m7 = `${year}-07`;
+  const m8 = `${year}-08`;
+  const m9 = `${year}-09`;
+  const m10 = `${year}-10`;
+  const m11 = `${year}-11`;
+  const m12 = `${year}-12`;
+  const m1T = [];
+  const m1M = 0;
+  const m1F = 0;
+  const m2T = [];
+  const m2M = 0;
+  const m2F = 0;
+  const m3T = [];
+  const m3M = 0;
+  const m3F = 0;
+  const m4T = [];
+  const m4M = 0;
+  const m4F = 0;
+  const m5T = [];
+  const m5M = 0;
+  const m5F = 0;
+  const m6T = [];
+  const m6M = 0;
+  const m6F = 0;
+  const m7T = [];
+  const m7M = 0;
+  const m7F = 0;
+  const m8T = [];
+  const m8M = 0;
+  const m8F = 0;
+  const m9T = [];
+  const m9M = 0;
+  const m9F = 0;
+  const m10T = [];
+  const m10M = 0;
+  const m10F = 0;
+  const m11T = [];
+  const m11M = 0;
+  const m11F = 0;
+  const m12T = [];
+  const m12M = 0;
+  const m12F = 0;
+  const query = await axios.get(`${api}khachHang/list`);
+  query.data.forEach((customer) => {
+    if (customer.createAt.substring(0, 7) === m1) {
+      m1T.push(customer);
+    } else if (customer.createAt.substring(0, 7) === m2) {
+      m2T.push(customer);
+    } else if (customer.createAt.substring(0, 7) === m3) {
+      m3T.push(customer);
+    } else if (customer.createAt.substring(0, 7) === m4) {
+      m4T.push(customer);
+    } else if (customer.createAt.substring(0, 7) === m5) {
+      m5T.push(customer);
+    } else if (customer.createAt.substring(0, 7) === m6) {
+      m6T.push(customer);
+    } else if (customer.createAt.substring(0, 7) === m7) {
+      m7T.push(customer);
+    } else if (customer.createAt.substring(0, 7) === m8) {
+      m8T.push(customer);
+    } else if (customer.createAt.substring(0, 7) === m9) {
+      m9T.push(customer);
+    } else if (customer.createAt.substring(0, 7) === m10) {
+      m10T.push(customer);
+    } else if (customer.createAt.substring(0, 7) === m11) {
+      m11T.push(customer);
+    } else if (customer.createAt.substring(0, 7) === m12) {
+      m12T.push(customer);
+    }
+  });
+  dispatch(
+    actionAnalyticColumnCustomersYear({
+      total: [
+        m1T.length,
+        m2T.length,
+        m3T.length,
+        m4T.length,
+        m5T.length,
+        m6T.length,
+        m7T.length,
+        m8T.length,
+        m9T.length,
+        m10T.length,
+        m11T.length,
+        m12T.length
+      ],
+      male: [
+        checkGender(m1T, 'Nam'),
+        checkGender(m2T, 'Nam'),
+        checkGender(m3T, 'Nam'),
+        checkGender(m4T, 'Nam'),
+        checkGender(m5T, 'Nam'),
+        checkGender(m6T, 'Nam'),
+        checkGender(m7T, 'Nam'),
+        checkGender(m8T, 'Nam'),
+        checkGender(m9T, 'Nam'),
+        checkGender(m10T, 'Nam'),
+        checkGender(m11T, 'Nam'),
+        checkGender(m12T, 'Nam')
+      ],
+      female: [
+        checkGender(m1T, 'Nữ'),
+        checkGender(m2T, 'Nữ'),
+        checkGender(m3T, 'Nữ'),
+        checkGender(m4T, 'Nữ'),
+        checkGender(m5T, 'Nữ'),
+        checkGender(m6T, 'Nữ'),
+        checkGender(m7T, 'Nữ'),
+        checkGender(m8T, 'Nữ'),
+        checkGender(m9T, 'Nữ'),
+        checkGender(m10T, 'Nữ'),
+        checkGender(m11T, 'Nữ'),
+        checkGender(m12T, 'Nữ')
+      ]
+    })
+  );
+};
+
+const checkGender = (data, condition) => data.filter((item) => item.gioiTinh === condition).length;
+
+const checkAnalyticMonth = (field, condition) => field.createAt.substring(0, 7) === condition;
+
+export const actionColumnRevenueBook = (year) => async (dispatch) => {
+  let m1 = 0;
+  let m2 = 0;
+  let m3 = 0;
+  let m4 = 0;
+  let m5 = 0;
+  let m6 = 0;
+  let m7 = 0;
+  let m8 = 0;
+  let m9 = 0;
+  let m10 = 0;
+  let m11 = 0;
+  let m12 = 0;
+  const query = await axios(`${api}donDatBan/list`);
+  query.data.forEach((book) => {
+    if (checkAnalyticMonth(book, `${year}-01`)) m1 += 1;
+    if (checkAnalyticMonth(book, `${year}-02`)) m2 += 1;
+    if (checkAnalyticMonth(book, `${year}-03`)) m3 += 1;
+    if (checkAnalyticMonth(book, `${year}-04`)) m4 += 1;
+    if (checkAnalyticMonth(book, `${year}-05`)) m5 += 1;
+    if (checkAnalyticMonth(book, `${year}-06`)) m6 += 1;
+    if (checkAnalyticMonth(book, `${year}-07`)) m7 += 1;
+    if (checkAnalyticMonth(book, `${year}-08`)) m8 += 1;
+    if (checkAnalyticMonth(book, `${year}-09`)) m9 += 1;
+    if (checkAnalyticMonth(book, `${year}-10`)) m10 += 1;
+    if (checkAnalyticMonth(book, `${year}-11`)) m11 += 1;
+    if (checkAnalyticMonth(book, `${year}-12`)) m12 += 1;
+  });
+  dispatch(actionAnalyticColumnRevenueBook([m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12]));
+};
+
+export const actionColumnRevenueOrder = (year) => async (dispatch) => {
+  let m1 = 0;
+  let m2 = 0;
+  let m3 = 0;
+  let m4 = 0;
+  let m5 = 0;
+  let m6 = 0;
+  let m7 = 0;
+  let m8 = 0;
+  let m9 = 0;
+  let m10 = 0;
+  let m11 = 0;
+  let m12 = 0;
+  const query = await axios(`${api}hoaDon/list`);
+  query.data.forEach((book) => {
+    if (checkAnalyticMonth(book, `${year}-01`)) m1 += 1;
+    if (checkAnalyticMonth(book, `${year}-02`)) m2 += 1;
+    if (checkAnalyticMonth(book, `${year}-03`)) m3 += 1;
+    if (checkAnalyticMonth(book, `${year}-04`)) m4 += 1;
+    if (checkAnalyticMonth(book, `${year}-05`)) m5 += 1;
+    if (checkAnalyticMonth(book, `${year}-06`)) m6 += 1;
+    if (checkAnalyticMonth(book, `${year}-07`)) m7 += 1;
+    if (checkAnalyticMonth(book, `${year}-08`)) m8 += 1;
+    if (checkAnalyticMonth(book, `${year}-09`)) m9 += 1;
+    if (checkAnalyticMonth(book, `${year}-10`)) m10 += 1;
+    if (checkAnalyticMonth(book, `${year}-11`)) m11 += 1;
+    if (checkAnalyticMonth(book, `${year}-12`)) m12 += 1;
+  });
+  dispatch(actionAnalyticColumnRevenueOrder([m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12]));
+};
+
+const getTotalItem = (field) => {
+  let total = 0;
+  field.donDatBan.listChiTietDonDatBan.forEach((ct) => {
+    total += ct.soLuong * ct.monAn.donGia;
+  });
+  return total;
+};
+
+export const actionColumnRevenueRevenue = (year) => async (dispatch) => {
+  let m1 = 0;
+  let m2 = 0;
+  let m3 = 0;
+  let m4 = 0;
+  let m5 = 0;
+  let m6 = 0;
+  let m7 = 0;
+  let m8 = 0;
+  let m9 = 0;
+  let m10 = 0;
+  let m11 = 0;
+  let m12 = 0;
+  const query = await axios(`${api}hoaDon/list`);
+  query.data.forEach((book) => {
+    if (checkAnalyticMonth(book, `${year}-01`)) {
+      m1 += getTotalItem(book);
+    }
+    if (checkAnalyticMonth(book, `${year}-02`)) {
+      m2 += getTotalItem(book);
+    }
+    if (checkAnalyticMonth(book, `${year}-03`)) {
+      m3 += getTotalItem(book);
+    }
+    if (checkAnalyticMonth(book, `${year}-04`)) {
+      m4 += getTotalItem(book);
+    }
+    if (checkAnalyticMonth(book, `${year}-05`)) {
+      m5 += getTotalItem(book);
+    }
+    if (checkAnalyticMonth(book, `${year}-06`)) {
+      m6 += getTotalItem(book);
+    }
+    if (checkAnalyticMonth(book, `${year}-07`)) {
+      m7 += getTotalItem(book);
+    }
+    if (checkAnalyticMonth(book, `${year}-08`)) {
+      m8 += getTotalItem(book);
+    }
+    if (checkAnalyticMonth(book, `${year}-09`)) {
+      m9 += getTotalItem(book);
+    }
+    if (checkAnalyticMonth(book, `${year}-10`)) {
+      m10 += getTotalItem(book);
+    }
+    if (checkAnalyticMonth(book, `${year}-11`)) {
+      m11 += getTotalItem(book);
+    }
+    if (checkAnalyticMonth(book, `${year}-12`)) {
+      m12 += getTotalItem(book);
+    }
+  });
+  dispatch(actionAnalyticColumnRevenueRevenue([m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12]));
 };

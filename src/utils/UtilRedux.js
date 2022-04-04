@@ -33,6 +33,11 @@ import {
   actionBookDateNow,
   actionBookMonthNow,
   actionBookYearNow,
+  actionColumnCustomersYear,
+  actionColumnRevenueBook,
+  actionColumnRevenueOrder,
+  actionColumnRevenueRevenue,
+  actionColumnTypefoodFood,
   actionOrderDateNow,
   actionOrderMonthNow,
   actionOrderYearNow,
@@ -47,7 +52,7 @@ function UtilRedux() {
   useEffect(() => {
     dispatch(actionGetAllCustomers());
     dispatch(actionGetAllTypeFoods());
-    // dispatch(actionGetAllFoods());
+    dispatch(actionGetAllFoods());
     // dispatch(actionGetAllEmployees());
     dispatch(actionGetEmployeesByKeywords(''));
     dispatch(actionGetAllFoodsByName(''));
@@ -72,6 +77,11 @@ function UtilRedux() {
     dispatch(actionRevenueYearNow());
     dispatch(actionBookYearNow());
     dispatch(actionOrderYearNow());
+    dispatch(actionColumnTypefoodFood());
+    dispatch(actionColumnCustomersYear(new Date().getFullYear()));
+    dispatch(actionColumnRevenueBook(new Date().getFullYear()));
+    dispatch(actionColumnRevenueOrder(new Date().getFullYear()));
+    dispatch(actionColumnRevenueRevenue(new Date().getFullYear()));
     if (loggedIn) dispatch(actionGetUser(JSON.parse(localStorage.getItem('admin')).id));
     return function () {
       return null;

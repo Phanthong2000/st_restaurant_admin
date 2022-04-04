@@ -11,6 +11,8 @@ import {
   ACTION_FOOD_SORT_FOOD
 } from './types';
 
+import { actionAnalyticFoodsSelling, actionAnalyticFoodsStopSell } from './analyticAction';
+
 export const actionFoodGetAllFoods = (data) => ({
   type: ACTION_FOOD_GET_ALL_FOODS,
   payload: data
@@ -52,6 +54,12 @@ export const actionGetAllFoods = () => (dispatch) => {
     .get(`${api}monAn/list`)
     .then((res) => {
       dispatch(actionFoodGetAllFoods(res.data));
+      dispatch(
+        actionAnalyticFoodsSelling(res.data.filter((food) => food.trangThai === 'Đang bán').length)
+      );
+      dispatch(
+        actionAnalyticFoodsStopSell(res.data.filter((food) => food.trangThai === 'Hết bán').length)
+      );
     })
     .catch((err) => {
       console.log(err);
