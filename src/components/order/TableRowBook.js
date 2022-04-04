@@ -23,7 +23,7 @@ const bounce = keyframes`
   }
 
   to {
-    ttransform: scale(1.3)
+    transform: scale(1.3)
   }
 `;
 const RootStyle = styled(TableRow)(({ theme }) => ({

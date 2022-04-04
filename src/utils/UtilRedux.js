@@ -29,6 +29,17 @@ import {
   actionNewBooks
 } from '../redux/actions/orderAction';
 import { actionGetAllAreas } from '../redux/actions/areaAction';
+import {
+  actionBookDateNow,
+  actionBookMonthNow,
+  actionBookYearNow,
+  actionOrderDateNow,
+  actionOrderMonthNow,
+  actionOrderYearNow,
+  actionRevenueDateNow,
+  actionRevenueMonthNow,
+  actionRevenueYearNow
+} from '../redux/actions/analyticAction';
 
 function UtilRedux() {
   const dispatch = useDispatch();
@@ -52,6 +63,15 @@ function UtilRedux() {
     dispatch(actionGetOrdersNow());
     dispatch(actionGetBooksNow());
     dispatch(actionGetTotalNow());
+    dispatch(actionRevenueDateNow());
+    dispatch(actionBookDateNow());
+    dispatch(actionOrderDateNow());
+    dispatch(actionRevenueMonthNow());
+    dispatch(actionBookMonthNow());
+    dispatch(actionOrderMonthNow());
+    dispatch(actionRevenueYearNow());
+    dispatch(actionBookYearNow());
+    dispatch(actionOrderYearNow());
     if (loggedIn) dispatch(actionGetUser(JSON.parse(localStorage.getItem('admin')).id));
     return function () {
       return null;

@@ -143,13 +143,13 @@ export const actionGetNewCustomerInWeek = () => (dispatch) => {
       dispatch(
         actionCustomerGetNewCustomerInWeek({
           categories: [
-            sundayString,
-            mondayString,
-            tuesdayString,
-            wednesdayString,
-            thursdayString,
-            fridayString,
-            saturdayString
+            moment(sunday).format(`DD-MM`),
+            moment(monday).format(`DD-MM`),
+            moment(tuesday).format(`DD-MM`),
+            moment(wednesday).format(`DD-MM`),
+            moment(thursday).format(`DD-MM`),
+            moment(friday).format(`DD-MM`),
+            moment(saturday).format(`DD-MM`)
           ],
           data: [sun, mon, tue, wed, thu, fri, sat],
           total: sun + mon + tue + wed + thu + fri + sat

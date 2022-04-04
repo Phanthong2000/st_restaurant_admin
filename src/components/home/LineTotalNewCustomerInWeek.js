@@ -20,11 +20,18 @@ function LineTotalNewCustomerInWeek() {
         },
         stroke: {
           width: 2,
-          curve: 'smooth'
+          curve: 'straight'
         },
         xaxis: {
           categories: newCustomer.categories,
-          tickAmount: 10
+          tickAmount: 10,
+          labels: {
+            style: {
+              fontSize: '12px',
+              fontWeight: 'bold',
+              fontFamily: 'san-serif'
+            }
+          }
         },
         title: {
           text: 'Khách hàng mới trong tuần',
@@ -35,20 +42,20 @@ function LineTotalNewCustomerInWeek() {
             fontFamily: 'inherit'
           }
         },
-        fill: {
-          type: 'gradient',
-          gradient: {
-            shade: 'dark',
-            gradientToColors: ['#FDD835'],
-            shadeIntensity: 1,
-            type: 'horizontal',
-            opacityFrom: 1,
-            opacityTo: 1
-          }
-        },
         yaxis: {
           min: 0,
-          max: newCustomer.total + 5
+          max: newCustomer.total,
+          title: {
+            text: 'Số lượng khách hàng (người)',
+            style: {
+              fontWeight: 'bold',
+              fontSize: '14px',
+              fontFamily: 'san-serif'
+            }
+          },
+          labels: {
+            formatter: (value) => value.toFixed(0)
+          }
         }
       }
     });
