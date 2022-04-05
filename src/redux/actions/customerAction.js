@@ -57,7 +57,11 @@ export const actionGetAllCustomers = () => (dispatch) => {
     .get(`${api}khachHang/list`)
     .then((res) => {
       const { data } = res;
-      dispatch(actionCustomerGetAllCustomers(data));
+      dispatch(
+        actionCustomerGetAllCustomers(
+          data.sort((a, b) => Date.parse(b.createAt) - Date.parse(a.createAt))
+        )
+      );
       dispatch(actionCustomerGetQuantityCustomers(data));
       dispatch(
         actionCustomerGetCustomerBlock(

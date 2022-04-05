@@ -1,5 +1,5 @@
 import { Box, styled } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
 import { useSelector } from 'react-redux';
 
@@ -11,55 +11,63 @@ const RootStyle = styled(Box)(({ theme }) => ({
 function PolarStatusCustomer() {
   const customerEffect = useSelector((state) => state.customer.customerEffect);
   const customerBlock = useSelector((state) => state.customer.customerBlock);
-  const [state, setState] = useState({
-    series: [customerEffect.length, customerBlock.length],
-    options: {
-      chart: {
-        type: 'polarArea',
-        background: undefined
-      },
-      labels: ['Hiệu lực', 'Đã khoá'],
-      fill: {
-        opacity: 1
-      },
-      stroke: {
-        width: 1,
-        colors: undefined
-      },
-      title: {
-        text: 'Trạng thái khách hàng',
-        align: 'center',
-        style: {
-          fontSize: '16px',
-          color: '#666',
-          fontFamily: 'inherit'
-        }
-      },
-      yaxis: {
-        show: false
-      },
-      legend: {
-        position: 'bottom'
-      },
-      plotOptions: {
-        polarArea: {
-          rings: {
-            strokeWidth: 0
-          },
-          spokes: {
-            strokeWidth: 0
+  const [state, setState] = useState({});
+  useEffect(() => {
+    setState({
+      series: [customerEffect.length, customerBlock.length],
+      options: {
+        chart: {
+          type: 'polarArea',
+          background: undefined
+        },
+        labels: ['Hiệu lực', 'Đã khoá'],
+        fill: {
+          opacity: 1
+        },
+        stroke: {
+          width: 1,
+          colors: undefined
+        },
+        title: {
+          text: 'Trạng thái khách hàng',
+          align: 'center',
+          style: {
+            fontSize: '16px',
+            color: '#666',
+            fontFamily: 'inherit'
           }
-        }
-      },
-      tooltip: {
-        y: {
-          formatter(val) {
-            return `${val} người`;
+        },
+        yaxis: {
+          show: false
+        },
+        legend: {
+          position: 'bottom'
+        },
+        plotOptions: {
+          polarArea: {
+            rings: {
+              strokeWidth: 0
+            },
+            spokes: {
+              strokeWidth: 0
+            }
+          }
+        },
+        tooltip: {
+          y: {
+            formatter(val) {
+              return `${val} người`;
+            }
           }
         }
       }
-    }
-  });
+    });
+    return function () {
+      return null;
+    };
+  }, [customerEffect.length, customerBlock.length]);
+  if (state.series === undefined || customerEffect.length === 0 || customerBlock.length === 0)
+    return null;
   return (
     <Box
       sx={{

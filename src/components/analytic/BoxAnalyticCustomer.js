@@ -5,6 +5,7 @@ import ModalCustomersOnline from '../customer/ModalCustomersOnline';
 import BoxCustomer from './BoxCustomer';
 import ColumnCustomer from './ColumnCustomer';
 import PolarWayPay from './PolarWayPay';
+import TableCustomer from './TableCustomer';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%'
@@ -32,6 +33,7 @@ function BoxAnalyticCustomer() {
           </Box>
         </Grid>
       </Grid>
+      <TableCustomer />
       {modalCustomersOnline.status && <ModalCustomersOnline />}
     </RootStyle>
   );

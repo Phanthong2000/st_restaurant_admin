@@ -112,7 +112,7 @@ function ColumnCustomer() {
     return null;
   return (
     <RootStyle>
-      <ReactApexChart options={state.options} series={state.series} type="bar" height={350} />
+      <ReactApexChart options={state.options} series={state.series} type="bar" height={360} />
     </RootStyle>
   );
 }
