@@ -1,9 +1,11 @@
 import React from 'react';
 import { styled, Box, Grid, Typography } from '@mui/material';
 import { Icon } from '@iconify/react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { fShortenNumber } from '../../utils/formatNumber';
 import PolarStatusCustomer from './PolarStatusCustomer';
+import { actionCustomerModalCustomersOnline } from '../../redux/actions/customerAction';
 
 const colortotal = '#ff4a00';
 const coloruser = '#f4ab55';
@@ -68,6 +70,25 @@ function BoxCustomer() {
   const broadcast = useSelector((state) => state.socket.broadcast);
   const user = useSelector((state) => state.user.user);
   const usersJoin = useSelector((state) => state.socket.usersJoin);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const goToCustomer = () => {
+    navigate(`/home/customer`);
+  };
+  const seeAllCustomersOnline = () => {
+    const customers = [];
+    broadcast.forEach((br) => {
+      if (br.type === 'user') {
+        customers.push(br.userId);
+      }
+    });
+    dispatch(
+      actionCustomerModalCustomersOnline({
+        status: true,
+        customers
+      })
+    );
+  };
   return (
     <RootStyle container>
       <Grid item sx={{ padding: '10px', width: '100%' }} xs={6} sm={6} md={6} lg={3} xl={3}>
@@ -82,7 +103,9 @@ function BoxCustomer() {
           <Value sx={{ color: colortotal }}>{fShortenNumber(customers.length)}</Value>
           <Title>Tổng khách hàng</Title>
           <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-            <BoxButton sx={{ background: colortotal }}>Xem tất cả</BoxButton>
+            <BoxButton sx={{ background: colortotal }} onClick={goToCustomer}>
+              Xem tất cả
+            </BoxButton>
           </Box>
         </Wrapper>
       </Grid>
@@ -102,7 +125,7 @@ function BoxCustomer() {
           </Value>
           <Title>Khách hàng đang hoạt động</Title>
           <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-            <BoxButton>Xem tất cả</BoxButton>
+            <BoxButton onClick={seeAllCustomersOnline}>Xem tất cả</BoxButton>
           </Box>
         </Wrapper>
       </Grid>

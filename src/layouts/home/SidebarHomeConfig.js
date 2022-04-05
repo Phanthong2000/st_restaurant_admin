@@ -33,11 +33,6 @@ const sidebarHomeConfig = [
     name: 'Số liệu',
     path: '/home/analytic',
     icon: 'carbon:analytics'
-  },
-  {
-    name: 'Báo cáo',
-    path: '/home/report',
-    icon: 'tabler:report-money'
   }
 ];
 

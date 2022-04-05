@@ -10,7 +10,8 @@ import {
   ACTION_CUSTOMER_GET_GENDER_CUSTOMER,
   ACTION_CUSTOMER_GET_SORT_CUSTOMER,
   ACTION_CUSTOMER_GET_CUSTOMER_BLOCK,
-  ACTION_CUSTOMER_GET_CUSTOMER_EFFECT
+  ACTION_CUSTOMER_GET_CUSTOMER_EFFECT,
+  ACTION_CUSTOMER_MODAL_CUSTOMERS_ONLINE
 } from './types';
 import api from '../../assets/api/api';
 
@@ -45,6 +46,10 @@ export const actionCustomerGetCustomerBlock = (data) => ({
 });
 export const actionCustomerGetCustomerEffect = (data) => ({
   type: ACTION_CUSTOMER_GET_CUSTOMER_EFFECT,
+  payload: data
+});
+export const actionCustomerModalCustomersOnline = (data) => ({
+  type: ACTION_CUSTOMER_MODAL_CUSTOMERS_ONLINE,
   payload: data
 });
 export const actionGetAllCustomers = () => (dispatch) => {

@@ -317,7 +317,7 @@ function Food() {
               </TableBody>
               <TableFooter>
                 <TableRow>
-                  <TableCell colSpan={11}>
+                  <TableCell colSpan={3}>
                     <Tooltip title="Về đầu bảng">
                       <IconButton onClick={goToStartTable} disabled={pageFood === 0}>
                         <Icon icon="bi:skip-start-fill" />
@@ -338,6 +338,11 @@ function Food() {
                         <Icon icon="bi:skip-end-fill" />
                       </IconButton>
                     </Tooltip>
+                  </TableCell>
+                  <TableCell colSpan={5}>
+                    <ButtonAddFood startIcon={<Icon icon="uil:export" />}>
+                      Xuất báo cáo
+                    </ButtonAddFood>
                   </TableCell>
                 </TableRow>
               </TableFooter>

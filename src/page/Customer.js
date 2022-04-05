@@ -144,6 +144,10 @@ function Customer() {
       width: '15%'
     },
     {
+      name: 'Hoạt động',
+      width: '15%'
+    },
+    {
       name: 'Xem thông tin',
       width: '10%'
     },
@@ -282,7 +286,7 @@ function Customer() {
               )}
               <TableFooter>
                 <TableRow>
-                  <TableCell colSpan={11}>
+                  <TableCell colSpan={4}>
                     <Tooltip title="Về đầu bảng">
                       <IconButton onClick={goToStartTable} disabled={page === 0}>
                         <Icon icon="bi:skip-start-fill" />
@@ -303,6 +307,11 @@ function Customer() {
                         <Icon icon="bi:skip-end-fill" />
                       </IconButton>
                     </Tooltip>
+                  </TableCell>
+                  <TableCell colSpan={5}>
+                    <ButtonAddCustomer startIcon={<Icon icon="uil:export" />}>
+                      Xuất báo cáo
+                    </ButtonAddCustomer>
                   </TableCell>
                 </TableRow>
               </TableFooter>

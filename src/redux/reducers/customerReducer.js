@@ -8,7 +8,8 @@ import {
   ACTION_CUSTOMER_GET_NEW_CUSTOMER_IN_WEEK,
   ACTION_CUSTOMER_GET_SORT_CUSTOMER,
   ACTION_CUSTOMER_GET_CUSTOMER_BLOCK,
-  ACTION_CUSTOMER_GET_CUSTOMER_EFFECT
+  ACTION_CUSTOMER_GET_CUSTOMER_EFFECT,
+  ACTION_CUSTOMER_MODAL_CUSTOMERS_ONLINE
 } from '../actions/types';
 
 const defaultState = {
@@ -28,7 +29,11 @@ const defaultState = {
   genderCustomer: [],
   sortCustomer: 'all',
   customerEffect: [],
-  customerBlock: []
+  customerBlock: [],
+  modalCustomersOnline: {
+    status: false,
+    customers: []
+  }
 };
 // eslint-disable-next-line default-param-last
 const customerReducer = (state = defaultState, action) => {
@@ -82,6 +87,11 @@ const customerReducer = (state = defaultState, action) => {
       return {
         ...state,
         customerEffect: action.payload
+      };
+    case ACTION_CUSTOMER_MODAL_CUSTOMERS_ONLINE:
+      return {
+        ...state,
+        modalCustomersOnline: action.payload
       };
     default:
       return state;

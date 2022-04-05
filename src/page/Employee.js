@@ -261,7 +261,7 @@ function Employee() {
               </TableBody>
               <TableFooter>
                 <TableRow>
-                  <TableCell colSpan={11}>
+                  <TableCell colSpan={3}>
                     <Tooltip title="Về đầu bảng">
                       <IconButton onClick={goToStartTable} disabled={page === 0}>
                         <Icon icon="bi:skip-start-fill" />
@@ -282,6 +282,11 @@ function Employee() {
                         <Icon icon="bi:skip-end-fill" />
                       </IconButton>
                     </Tooltip>
+                  </TableCell>
+                  <TableCell colSpan={4}>
+                    <ButtonAddEmployee startIcon={<Icon icon="uil:export" />}>
+                      Xuất báo cáo
+                    </ButtonAddEmployee>
                   </TableCell>
                 </TableRow>
               </TableFooter>

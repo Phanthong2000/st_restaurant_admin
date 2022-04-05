@@ -1,5 +1,7 @@
 import { Box, Grid, styled } from '@mui/material';
 import React from 'react';
+import { useSelector } from 'react-redux';
+import ModalCustomersOnline from '../customer/ModalCustomersOnline';
 import BoxCustomer from './BoxCustomer';
 import ColumnCustomer from './ColumnCustomer';
 import PolarWayPay from './PolarWayPay';
@@ -8,6 +10,7 @@ const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%'
 }));
 function BoxAnalyticCustomer() {
+  const modalCustomersOnline = useSelector((state) => state.customer.modalCustomersOnline);
   return (
     <RootStyle>
       <BoxCustomer />
@@ -29,6 +32,7 @@ function BoxAnalyticCustomer() {
           </Box>
         </Grid>
       </Grid>
+      {modalCustomersOnline.status && <ModalCustomersOnline />}
     </RootStyle>
   );
 }

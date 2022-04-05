@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Avatar, IconButton, styled, TableCell, TableRow } from '@mui/material';
+import { Avatar, Box, IconButton, styled, TableCell, TableRow, Typography } from '@mui/material';
 import { Icon } from '@iconify/react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { actionCustomerModalEditCustomer } from '../../redux/actions/customerAction';
 import { actionOrderGetUser } from '../../redux/actions/orderAction';
@@ -23,6 +23,7 @@ CustomerTableRow.prototype = {
 function CustomerTableRow({ customer, index }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const broadcast = useSelector((state) => state.socket.broadcast);
   if (customer.id === undefined) return null;
   return (
     <RootStyle sx={{ background: index % 2 === 0 ? '#fff' : 'lightgrey' }}>
@@ -34,6 +35,22 @@ function CustomerTableRow({ customer, index }) {
       <Cell>{customer.soDienThoai}</Cell>
       <Cell>{customer.gioiTinh}</Cell>
       <Cell>{customer.taiKhoan.trangThai}</Cell>
+      <Cell>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Icon
+            style={{
+              width: '30px',
+              height: '30px',
+              color:
+                broadcast.find((br) => br.userId === customer.id) !== undefined ? 'green' : 'gray'
+            }}
+            icon="ci:dot-05-xl"
+          />
+          <Typography>
+            {broadcast.find((br) => br.userId === customer.id) !== undefined ? `Online` : 'Offline'}
+          </Typography>
+        </Box>
+      </Cell>
       <Cell>
         <IconButton
           onClick={() =>
