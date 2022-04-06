@@ -35,6 +35,7 @@ import {
 } from '../../redux/actions/customerAction';
 import { actionUserSnackbar } from '../../redux/actions/userAction';
 import { storage } from '../../firebase-config';
+import { actionColumnCustomersYear } from '../../redux/actions/analyticAction';
 
 const BoxModal = styled(Card)(({ theme }) => ({
   position: 'absolute',
@@ -213,6 +214,7 @@ function AddCustomer({ add }) {
                           dispatch(actionGetAllCustomers());
                           dispatch(actionGetNewCustomerInWeek());
                           dispatch(actionGetAllCustomerByKeyword(''));
+                          dispatch(actionColumnCustomersYear(new Date().getFullYear()));
                           dispatch(
                             actionUserSnackbar({
                               status: true,

@@ -12,7 +12,7 @@ const RootStyle = styled(Grid)(({ theme }) => ({
 }));
 const GridItem = styled(Grid)(({ theme }) => ({
   width: '100%',
-  padding: '5px 20px'
+  padding: '5px 10px'
 }));
 const Wrapper = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -51,12 +51,6 @@ const Time = styled(Typography)(({ theme }) => ({
   fontSize: '14px',
   marginLeft: '5px'
 }));
-const DATENOW = 25200332;
-const DATELAST = 15393232;
-const MONTHNOW = 25200332;
-const MONTHLAST = 15393232;
-const YEARNOW = 25200332;
-const YEARLAST = 15393232;
 function BoxRevenue() {
   const revenueDateNow = useSelector((state) => state.analytic.revenueDateNow);
   const revenueDateLast = useSelector((state) => state.analytic.revenueDateLast);

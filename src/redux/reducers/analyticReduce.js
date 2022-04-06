@@ -23,7 +23,9 @@ import {
   ACTION_ANALYTIC_COLUMN_CUSTOMERS_YEAR,
   ACTION_ANALYTIC_COLUMN_REVENUE_BOOK,
   ACTION_ANALYTIC_COLUMN_REVENUE_ORDER,
-  ACTION_ANALYTIC_COLUMN_REVENUE_REVENUE
+  ACTION_ANALYTIC_COLUMN_REVENUE_REVENUE,
+  ACTION_ANALYTIC_GET_ALL_ORDERS,
+  ACTION_ANALYTIC_GET_TOP10_FOODS_LOVE
 } from '../actions/types';
 
 const defaultState = {
@@ -58,7 +60,12 @@ const defaultState = {
   },
   columnRevenueBook: [],
   columnRevenueOrder: [],
-  columnRevenueRevenue: []
+  columnRevenueRevenue: [],
+  allOrders: [],
+  top10FoodsLove: {
+    name: [],
+    value: []
+  }
 };
 
 // eslint-disable-next-line default-param-last
@@ -189,6 +196,16 @@ const analyticReduce = (state = defaultState, action) => {
       return {
         ...state,
         columnRevenueRevenue: action.payload
+      };
+    case ACTION_ANALYTIC_GET_ALL_ORDERS:
+      return {
+        ...state,
+        allOrders: action.payload
+      };
+    case ACTION_ANALYTIC_GET_TOP10_FOODS_LOVE:
+      return {
+        ...state,
+        top10FoodsLove: action.payload
       };
     default:
       return state;

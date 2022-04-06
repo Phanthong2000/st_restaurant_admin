@@ -1,6 +1,7 @@
 import { Box, styled } from '@mui/material';
 import React from 'react';
 import BoxFood from './BoxFood';
+import ColumnTop10FoodsLove from './ColumnTop10FoodsLove';
 import ColumnTypefoodFood from './ColumnTypefoodFood';
 
 const RootStyle = styled(Box)(({ theme }) => ({
@@ -10,7 +11,10 @@ function BoxAnalyticFood() {
   return (
     <RootStyle>
       <BoxFood />
-      <ColumnTypefoodFood />
+      <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+        <ColumnTypefoodFood />
+        <ColumnTop10FoodsLove />
+      </Box>
     </RootStyle>
   );
 }

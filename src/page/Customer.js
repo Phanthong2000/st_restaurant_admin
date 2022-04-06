@@ -21,7 +21,6 @@ import { Scrollbar } from 'smooth-scrollbar-react';
 import { Icon } from '@iconify/react';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import axios from 'axios';
-// import ReactHtmlTableToExcel from 'react-html-table-to-excel';
 import CustomerTableRow from '../components/customer/CustomerTableRow';
 import AddCustomer from '../components/customer/AddCustomer';
 import {
@@ -286,7 +285,7 @@ function Customer() {
               )}
               <TableFooter>
                 <TableRow>
-                  <TableCell colSpan={4}>
+                  <TableCell colSpan={9}>
                     <Tooltip title="Về đầu bảng">
                       <IconButton onClick={goToStartTable} disabled={page === 0}>
                         <Icon icon="bi:skip-start-fill" />
@@ -307,11 +306,6 @@ function Customer() {
                         <Icon icon="bi:skip-end-fill" />
                       </IconButton>
                     </Tooltip>
-                  </TableCell>
-                  <TableCell colSpan={5}>
-                    <ButtonAddCustomer startIcon={<Icon icon="uil:export" />}>
-                      Xuất báo cáo
-                    </ButtonAddCustomer>
                   </TableCell>
                 </TableRow>
               </TableFooter>

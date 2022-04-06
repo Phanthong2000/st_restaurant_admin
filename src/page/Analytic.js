@@ -37,6 +37,9 @@ const BoxIconRight = styled(Box)(({ theme }) => ({
   borderRadius: '2px',
   ':hover': {
     background: theme.palette.lightgrey
+  },
+  [theme.breakpoints.down('md')]: {
+    right: 0
   }
 }));
 const IconRight = styled(Icon)(({ theme }) => ({
@@ -53,7 +56,10 @@ const BoxMenu = styled(Box)(({ theme }) => ({
   border: `1px solid lightgrey`,
   borderRadius: '2px 0px 2px 2px',
   padding: '10px',
-  zIndex: 10
+  zIndex: 10,
+  [theme.breakpoints.down('md')]: {
+    right: 0
+  }
 }));
 const BoxIconLeft = styled(Box)(({ theme }) => ({
   width: '40px',
@@ -72,6 +78,9 @@ const BoxIconLeft = styled(Box)(({ theme }) => ({
   borderRadius: '0px 2px 2px 2px',
   ':hover': {
     background: theme.palette.lightgrey
+  },
+  [theme.breakpoints.down('md')]: {
+    right: 199
   }
 }));
 const Title = styled(Typography)(({ theme }) => ({

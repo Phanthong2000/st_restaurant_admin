@@ -21,8 +21,11 @@ import {
 import moment from 'moment';
 import { Icon } from '@iconify/react';
 import { useSelector } from 'react-redux';
+import ReactHtmlTableToExcel from 'react-html-table-to-excel';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import axios from 'axios';
+import api from '../../assets/api/api';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -115,6 +118,24 @@ const IconTime = styled(Icon)(({ theme }) => ({
   marginLeft: '5px'
 }));
 function TableRowCustomer({ customer, index }) {
+  const [quantity, setQuantity] = useState(-1);
+  const getQuantityBook = () => {
+    axios
+      .get(`${api}donDatBan/list/maKhachHang/`, {
+        params: {
+          maKhachHang: customer.id
+        }
+      })
+      .then((res) => {
+        setQuantity(res.data.length);
+      });
+  };
+  useEffect(() => {
+    getQuantityBook();
+    return function () {
+      return null;
+    };
+  }, []);
   const Row = styled(TableRow)(({ theme }) => ({
     width: '100%'
   }));
@@ -123,6 +144,7 @@ function TableRowCustomer({ customer, index }) {
     fontFamily: theme.typography.fontFamily.primary,
     fontSize: '12px'
   }));
+  if (quantity === -1) return null;
   return (
     <Row>
       <Cell>{index + 1}</Cell>
@@ -132,6 +154,7 @@ function TableRowCustomer({ customer, index }) {
       <Cell>{customer.chungMinhThu}</Cell>
       <Cell>{customer.gioiTinh}</Cell>
       <Cell>{customer.taiKhoan.trangThai}</Cell>
+      <Cell>{quantity}</Cell>
       <Cell>{moment(customer.createAt).format(`DD-MM-YYYY`)}</Cell>
     </Row>
   );
@@ -155,7 +178,7 @@ function TableCustomer() {
     },
     {
       name: 'Họ tên',
-      width: '20%'
+      width: '15%'
     },
     {
       name: 'Số điện thoại',
@@ -167,7 +190,7 @@ function TableCustomer() {
     },
     {
       name: 'CMND',
-      width: '15%'
+      width: '10%'
     },
     {
       name: 'Giới tính',
@@ -178,22 +201,34 @@ function TableCustomer() {
       width: '10%'
     },
     {
+      name: 'SL đơn đặt bàn',
+      width: '12%'
+    },
+    {
       name: 'Thời gian tham gia',
-      width: '15%'
+      width: '13%'
     }
   ];
   const handleChangeStatus = (status) => {
     setStatus(status);
     if (status === 'all') {
       setCustomerTable(customers);
+      setFrom();
+      setTo();
     }
   };
   const handleSearch = () => {
     const start = Date.parse(from);
     const end = Date.parse(to);
-    if (status === 'setting') {
+    if (status === 'setting' && from && to) {
       if (start === end) {
-        setCustomerTable(customers.filter((customer) => Date.parse(customer.createAt) >= start));
+        setCustomerTable(
+          customers.filter(
+            (customer) =>
+              Date.parse(customer.createAt) >= start &&
+              Date.parse(customer.createAt) <= start + 86400000
+          )
+        );
       } else {
         setCustomerTable(
           customers.filter(
@@ -289,10 +324,23 @@ function TableCustomer() {
               )}
             </BoxSearch>
           </BoxSort>
-          <ButtonDownload>
-            <Icon style={{ marginRight: '5px' }} icon="uil:export" />
-            Xuất báo cáo
-          </ButtonDownload>
+          <ReactHtmlTableToExcel
+            table="tb"
+            filename={
+              status !== 'setting' || !from || !to
+                ? `Danh-sach-tat-ca-khach-hang-${moment(new Date()).format('hh:mmaDD/MM/YY')}`
+                : `Danh-sach-khach-hang-tu-${moment(from).format('DD/MM/YY')}-den-${moment(
+                    to
+                  ).format('DD/MM/YY')}-${moment(new Date()).format('hh:mmaDD/MM/YY')}`
+            }
+            sheet="Sheet"
+            buttonText={
+              <ButtonDownload>
+                <Icon style={{ marginRight: '5px' }} icon="uil:export" />
+                Xuất báo cáo
+              </ButtonDownload>
+            }
+          />
         </BoxTitle>
         <Box
           sx={{
@@ -303,7 +351,7 @@ function TableCustomer() {
           }}
         >
           <TableContainer sx={{ maxHeight: '400px' }}>
-            <Table stickyHeader>
+            <Table id="tb" stickyHeader>
               <TableHead>
                 <TableRow>
                   {header.map((item, index) => (

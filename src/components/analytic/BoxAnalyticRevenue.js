@@ -5,6 +5,7 @@ import BoxBook from './BoxBook';
 import BoxOrder from './BoxOrder';
 import ColumnRevenueYear from './ColumnRevenueYear';
 import PolarWayPay from './PolarWayPay';
+import BoxTableBookAndOrder from './BoxTableBookAndOrder';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%'
@@ -16,6 +17,7 @@ function BoxAnalyticRevenue() {
       <BoxBook />
       <BoxOrder />
       <ColumnRevenueYear />
+      <BoxTableBookAndOrder />
     </RootStyle>
   );
 }

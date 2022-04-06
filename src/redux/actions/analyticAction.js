@@ -27,7 +27,9 @@ import {
   ACTION_ANALYTIC_COLUMN_CUSTOMERS_YEAR,
   ACTION_ANALYTIC_COLUMN_REVENUE_BOOK,
   ACTION_ANALYTIC_COLUMN_REVENUE_ORDER,
-  ACTION_ANALYTIC_COLUMN_REVENUE_REVENUE
+  ACTION_ANALYTIC_COLUMN_REVENUE_REVENUE,
+  ACTION_ANALYTIC_GET_ALL_ORDERS,
+  ACTION_ANALYTIC_GET_TOP10_FOODS_LOVE
 } from './types';
 
 export const actionAnalyticRevenueDateNow = (data) => ({
@@ -130,6 +132,14 @@ export const actionAnalyticColumnRevenueBook = (data) => ({
 });
 export const actionAnalyticColumnRevenueRevenue = (data) => ({
   type: ACTION_ANALYTIC_COLUMN_REVENUE_REVENUE,
+  payload: data
+});
+export const actionAnalyticGetAllOrders = (data) => ({
+  type: ACTION_ANALYTIC_GET_ALL_ORDERS,
+  payload: data
+});
+export const actionAnalyticGetTop10FoodsLove = (data) => ({
+  type: ACTION_ANALYTIC_GET_TOP10_FOODS_LOVE,
   payload: data
 });
 export const actionRevenueDateNow = () => (dispatch) => {
@@ -552,4 +562,31 @@ export const actionColumnRevenueRevenue = (year) => async (dispatch) => {
     }
   });
   dispatch(actionAnalyticColumnRevenueRevenue([m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12]));
+};
+
+export const actionGetAllOrders = () => async (dispatch) => {
+  const data = await axios.get(`${api}hoaDon/list`);
+  dispatch(
+    actionAnalyticGetAllOrders(
+      data.data.sort((a, b) => Date.parse(b.createAt) - Date.parse(a.createAt))
+    )
+  );
+};
+
+export const actionGetTop10FoodsLove = () => async (dispatch) => {
+  const data = await axios(`${api}monAn/list`);
+  const temp = data.data.filter((food) => food.thich);
+  const tempSort = temp.sort((a, b) => b.thich.length - a.thich.length);
+  const name = [];
+  const value = [];
+  tempSort.slice(0, 10).forEach((food) => {
+    name.push(food.tenMonAn);
+    value.push(food.thich.length);
+  });
+  dispatch(
+    actionAnalyticGetTop10FoodsLove({
+      name,
+      value
+    })
+  );
 };

@@ -34,6 +34,17 @@ import {
   actionGetTotalNow,
   actionNewBooks
 } from '../redux/actions/orderAction';
+import {
+  actionOrderDateNow,
+  actionOrderMonthNow,
+  actionOrderYearNow,
+  actionRevenueDateNow,
+  actionRevenueMonthNow,
+  actionRevenueYearNow,
+  actionGetAllOrders,
+  actionColumnRevenueOrder,
+  actionColumnRevenueRevenue
+} from '../redux/actions/analyticAction';
 
 const heightScreen = window.innerHeight - 1;
 const RootStyle = styled(Box)(({ theme }) => ({
@@ -290,8 +301,17 @@ function PayOrder() {
           .then(() => {
             dispatch(actionGetOrdersNow());
             dispatch(actionGetBooksByKeyword(''));
+            dispatch(actionGetAllOrders());
             dispatch(actionGetTotalNow());
             dispatch(actionNewBooks());
+            dispatch(actionRevenueDateNow());
+            dispatch(actionOrderDateNow());
+            dispatch(actionRevenueMonthNow());
+            dispatch(actionOrderMonthNow());
+            dispatch(actionRevenueYearNow());
+            dispatch(actionOrderYearNow());
+            dispatch(actionColumnRevenueOrder(new Date().getFullYear()));
+            dispatch(actionColumnRevenueRevenue(new Date().getFullYear()));
             dispatch(
               actionUserBackdrop({
                 status: false,

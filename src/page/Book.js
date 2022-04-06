@@ -281,7 +281,7 @@ function Book() {
               </TableBody>
               <TableFooter>
                 <TableRow>
-                  <TableCell colSpan={5}>
+                  <TableCell colSpan={12}>
                     <Tooltip title="Về đầu bảng">
                       <IconButton onClick={goToStartTable} disabled={page === 0}>
                         <Icon icon="bi:skip-start-fill" />
@@ -302,9 +302,6 @@ function Book() {
                         <Icon icon="bi:skip-end-fill" />
                       </IconButton>
                     </Tooltip>
-                  </TableCell>
-                  <TableCell colSpan={7}>
-                    <ButtonOrder startIcon={<Icon icon="uil:export" />}>Xuất báo cáo</ButtonOrder>
                   </TableCell>
                 </TableRow>
               </TableFooter>

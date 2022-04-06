@@ -4,7 +4,7 @@ import ReactApexChart from 'react-apexcharts';
 import { useSelector } from 'react-redux';
 
 const RootStyle = styled(Box)(({ theme }) => ({
-  width: '50%',
+  width: '100%',
   border: `1px solid lightgrey`,
   borderRadius: '2px',
   background: theme.palette.white
@@ -81,7 +81,7 @@ function ColumnTypefoodFood() {
     }
   });
   return (
-    <Box sx={{ width: '100%', padding: '10px' }}>
+    <Box sx={{ width: '50%', padding: '10px' }}>
       <RootStyle>
         <ReactApexChart options={state.options} series={state.series} type="bar" height={350} />
       </RootStyle>

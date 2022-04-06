@@ -11,7 +11,7 @@ const RootStyle = styled(Grid)(({ theme }) => ({
 }));
 const GridItem = styled(Grid)(({ theme }) => ({
   width: '100%',
-  padding: '5px 20px'
+  padding: '5px 10px'
 }));
 const Wrapper = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -50,12 +50,6 @@ const Time = styled(Typography)(({ theme }) => ({
   color: theme.palette.gray,
   marginLeft: '5px'
 }));
-const DATENOW = 129;
-const DATELAST = 207;
-const MONTHNOW = 2214;
-const MONTHLAST = 1321;
-const YEARNOW = 10132;
-const YEARLAST = 9932;
 function BoxOrder() {
   const orderDateNow = useSelector((state) => state.analytic.orderDateNow);
   const orderDateLast = useSelector((state) => state.analytic.orderDateLast);

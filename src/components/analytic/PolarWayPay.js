@@ -37,7 +37,7 @@ function PolarWayPay() {
               {
                 from: 1380,
                 to: 1380,
-                color: '#eb4034'
+                color: '#6df792'
               }
             ]
           }

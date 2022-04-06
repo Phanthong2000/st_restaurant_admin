@@ -39,6 +39,12 @@ import {
   actionOrderSetFood
 } from '../redux/actions/orderAction';
 import api from '../assets/api/api';
+import {
+  actionBookDateNow,
+  actionBookMonthNow,
+  actionBookYearNow,
+  actionColumnRevenueBook
+} from '../redux/actions/analyticAction';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -272,7 +278,10 @@ function OrderChooseFood() {
         thoiGianNhanBan: moment(book.date).format(),
         trangThai: '0',
         ghiChu: book.description,
-        listChiTietDonDatBan
+        listChiTietDonDatBan,
+        khuVuc: {
+          id: book.area.id
+        }
       };
       axios
         .post(`${api}donDatBan/create`, {
@@ -282,6 +291,10 @@ function OrderChooseFood() {
           dispatch(actionGetBooksNow());
           dispatch(actionGetBooksByKeyword(''));
           dispatch(actionNewBooks());
+          dispatch(actionBookDateNow());
+          dispatch(actionBookMonthNow());
+          dispatch(actionBookYearNow());
+          dispatch(actionColumnRevenueBook(new Date().getFullYear()));
           dispatch(
             actionUserSnackbar({
               status: true,

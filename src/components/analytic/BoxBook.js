@@ -11,7 +11,7 @@ const RootStyle = styled(Grid)(({ theme }) => ({
 }));
 const GridItem = styled(Grid)(({ theme }) => ({
   width: '100%',
-  padding: '5px 20px'
+  padding: '5px 10px'
 }));
 const Wrapper = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -52,12 +52,7 @@ const Time = styled(Typography)(({ theme }) => ({
   color: theme.palette.white,
   marginLeft: '5px'
 }));
-const DATENOW = 129;
-const DATELAST = 397;
-const MONTHNOW = 3214;
-const MONTHLAST = 2321;
-const YEARNOW = 32132;
-const YEARLAST = 30132;
+
 function BoxBook() {
   const bookDateNow = useSelector((state) => state.analytic.bookDateNow);
   const bookDateLast = useSelector((state) => state.analytic.bookDateLast);
@@ -155,7 +150,9 @@ function BoxBook() {
             ) : (
               <Box sx={{ textAlign: 'center' }}>
                 <IconBook icon="akar-icons:arrow-down" />
-                <Title sx={{ fontSize: '14px' }}>{fShortenNumber(YEARLAST - bookYearNow)}</Title>
+                <Title sx={{ fontSize: '14px' }}>
+                  {fShortenNumber(bookYearLast - bookYearNow)}
+                </Title>
               </Box>
             )}
           </Box>
