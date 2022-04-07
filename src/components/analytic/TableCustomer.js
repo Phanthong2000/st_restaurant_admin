@@ -124,6 +124,10 @@ function TableRowCustomer({ customer, index }) {
       .get(`${api}donDatBan/list/maKhachHang/`, {
         params: {
           maKhachHang: customer.id
+        },
+
+        headers: {
+          Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
         }
       })
       .then((res) => {
@@ -245,11 +249,12 @@ function TableCustomer() {
       setTo(newValue);
     }
   };
+  if (customerTable.length === 0) return null;
   return (
     <RootStyle>
       <BoxContent>
         <BoxTitle>
-          <Title>Danh sách khách hàng</Title>
+          <Title>Danh sách khách hàng {customerTable.length}</Title>
           <BoxSort>
             <Box>
               <RadioGroup

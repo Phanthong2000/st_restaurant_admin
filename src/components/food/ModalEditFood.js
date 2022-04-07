@@ -156,12 +156,21 @@ function ModalEditFood() {
       };
       if (values.name === modalEditFood.food.tenMonAn) {
         axios
-          .put(`${api}monAn/edit`, {
-            ...modalEditFood.food,
-            ...food
-          })
+          .put(
+            `${api}monAn/edit`,
+            {
+              ...modalEditFood.food,
+              ...food
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+              }
+            }
+          )
           .then(() => {
             dispatch(actionGetAllFoodsByName(''));
+            dispatch(actionGetAllFoods());
             handleClose();
             dispatch(
               actionUserSnackbar({
@@ -174,21 +183,38 @@ function ModalEditFood() {
           .catch((err) => console.log(err));
       } else {
         axios
-          .get(`${api}monAn/detail/tenMonAn`, {
-            params: {
-              tenMonAn: values.name
+          .get(
+            `${api}monAn/detail/tenMonAn`,
+            {
+              params: {
+                tenMonAn: values.name
+              }
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+              }
             }
-          })
+          )
           .then((res) => {
             setError('Tên món ăn đã tồn tại');
           })
           .catch((err) => {
             axios
-              .put(`${api}monAn/edit`, {
-                ...modalEditFood.food,
-                ...food
-              })
+              .put(
+                `${api}monAn/edit`,
+                {
+                  ...modalEditFood.food,
+                  ...food
+                },
+                {
+                  headers: {
+                    Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+                  }
+                }
+              )
               .then(() => {
+                dispatch(actionGetAllFoodsByName(''));
                 dispatch(actionGetAllFoods());
                 handleClose();
                 dispatch(

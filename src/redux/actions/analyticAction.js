@@ -143,161 +143,228 @@ export const actionAnalyticGetTop10FoodsLove = (data) => ({
   payload: data
 });
 export const actionRevenueDateNow = () => (dispatch) => {
-  axios.get(`${api}hoaDon/list`).then((res) => {
-    const allOrders = res.data.filter(
-      (order) =>
-        order.createAt.substring(0, 10) === moment(new Date().getTime()).format(`YYYY-MM-DD`)
-    );
-    const allOrdersLast = res.data.filter(
-      (order) =>
-        order.createAt.substring(0, 10) ===
-        moment(new Date().getTime() - 86400000).format(`YYYY-MM-DD`)
-    );
-    let total = 0;
-    let totalLast = 0;
-    allOrders.forEach((order) => {
-      order.donDatBan.listChiTietDonDatBan.forEach((ct) => {
-        total += ct.soLuong * ct.monAn.donGia;
+  axios
+    .get(`${api}hoaDon/list`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+      }
+    })
+    .then((res) => {
+      const allOrders = res.data.filter(
+        (order) =>
+          order.createAt.substring(0, 10) === moment(new Date().getTime()).format(`YYYY-MM-DD`)
+      );
+      const allOrdersLast = res.data.filter(
+        (order) =>
+          order.createAt.substring(0, 10) ===
+          moment(new Date().getTime() - 86400000).format(`YYYY-MM-DD`)
+      );
+      let total = 0;
+      let totalLast = 0;
+      allOrders.forEach((order) => {
+        order.donDatBan.listChiTietDonDatBan.forEach((ct) => {
+          total += ct.soLuong * ct.monAn.donGia;
+        });
       });
-    });
-    allOrdersLast.forEach((order) => {
-      order.donDatBan.listChiTietDonDatBan.forEach((ct) => {
-        totalLast += ct.soLuong * ct.monAn.donGia;
+      allOrdersLast.forEach((order) => {
+        order.donDatBan.listChiTietDonDatBan.forEach((ct) => {
+          totalLast += ct.soLuong * ct.monAn.donGia;
+        });
       });
+      dispatch(actionAnalyticRevenueDateNow(total));
+      dispatch(actionAnalyticRevenueDateLast(totalLast));
     });
-    dispatch(actionAnalyticRevenueDateNow(total));
-    dispatch(actionAnalyticRevenueDateLast(totalLast));
-  });
 };
 
 export const actionRevenueMonthNow = () => (dispatch) => {
-  axios.get(`${api}hoaDon/list`).then((res) => {
-    const monthNow = moment(new Date().getTime()).format(`YYYY-MM`);
-    const monthLast = moment(monthNow, 'YYYY-MM').add(-1, 'months').format('YYYY-MM');
-    const allOrders = res.data.filter((order) => order.createAt.substring(0, 7) === monthNow);
-    const allOrdersLast = res.data.filter((order) => order.createAt.substring(0, 7) === monthLast);
-    let total = 0;
-    let totalLast = 0;
-    allOrders.forEach((order) => {
-      order.donDatBan.listChiTietDonDatBan.forEach((ct) => {
-        total += ct.soLuong * ct.monAn.donGia;
+  axios
+    .get(`${api}hoaDon/list`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+      }
+    })
+    .then((res) => {
+      const monthNow = moment(new Date().getTime()).format(`YYYY-MM`);
+      const monthLast = moment(monthNow, 'YYYY-MM').add(-1, 'months').format('YYYY-MM');
+      const allOrders = res.data.filter((order) => order.createAt.substring(0, 7) === monthNow);
+      const allOrdersLast = res.data.filter(
+        (order) => order.createAt.substring(0, 7) === monthLast
+      );
+      let total = 0;
+      let totalLast = 0;
+      allOrders.forEach((order) => {
+        order.donDatBan.listChiTietDonDatBan.forEach((ct) => {
+          total += ct.soLuong * ct.monAn.donGia;
+        });
       });
-    });
-    allOrdersLast.forEach((order) => {
-      order.donDatBan.listChiTietDonDatBan.forEach((ct) => {
-        totalLast += ct.soLuong * ct.monAn.donGia;
+      allOrdersLast.forEach((order) => {
+        order.donDatBan.listChiTietDonDatBan.forEach((ct) => {
+          totalLast += ct.soLuong * ct.monAn.donGia;
+        });
       });
+      dispatch(actionAnalyticRevenueMonthNow(total));
+      dispatch(actionAnalyticRevenueMonthLast(totalLast));
     });
-    dispatch(actionAnalyticRevenueMonthNow(total));
-    dispatch(actionAnalyticRevenueMonthLast(totalLast));
-  });
 };
 export const actionRevenueYearNow = () => (dispatch) => {
-  axios.get(`${api}hoaDon/list`).then((res) => {
-    const yearNow = moment(new Date().getTime()).format(`YYYY`);
-    const yearLast = moment(yearNow, 'YYYY').add(-1, 'years').format('YYYY');
-    const allOrders = res.data.filter((order) => order.createAt.substring(0, 4) === yearNow);
-    const allOrdersLast = res.data.filter((order) => order.createAt.substring(0, 4) === yearLast);
-    let total = 0;
-    let totalLast = 0;
-    allOrders.forEach((order) => {
-      order.donDatBan.listChiTietDonDatBan.forEach((ct) => {
-        total += ct.soLuong * ct.monAn.donGia;
+  axios
+    .get(`${api}hoaDon/list`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+      }
+    })
+    .then((res) => {
+      const yearNow = moment(new Date().getTime()).format(`YYYY`);
+      const yearLast = moment(yearNow, 'YYYY').add(-1, 'years').format('YYYY');
+      const allOrders = res.data.filter((order) => order.createAt.substring(0, 4) === yearNow);
+      const allOrdersLast = res.data.filter((order) => order.createAt.substring(0, 4) === yearLast);
+      let total = 0;
+      let totalLast = 0;
+      allOrders.forEach((order) => {
+        order.donDatBan.listChiTietDonDatBan.forEach((ct) => {
+          total += ct.soLuong * ct.monAn.donGia;
+        });
       });
-    });
-    allOrdersLast.forEach((order) => {
-      order.donDatBan.listChiTietDonDatBan.forEach((ct) => {
-        totalLast += ct.soLuong * ct.monAn.donGia;
+      allOrdersLast.forEach((order) => {
+        order.donDatBan.listChiTietDonDatBan.forEach((ct) => {
+          totalLast += ct.soLuong * ct.monAn.donGia;
+        });
       });
+      dispatch(actionAnalyticRevenueYearNow(total));
+      dispatch(actionAnalyticRevenueYearLast(totalLast));
     });
-    dispatch(actionAnalyticRevenueYearNow(total));
-    dispatch(actionAnalyticRevenueYearLast(totalLast));
-  });
 };
 
 export const actionBookDateNow = () => (dispatch) => {
-  axios.get(`${api}donDatBan/list`).then((res) => {
-    const allBooks = res.data.filter(
-      (book) => book.createAt.substring(0, 10) === moment(new Date().getTime()).format(`YYYY-MM-DD`)
-    );
-    const allBooksLast = res.data.filter(
-      (book) =>
-        book.createAt.substring(0, 10) ===
-        moment(new Date().getTime() - 86400000).format(`YYYY-MM-DD`)
-    );
-    dispatch(actionAnalyticBookDateNow(allBooks.length));
-    dispatch(actionAnalyticBookDateLast(allBooksLast.length));
-  });
+  axios
+    .get(`${api}donDatBan/list`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+      }
+    })
+    .then((res) => {
+      const allBooks = res.data.filter(
+        (book) =>
+          book.createAt.substring(0, 10) === moment(new Date().getTime()).format(`YYYY-MM-DD`)
+      );
+      const allBooksLast = res.data.filter(
+        (book) =>
+          book.createAt.substring(0, 10) ===
+          moment(new Date().getTime() - 86400000).format(`YYYY-MM-DD`)
+      );
+      dispatch(actionAnalyticBookDateNow(allBooks.length));
+      dispatch(actionAnalyticBookDateLast(allBooksLast.length));
+    });
 };
 
 export const actionBookMonthNow = () => (dispatch) => {
-  axios.get(`${api}donDatBan/list`).then((res) => {
-    const monthNow = moment(new Date().getTime()).format(`YYYY-MM`);
-    const monthLast = moment(monthNow, 'YYYY-MM').add(-1, 'months').format('YYYY-MM');
-    const allBooks = res.data.filter((book) => book.createAt.substring(0, 7) === monthNow);
-    const allBooksLast = res.data.filter((book) => book.createAt.substring(0, 7) === monthLast);
-    dispatch(actionAnalyticBookMonthLast(allBooksLast.length));
-    dispatch(actionAnalyticBookMonthNow(allBooks.length));
-  });
+  axios
+    .get(`${api}donDatBan/list`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+      }
+    })
+    .then((res) => {
+      const monthNow = moment(new Date().getTime()).format(`YYYY-MM`);
+      const monthLast = moment(monthNow, 'YYYY-MM').add(-1, 'months').format('YYYY-MM');
+      const allBooks = res.data.filter((book) => book.createAt.substring(0, 7) === monthNow);
+      const allBooksLast = res.data.filter((book) => book.createAt.substring(0, 7) === monthLast);
+      dispatch(actionAnalyticBookMonthLast(allBooksLast.length));
+      dispatch(actionAnalyticBookMonthNow(allBooks.length));
+    });
 };
 
 export const actionBookYearNow = () => (dispatch) => {
-  axios.get(`${api}donDatBan/list`).then((res) => {
-    const yearNow = moment(new Date().getTime()).format(`YYYY`);
-    const yearLast = moment(yearNow, 'YYYY').add(-1, 'years').format('YYYY');
-    const allBooks = res.data.filter((book) => book.createAt.substring(0, 4) === yearNow);
-    const allBooksLast = res.data.filter((book) => book.createAt.substring(0, 4) === yearLast);
-    dispatch(actionAnalyticBookYearNow(allBooks.length));
-    dispatch(actionAnalyticBookYearLast(allBooksLast.length));
-  });
+  axios
+    .get(`${api}donDatBan/list`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+      }
+    })
+    .then((res) => {
+      const yearNow = moment(new Date().getTime()).format(`YYYY`);
+      const yearLast = moment(yearNow, 'YYYY').add(-1, 'years').format('YYYY');
+      const allBooks = res.data.filter((book) => book.createAt.substring(0, 4) === yearNow);
+      const allBooksLast = res.data.filter((book) => book.createAt.substring(0, 4) === yearLast);
+      dispatch(actionAnalyticBookYearNow(allBooks.length));
+      dispatch(actionAnalyticBookYearLast(allBooksLast.length));
+    });
 };
 
 export const actionOrderDateNow = () => (dispatch) => {
-  axios.get(`${api}hoaDon/list`).then((res) => {
-    const allOrders = res.data.filter(
-      (order) =>
-        order.createAt.substring(0, 10) === moment(new Date().getTime()).format(`YYYY-MM-DD`)
-    );
-    const allOrdersLast = res.data.filter(
-      (order) =>
-        order.createAt.substring(0, 10) ===
-        moment(new Date().getTime() - 86400000).format(`YYYY-MM-DD`)
-    );
-    dispatch(actionAnalyticOrderDateNow(allOrders.length));
-    dispatch(actionAnalyticOrderDateLast(allOrdersLast.length));
-  });
+  axios
+    .get(`${api}hoaDon/list`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+      }
+    })
+    .then((res) => {
+      const allOrders = res.data.filter(
+        (order) =>
+          order.createAt.substring(0, 10) === moment(new Date().getTime()).format(`YYYY-MM-DD`)
+      );
+      const allOrdersLast = res.data.filter(
+        (order) =>
+          order.createAt.substring(0, 10) ===
+          moment(new Date().getTime() - 86400000).format(`YYYY-MM-DD`)
+      );
+      dispatch(actionAnalyticOrderDateNow(allOrders.length));
+      dispatch(actionAnalyticOrderDateLast(allOrdersLast.length));
+    });
 };
 
 export const actionOrderMonthNow = () => (dispatch) => {
-  axios.get(`${api}hoaDon/list`).then((res) => {
-    const monthNow = moment(new Date().getTime()).format(`YYYY-MM`);
-    const monthLast = moment(monthNow, 'YYYY-MM').add(-1, 'months').format('YYYY-MM');
-    const allOrders = res.data.filter((order) => order.createAt.substring(0, 7) === monthNow);
-    const allOrdersLast = res.data.filter((order) => order.createAt.substring(0, 7) === monthLast);
-    dispatch(actionAnalyticOrderMonthNow(allOrders.length));
-    dispatch(actionAnalyticOrderMonthLast(allOrdersLast.length));
-  });
+  axios
+    .get(`${api}hoaDon/list`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+      }
+    })
+    .then((res) => {
+      const monthNow = moment(new Date().getTime()).format(`YYYY-MM`);
+      const monthLast = moment(monthNow, 'YYYY-MM').add(-1, 'months').format('YYYY-MM');
+      const allOrders = res.data.filter((order) => order.createAt.substring(0, 7) === monthNow);
+      const allOrdersLast = res.data.filter(
+        (order) => order.createAt.substring(0, 7) === monthLast
+      );
+      dispatch(actionAnalyticOrderMonthNow(allOrders.length));
+      dispatch(actionAnalyticOrderMonthLast(allOrdersLast.length));
+    });
 };
 
 export const actionOrderYearNow = () => (dispatch) => {
-  axios.get(`${api}hoaDon/list`).then((res) => {
-    const yearNow = moment(new Date().getTime()).format(`YYYY`);
-    const yearLast = moment(yearNow, 'YYYY').add(-1, 'years').format('YYYY');
-    const allOrders = res.data.filter((order) => order.createAt.substring(0, 4) === yearNow);
-    const allOrdersLast = res.data.filter((order) => order.createAt.substring(0, 4) === yearLast);
-    dispatch(actionAnalyticOrderYearNow(allOrders.length));
-    dispatch(actionAnalyticOrderYearLast(allOrdersLast.length));
-  });
+  axios
+    .get(`${api}hoaDon/list`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+      }
+    })
+    .then((res) => {
+      const yearNow = moment(new Date().getTime()).format(`YYYY`);
+      const yearLast = moment(yearNow, 'YYYY').add(-1, 'years').format('YYYY');
+      const allOrders = res.data.filter((order) => order.createAt.substring(0, 4) === yearNow);
+      const allOrdersLast = res.data.filter((order) => order.createAt.substring(0, 4) === yearLast);
+      dispatch(actionAnalyticOrderYearNow(allOrders.length));
+      dispatch(actionAnalyticOrderYearLast(allOrdersLast.length));
+    });
 };
 
 export const actionColumnTypefoodFood = () => async (dispatch) => {
-  const typefoodQuery = await axios.get(`${api}loaiMonAn/list`);
+  const typefoodQuery = await axios.get(`${api}loaiMonAn/list`, {
+    headers: {
+      Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+    }
+  });
   const resType = typefoodQuery.data;
   const columnName = [];
   const columnData = [];
   resType.forEach((type) => {
     columnName.push(type.tenLoaiMonAn);
-    const data = axios.get(`${api}monAn/list/loaiMonAn?maLoaiMonAn=${type.id}`);
+    const data = axios.get(`${api}monAn/list/loaiMonAn?maLoaiMonAn=${type.id}`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+      }
+    });
     data.then((res) => {
       columnData.push(res.data.length);
     });
@@ -359,7 +426,11 @@ export const actionColumnCustomersYear = (year) => async (dispatch) => {
   const m12T = [];
   const m12M = 0;
   const m12F = 0;
-  const query = await axios.get(`${api}khachHang/list`);
+  const query = await axios.get(`${api}khachHang/list`, {
+    headers: {
+      Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+    }
+  });
   query.data.forEach((customer) => {
     if (customer.createAt.substring(0, 7) === m1) {
       m1T.push(customer);
@@ -452,7 +523,11 @@ export const actionColumnRevenueBook = (year) => async (dispatch) => {
   let m10 = 0;
   let m11 = 0;
   let m12 = 0;
-  const query = await axios(`${api}donDatBan/list`);
+  const query = await axios(`${api}donDatBan/list`, {
+    headers: {
+      Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+    }
+  });
   query.data.forEach((book) => {
     if (checkAnalyticMonth(book, `${year}-01`)) m1 += 1;
     if (checkAnalyticMonth(book, `${year}-02`)) m2 += 1;
@@ -483,7 +558,11 @@ export const actionColumnRevenueOrder = (year) => async (dispatch) => {
   let m10 = 0;
   let m11 = 0;
   let m12 = 0;
-  const query = await axios(`${api}hoaDon/list`);
+  const query = await axios(`${api}hoaDon/list`, {
+    headers: {
+      Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+    }
+  });
   query.data.forEach((book) => {
     if (checkAnalyticMonth(book, `${year}-01`)) m1 += 1;
     if (checkAnalyticMonth(book, `${year}-02`)) m2 += 1;
@@ -522,7 +601,11 @@ export const actionColumnRevenueRevenue = (year) => async (dispatch) => {
   let m10 = 0;
   let m11 = 0;
   let m12 = 0;
-  const query = await axios(`${api}hoaDon/list`);
+  const query = await axios(`${api}hoaDon/list`, {
+    headers: {
+      Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+    }
+  });
   query.data.forEach((book) => {
     if (checkAnalyticMonth(book, `${year}-01`)) {
       m1 += getTotalItem(book);
@@ -565,7 +648,11 @@ export const actionColumnRevenueRevenue = (year) => async (dispatch) => {
 };
 
 export const actionGetAllOrders = () => async (dispatch) => {
-  const data = await axios.get(`${api}hoaDon/list`);
+  const data = await axios.get(`${api}hoaDon/list`, {
+    headers: {
+      Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+    }
+  });
   dispatch(
     actionAnalyticGetAllOrders(
       data.data.sort((a, b) => Date.parse(b.createAt) - Date.parse(a.createAt))

@@ -201,10 +201,18 @@ function Food() {
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           axios
-            .post(`${api}loaiMonAn/create`, {
-              tenLoaiMonAn: name,
-              hinhAnh: downloadURL
-            })
+            .post(
+              `${api}loaiMonAn/create`,
+              {
+                tenLoaiMonAn: name,
+                hinhAnh: downloadURL
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+                }
+              }
+            )
             .then((res) => {
               dispatch(actionGetAllTypeFoods());
               dispatch(
@@ -242,10 +250,18 @@ function Food() {
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           axios
-            .put(`${api}loaiMonAn/edit`, {
-              ...typefood,
-              hinhAnh: downloadURL
-            })
+            .put(
+              `${api}loaiMonAn/edit`,
+              {
+                ...typefood,
+                hinhAnh: downloadURL
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+                }
+              }
+            )
             .then((res) => {
               dispatch(actionGetAllTypeFoods());
               dispatch(actionGetAllFoodsByName(''));

@@ -96,7 +96,11 @@ export const actionOrderGetTotalNow = (data) => ({
 export const actionGetBooksByKeyword = (keyword) => (dispatch) => {
   if (keyword === '') {
     axios
-      .get(`${api}donDatBan/list`)
+      .get(`${api}donDatBan/list`, {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+        }
+      })
       .then((res) => {
         dispatch(
           actionOrderGetBooksByKeyWord(
@@ -110,6 +114,9 @@ export const actionGetBooksByKeyword = (keyword) => (dispatch) => {
       .get(`${api}donDatBan/list/khachHang/keyword`, {
         params: {
           keyword: keyword.toLowerCase()
+        },
+        headers: {
+          Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
         }
       })
       .then((res) => {
@@ -123,55 +130,85 @@ export const actionGetBooksByKeyword = (keyword) => (dispatch) => {
   }
 };
 export const actionNewBooks = () => (dispatch) => {
-  axios.get(`${api}donDatBan/list`).then((res) => {
-    const { data } = res;
-    const booksSort = data.sort((a, b) => Date.parse(b.createAt) - Date.parse(a.createAt));
-    dispatch(actionOrderNewBooks(booksSort));
-  });
+  axios
+    .get(`${api}donDatBan/list`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+      }
+    })
+    .then((res) => {
+      const { data } = res;
+      const booksSort = data.sort((a, b) => Date.parse(b.createAt) - Date.parse(a.createAt));
+      dispatch(actionOrderNewBooks(booksSort));
+    });
 };
 
 export const actionGetAllWayPay = () => (dispatch) => {
-  axios.get(`${api}hinhThucThanhToan/list`).then((res) => {
-    dispatch(actionOrderGetAllWayPay(res.data));
-  });
+  axios
+    .get(`${api}hinhThucThanhToan/list`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+      }
+    })
+    .then((res) => {
+      dispatch(actionOrderGetAllWayPay(res.data));
+    });
 };
 export const actionGetOrdersNow = () => (dispatch) => {
-  axios.get(`${api}hoaDon/list`).then((res) => {
-    dispatch(
-      actionOrderGetOrdersNow(
-        res.data.filter(
-          (order) =>
-            order.createAt.substring(0, 10) === moment(new Date().getTime()).format(`YYYY-MM-DD`)
+  axios
+    .get(`${api}hoaDon/list`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+      }
+    })
+    .then((res) => {
+      dispatch(
+        actionOrderGetOrdersNow(
+          res.data.filter(
+            (order) =>
+              order.createAt.substring(0, 10) === moment(new Date().getTime()).format(`YYYY-MM-DD`)
+          )
         )
-      )
-    );
-  });
+      );
+    });
 };
 
 export const actionGetBooksNow = () => (dispatch) => {
-  axios.get(`${api}donDatBan/list`).then((res) => {
-    dispatch(
-      actionOrderGetBooksNow(
-        res.data.filter(
-          (book) =>
-            book.createAt.substring(0, 10) === moment(new Date().getTime()).format(`YYYY-MM-DD`)
+  axios
+    .get(`${api}donDatBan/list`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+      }
+    })
+    .then((res) => {
+      dispatch(
+        actionOrderGetBooksNow(
+          res.data.filter(
+            (book) =>
+              book.createAt.substring(0, 10) === moment(new Date().getTime()).format(`YYYY-MM-DD`)
+          )
         )
-      )
-    );
-  });
+      );
+    });
 };
 export const actionGetTotalNow = () => (dispatch) => {
-  axios.get(`${api}hoaDon/list`).then((res) => {
-    const allOrders = res.data.filter(
-      (order) =>
-        order.createAt.substring(0, 10) === moment(new Date().getTime()).format(`YYYY-MM-DD`)
-    );
-    let total = 0;
-    allOrders.forEach((order) => {
-      order.donDatBan.listChiTietDonDatBan.forEach((ct) => {
-        total += ct.soLuong * ct.monAn.donGia;
+  axios
+    .get(`${api}hoaDon/list`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+      }
+    })
+    .then((res) => {
+      const allOrders = res.data.filter(
+        (order) =>
+          order.createAt.substring(0, 10) === moment(new Date().getTime()).format(`YYYY-MM-DD`)
+      );
+      let total = 0;
+      allOrders.forEach((order) => {
+        order.donDatBan.listChiTietDonDatBan.forEach((ct) => {
+          total += ct.soLuong * ct.monAn.donGia;
+        });
       });
+      dispatch(actionOrderGetTotalNow(total));
     });
-    dispatch(actionOrderGetTotalNow(total));
-  });
 };

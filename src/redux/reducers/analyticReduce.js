@@ -72,7 +72,6 @@ const defaultState = {
 const analyticReduce = (state = defaultState, action) => {
   switch (action.type) {
     case ACTION_ANALYTIC_REVENUE_DATE_LAST:
-      console.log(action.payload);
       return {
         ...state,
         revenueDateLast: action.payload

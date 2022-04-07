@@ -181,6 +181,9 @@ function CreateFoods() {
                   .get(`${api}monAn/detail/tenMonAn`, {
                     params: {
                       tenMonAn: name
+                    },
+                    headers: {
+                      Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
                     }
                   })
                   .then((res) => {
@@ -188,7 +191,11 @@ function CreateFoods() {
                   })
                   .catch((err) => {
                     axios
-                      .post(`${api}monAn/create`, food)
+                      .post(`${api}monAn/create`, food, {
+                        headers: {
+                          Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+                        }
+                      })
                       .then((res) => {
                         dispatch(actionGetAllFoodsByName(''));
                         dispatch(

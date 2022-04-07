@@ -54,7 +54,11 @@ export const actionCustomerModalCustomersOnline = (data) => ({
 });
 export const actionGetAllCustomers = () => (dispatch) => {
   axios
-    .get(`${api}khachHang/list`)
+    .get(`${api}khachHang/list`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+      }
+    })
     .then((res) => {
       const { data } = res;
       dispatch(
@@ -79,7 +83,11 @@ export const actionGetAllCustomers = () => (dispatch) => {
 export const actionGetAllCustomerByKeyword = (keyword) => (dispatch) => {
   if (keyword === '') {
     axios
-      .get(`${api}khachHang/list`)
+      .get(`${api}khachHang/list`, {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+        }
+      })
       .then((res) => {
         dispatch(
           actionCustomerGetAllCustomersByKeyword(
@@ -93,10 +101,12 @@ export const actionGetAllCustomerByKeyword = (keyword) => (dispatch) => {
       .get(`${api}khachHang/list/keyword`, {
         params: {
           keyword
+        },
+        headers: {
+          Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
         }
       })
       .then((res) => {
-        console.log('keyword', res.data);
         dispatch(
           actionCustomerGetAllCustomersByKeyword(
             res.data.sort((a, b) => Date.parse(b.createAt) - Date.parse(a.createAt))
@@ -138,7 +148,11 @@ export const actionGetNewCustomerInWeek = () => (dispatch) => {
   let fri = 0;
   let sat = 0;
   axios
-    .get(`${api}khachHang/list`)
+    .get(`${api}khachHang/list`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+      }
+    })
     .then((res) => {
       res.data.forEach((user) => {
         if (user.createAt.substring(0, 10) === sundayString) sun += 1;
@@ -169,7 +183,11 @@ export const actionGetNewCustomerInWeek = () => (dispatch) => {
 };
 export const actionGetGenderCustomer = () => (dispatch) => {
   axios
-    .get(`${api}khachHang/list`)
+    .get(`${api}khachHang/list`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+      }
+    })
     .then((res) => {
       let male = 0;
       let female = 0;

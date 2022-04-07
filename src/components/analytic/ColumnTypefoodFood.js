@@ -1,5 +1,5 @@
 import { Box, styled } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
 import { useSelector } from 'react-redux';
 
@@ -11,75 +11,87 @@ const RootStyle = styled(Box)(({ theme }) => ({
 }));
 function ColumnTypefoodFood() {
   const columnTypefoodFood = useSelector((state) => state.analytic.columnTypefoodFood);
-  const [state, setState] = useState({
-    series: [
-      {
-        name: 'Món ăn',
-        data: columnTypefoodFood.data
-      }
-    ],
-    options: {
-      chart: {
-        type: 'bar',
-        height: 350
-      },
-      title: {
-        text: 'Số lượng món ăn theo từng loại',
-        align: 'center',
-        style: {
-          fontFamily: 'san-serif',
-          fontWeight: 'bold',
-          fontSize: '16px'
+  const [state, setState] = useState({});
+  useEffect(() => {
+    setState({
+      series: [
+        {
+          name: 'Món ăn',
+          data: columnTypefoodFood.data
         }
-      },
-      plotOptions: {
-        bar: {
-          horizontal: false,
-          columnWidth: 20,
-          endingShape: 'rounded',
-          borderRadius: 20
-        }
-      },
-      dataLabels: {
-        enabled: false
-      },
-      stroke: {
-        show: true,
-        width: 2,
-        colors: ['transparent']
-      },
-      xaxis: {
-        categories: columnTypefoodFood.name,
-        labels: {
-          style: {
-            fontWeight: 'bold',
-            fontFamily: 'san-serif',
-            fontSize: '12px'
-          }
-        }
-      },
-      yaxis: {
+      ],
+      options: {
+        chart: {
+          type: 'bar',
+          height: 350
+        },
         title: {
-          text: 'Số lượng món ăn',
+          text: 'Số lượng món ăn theo từng loại',
+          align: 'center',
           style: {
             fontFamily: 'san-serif',
             fontWeight: 'bold',
-            fontSize: '14px'
+            fontSize: '16px'
           }
-        }
-      },
-      fill: {
-        opacity: 1
-      },
-      tooltip: {
-        y: {
-          formatter(val) {
-            return `${+val} món ăn`;
+        },
+        plotOptions: {
+          bar: {
+            horizontal: false,
+            columnWidth: 20,
+            endingShape: 'rounded',
+            borderRadius: 20
+          }
+        },
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          show: true,
+          width: 2,
+          colors: ['transparent']
+        },
+        xaxis: {
+          categories: columnTypefoodFood.name,
+          labels: {
+            style: {
+              fontWeight: 'bold',
+              fontFamily: 'san-serif',
+              fontSize: '12px'
+            }
+          }
+        },
+        yaxis: {
+          title: {
+            text: 'Số lượng món ăn',
+            style: {
+              fontFamily: 'san-serif',
+              fontWeight: 'bold',
+              fontSize: '14px'
+            }
+          }
+        },
+        fill: {
+          opacity: 1
+        },
+        tooltip: {
+          y: {
+            formatter(val) {
+              return `${+val} món ăn`;
+            }
           }
         }
       }
-    }
-  });
+    });
+    return function () {
+      return null;
+    };
+  }, [columnTypefoodFood]);
+  if (
+    columnTypefoodFood.name.length === 0 ||
+    columnTypefoodFood.data.length === 0 ||
+    state.series === undefined
+  )
+    return null;
   return (
     <Box sx={{ width: '50%', padding: '10px' }}>
       <RootStyle>

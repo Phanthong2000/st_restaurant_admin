@@ -32,7 +32,11 @@ export const actionEmployeeSortEmployee = (data) => ({
 });
 export const actionGetAllEmployees = () => (dispatch) => {
   axios
-    .get(`${api}nhanVien/list`)
+    .get(`${api}nhanVien/list`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+      }
+    })
     .then((res) => {
       dispatch(actionEmployeeGetAllEmployees(res.data));
     })
@@ -42,7 +46,11 @@ export const actionGetAllEmployees = () => (dispatch) => {
 export const actionGetEmployeesByKeywords = (keywords) => (dispatch) => {
   if (keywords === '') {
     axios
-      .get(`${api}nhanVien/list`)
+      .get(`${api}nhanVien/list`, {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+        }
+      })
       .then((res) => {
         dispatch(
           actionEmployeeGetEmployeesByKeywords(
@@ -56,6 +64,9 @@ export const actionGetEmployeesByKeywords = (keywords) => (dispatch) => {
       .get(`${api}nhanVien/list/keyword`, {
         params: {
           keyword: keywords
+        },
+        headers: {
+          Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
         }
       })
       .then((res) => {

@@ -174,7 +174,7 @@ function Customer() {
     setPage(parseInt(page, 10));
     getCustomerByPage(parseInt(page, 10));
   };
-  const addCustomer = (account, customer, image) => {
+  const addCustomer = (customer, image) => {
     dispatch(
       actionUserBackdrop({
         status: true,
@@ -192,10 +192,7 @@ function Customer() {
           axios
             .post(`${api}khachHang/create`, {
               ...customer,
-              anhDaiDien: downloadURL,
-              taiKhoan: {
-                id: account.id
-              }
+              anhDaiDien: downloadURL
             })
             .then((res) => {
               dispatch(actionGetNewCustomerInWeek());

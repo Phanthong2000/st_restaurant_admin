@@ -165,7 +165,7 @@ function Employee() {
     setPage(parseInt(page, 10));
     setEmployees(parseInt(page, 10));
   };
-  const addEmployee = (account, employee, image) => {
+  const addEmployee = (employee, image) => {
     dispatch(
       actionUserBackdrop({
         status: true,
@@ -181,13 +181,19 @@ function Employee() {
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           axios
-            .post(`${api}nhanVien/create`, {
-              ...employee,
-              anhDaiDien: downloadURL,
-              taiKhoan: {
-                id: account.id
+            .post(
+              `${api}nhanVien/create`,
+              {
+                ...employee,
+                anhDaiDien: downloadURL
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+                  // 'Content-Type': 'application/json'
+                }
               }
-            })
+            )
             .then((res) => {
               dispatch(actionGetEmployeesByKeywords(''));
               dispatch(

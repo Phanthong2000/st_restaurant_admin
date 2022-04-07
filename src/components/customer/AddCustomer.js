@@ -178,73 +178,51 @@ function AddCustomer({ add }) {
           chungMinhThu: values.identification,
           diaChi: values.address,
           ngaySinh: birthday,
-          gioiTinh: gender
+          gioiTinh: gender,
+          taiKhoan: {
+            tenDangNhap: values.username,
+            matKhau: values.password
+          }
         };
         axios
-          .get(`${api}taiKhoan/detail/tenDangNhap/${values.username}`)
+          .get(`${api}taiKhoan/detail/tenDangNhap/${values.username}`, {
+            headers: {
+              Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+            }
+          })
           .then((res) => {
             setError('Tên đăng nhập đã tồn tại');
           })
           .catch((err) => {
-            axios
-              .get(`${api}vaiTro/detail/tenVaiTro/CUSTOMER`)
-              .then((res) => {
-                axios
-                  .post(`${api}taiKhoan/create/`, {
-                    tenDangNhap: values.username,
-                    matKhau: values.password,
-                    trangThai: 'Hiệu lực',
-                    vaiTro: {
-                      id: res.data.id
-                    }
-                  })
-                  .then((res) => {
-                    if (
-                      avatar ===
-                      'https://tinhdaunhuy.com/wp-content/uploads/2015/08/default-avatar.jpg'
-                    ) {
-                      axios
-                        .post(`${api}khachHang/create`, {
-                          ...customer,
-                          taiKhoan: {
-                            id: res.data.id
-                          }
-                        })
-                        .then((res) => {
-                          dispatch(actionGetAllCustomers());
-                          dispatch(actionGetNewCustomerInWeek());
-                          dispatch(actionGetAllCustomerByKeyword(''));
-                          dispatch(actionColumnCustomersYear(new Date().getFullYear()));
-                          dispatch(
-                            actionUserSnackbar({
-                              status: true,
-                              content: 'Thêm khách hàng thành công',
-                              type: 'success'
-                            })
-                          );
-                          handleClose();
-                        })
-                        .catch((err) => console.log(err));
-                    } else {
-                      setErrorBirthday('');
-                      setErrorRePassword('');
-                      const customer = {
-                        hoTen: values.fullname,
-                        soDienThoai: values.phone,
-                        email: values.email,
-                        chungMinhThu: values.identification,
-                        diaChi: values.address,
-                        ngaySinh: birthday,
-                        gioiTinh: gender
-                      };
-                      add(res.data, customer, image);
-                      handleClose();
-                    }
-                  })
-                  .catch((err) => console.log(err));
-              })
-              .catch((err) => console.log(err));
-          });
+            setError('');
+            if (
+              avatar === 'https://tinhdaunhuy.com/wp-content/uploads/2015/08/default-avatar.jpg'
+            ) {
+              axios
+                .post(`${api}khachHang/create`, {
+                  ...customer
+                })
+                .then((res) => {
+                  dispatch(actionGetAllCustomers());
+                  dispatch(actionGetNewCustomerInWeek());
+                  dispatch(actionGetAllCustomerByKeyword(''));
+                  dispatch(actionColumnCustomersYear(new Date().getFullYear()));
+                  dispatch(
+                    actionUserSnackbar({
+                      status: true,
+                      content: 'Thêm khách hàng thành công',
+                      type: 'success'
+                    })
+                  );
+                  handleClose();
+                })
+                .catch((err) => console.log(err));
+            } else {
+              add(customer, image);
+              handleClose();
+            }
+          })
+          .catch((err) => console.log(err));
       }
     }
   });

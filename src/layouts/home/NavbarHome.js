@@ -59,6 +59,7 @@ const BoxAvatar = styled(Box)(({ theme }) => ({
 function NavbarHome() {
   const [openDrawer, setOpenDrawer] = useState(false);
   const { pathname } = useLocation();
+  const user = useSelector((state) => state.user.user);
   const boxProfile = useSelector((state) => state.user.boxProfile);
   const boxNotification = useSelector((state) => state.user.boxNotification);
   const boxFeedBack = useSelector((state) => state.user.boxFeedBack);
@@ -126,7 +127,7 @@ function NavbarHome() {
               e.stopPropagation();
               dispatch(actionUserBoxProfile(true));
             }}
-            src="https://cdn-prod.medicalnewstoday.com/content/images/articles/325/325466/man-walking-dog.jpg"
+            src={user.anhDaiDien}
           />
         </BoxAvatar>
       ) : (

@@ -141,10 +141,18 @@ function ModalEditTypeFood({ editTypeFood }) {
         setError('Tên loại món đã tồn tại');
       } else if (!imageNew) {
         axios
-          .put(`${api}loaiMonAn/edit`, {
-            ...modalEditTypeFood.typefood,
-            tenLoaiMonAn: values.name
-          })
+          .put(
+            `${api}loaiMonAn/edit`,
+            {
+              ...modalEditTypeFood.typefood,
+              tenLoaiMonAn: values.name
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+              }
+            }
+          )
           .then((res) => {
             setError('');
             dispatch(actionGetAllFoods());

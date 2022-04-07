@@ -143,9 +143,17 @@ function ModalEditBook() {
       trangThai: status
     };
     axios
-      .put(`${api}donDatBan/edit`, {
-        ...book
-      })
+      .put(
+        `${api}donDatBan/edit`,
+        {
+          ...book
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+          }
+        }
+      )
       .then((res) => {
         dispatch(actionGetBooksByKeyword(''));
         dispatch(

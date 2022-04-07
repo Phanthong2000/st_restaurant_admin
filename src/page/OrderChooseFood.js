@@ -284,9 +284,17 @@ function OrderChooseFood() {
         }
       };
       axios
-        .post(`${api}donDatBan/create`, {
-          ...order
-        })
+        .post(
+          `${api}donDatBan/create`,
+          {
+            ...order
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+            }
+          }
+        )
         .then((res) => {
           dispatch(actionGetBooksNow());
           dispatch(actionGetBooksByKeyword(''));

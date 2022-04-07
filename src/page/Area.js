@@ -134,14 +134,22 @@ function Area() {
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           axios
-            .post(`${api}khuVuc/create`, {
-              hinhAnh: downloadURL,
-              moTa: description,
-              nguoiQuanLy: {
-                ...user
+            .post(
+              `${api}khuVuc/create`,
+              {
+                hinhAnh: downloadURL,
+                moTa: description,
+                nguoiQuanLy: {
+                  ...user
+                },
+                tenKhuVuc: name
               },
-              tenKhuVuc: name
-            })
+              {
+                headers: {
+                  Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+                }
+              }
+            )
             .then(() => {
               dispatch(actionGetAllAreas());
               dispatch(
@@ -175,22 +183,28 @@ function Area() {
         tenKhuVuc: name,
         moTa: description
       };
-      axios.put(`${api}khuVuc/edit`, areaNew).then(() => {
-        dispatch(actionGetAllAreas());
-        dispatch(
-          actionUserBackdrop({
-            status: false,
-            content: 'Sửa thông tin khu vực'
-          })
-        );
-        dispatch(
-          actionUserSnackbar({
-            status: true,
-            content: 'Sửa thông tin khu vực thành công',
-            type: 'success'
-          })
-        );
-      });
+      axios
+        .put(`${api}khuVuc/edit`, areaNew, {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+          }
+        })
+        .then(() => {
+          dispatch(actionGetAllAreas());
+          dispatch(
+            actionUserBackdrop({
+              status: false,
+              content: 'Sửa thông tin khu vực'
+            })
+          );
+          dispatch(
+            actionUserSnackbar({
+              status: true,
+              content: 'Sửa thông tin khu vực thành công',
+              type: 'success'
+            })
+          );
+        });
     } else {
       const storageRef = ref(storage, `area/${name}.${new Date().getTime()}`);
       const uploadTask = uploadBytesResumable(storageRef, image);
@@ -206,22 +220,28 @@ function Area() {
               moTa: description,
               hinhAnh: downloadURL
             };
-            axios.put(`${api}khuVuc/edit`, areaNew).then(() => {
-              dispatch(actionGetAllAreas());
-              dispatch(
-                actionUserBackdrop({
-                  status: false,
-                  content: 'Sửa thông tin khu vực'
-                })
-              );
-              dispatch(
-                actionUserSnackbar({
-                  status: true,
-                  content: 'Sửa khu vực thành công',
-                  type: 'success'
-                })
-              );
-            });
+            axios
+              .put(`${api}khuVuc/edit`, areaNew, {
+                headers: {
+                  Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+                }
+              })
+              .then(() => {
+                dispatch(actionGetAllAreas());
+                dispatch(
+                  actionUserBackdrop({
+                    status: false,
+                    content: 'Sửa thông tin khu vực'
+                  })
+                );
+                dispatch(
+                  actionUserSnackbar({
+                    status: true,
+                    content: 'Sửa khu vực thành công',
+                    type: 'success'
+                  })
+                );
+              });
           });
         }
       );

@@ -54,10 +54,18 @@ function Feedback({ feedback, index }) {
     if (feedback.trangThai === 'Chưa đọc') {
       dispatch(actionUserDeleteBadgeFeedback());
       axios
-        .put(`${api}phanHoi/edit`, {
-          ...feedback,
-          trangThai: 'Đã đọc'
-        })
+        .put(
+          `${api}phanHoi/edit`,
+          {
+            ...feedback,
+            trangThai: 'Đã đọc'
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+            }
+          }
+        )
         .then((res) => {
           dispatch(actionUserBoxFeedBack(false));
           dispatch(

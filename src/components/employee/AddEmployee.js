@@ -179,58 +179,53 @@ function AddEmployee({ addEmployee }) {
           chungMinhThu: values.identification,
           diaChi: values.address,
           ngaySinh: moment(birthday.getTime()).format(),
-          gioiTinh: gender
+          gioiTinh: gender,
+          taiKhoan: {
+            tenDangNhap: values.username,
+            matKhau: values.password
+          }
         };
         axios
-          .get(`${api}taiKhoan/detail/tenDangNhap/${values.username}`)
+          .get(`${api}taiKhoan/detail/tenDangNhap/${values.username}`, {
+            headers: {
+              Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+            }
+          })
           .then((res) => {
             setError('Tên đăng nhập đã tồn tại');
           })
           .catch((err) => {
-            axios
-              .get(`${api}vaiTro/detail/tenVaiTro/EMPLOYEE`)
-              .then((res) => {
-                axios
-                  .post(`${api}taiKhoan/create/`, {
-                    tenDangNhap: values.username,
-                    matKhau: values.password,
-                    trangThai: 'Đang làm',
-                    vaiTro: {
-                      id: res.data.id
+            setError('');
+            if (avatar === 'https://images.cdn2.stockunlimited.net/clipart/employee_1565984.jpg') {
+              axios
+                .post(
+                  `${api}nhanVien/create`,
+                  {
+                    ...employee
+                  },
+                  {
+                    headers: {
+                      Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+                      // 'Content-Type': 'application/json'
                     }
-                  })
-                  .then((res) => {
-                    if (
-                      avatar ===
-                      'https://images.cdn2.stockunlimited.net/clipart/employee_1565984.jpg'
-                    ) {
-                      axios
-                        .post(`${api}nhanVien/create`, {
-                          ...employee,
-                          taiKhoan: {
-                            id: res.data.id
-                          }
-                        })
-                        .then((res) => {
-                          dispatch(actionGetEmployeesByKeywords(''));
-                          dispatch(
-                            actionUserSnackbar({
-                              status: true,
-                              content: 'Thêm nhân viên thành công',
-                              type: 'success'
-                            })
-                          );
-                          handleClose();
-                        })
-                        .catch((err) => console.log(err));
-                    } else {
-                      addEmployee(res.data, employee, image);
-                      handleClose();
-                    }
-                  })
-                  .catch((err) => console.log(err));
-              })
-              .catch((err) => console.log(err));
+                  }
+                )
+                .then((res) => {
+                  dispatch(actionGetEmployeesByKeywords(''));
+                  dispatch(
+                    actionUserSnackbar({
+                      status: true,
+                      content: 'Thêm nhân viên thành công',
+                      type: 'success'
+                    })
+                  );
+                  handleClose();
+                })
+                .catch((err) => console.log(err));
+            } else {
+              addEmployee(employee, image);
+              handleClose();
+            }
           });
       }
     }

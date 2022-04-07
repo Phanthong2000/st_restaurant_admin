@@ -118,7 +118,11 @@ export const actionUserModalFeedback = (data) => ({
 });
 export const actionGetUser = (id) => (dispatch) => {
   axios
-    .get(`${api}nguoiQuanLy/detail/${id}`)
+    .get(`${api}nguoiQuanLy/detail/${id}`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+      }
+    })
     .then((res) => {
       dispatch(actionUserGetUser(res.data));
     })
@@ -126,31 +130,44 @@ export const actionGetUser = (id) => (dispatch) => {
 };
 
 export const actionGetAllNotifications = () => (dispatch) => {
-  axios.get(`${api}thongBao/list`).then((res) => {
-    dispatch(
-      actionUserGetBadgeNotification(
-        res.data.filter((noti) => noti.trangThai === 'Chưa đọc').length
-      )
-    );
-    dispatch(
-      actionUserGetAllNotifications(
-        res.data.sort((a, b) => Date.parse(b.createAt) - Date.parse(a.createAt))
-      )
-    );
-  });
+  axios
+    .get(`${api}thongBao/list`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+      }
+    })
+    .then((res) => {
+      console.log('noti', res.data);
+      dispatch(
+        actionUserGetBadgeNotification(
+          res.data.filter((noti) => noti.trangThai === 'Chưa đọc').length
+        )
+      );
+      dispatch(
+        actionUserGetAllNotifications(
+          res.data.sort((a, b) => Date.parse(b.createAt) - Date.parse(a.createAt))
+        )
+      );
+    });
 };
 
 export const actionGetAllFeedbacks = () => (dispatch) => {
-  axios.get(`${api}phanHoi/list`).then((res) => {
-    dispatch(
-      actionUserGetBadgeFeedback(
-        res.data.filter((feedback) => feedback.trangThai === 'Chưa đọc').length
-      )
-    );
-    dispatch(
-      actionUserGetAllFeedbacks(
-        res.data.sort((a, b) => Date.parse(b.createAt) - Date.parse(a.createAt))
-      )
-    );
-  });
+  axios
+    .get(`${api}phanHoi/list`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+      }
+    })
+    .then((res) => {
+      dispatch(
+        actionUserGetBadgeFeedback(
+          res.data.filter((feedback) => feedback.trangThai === 'Chưa đọc').length
+        )
+      );
+      dispatch(
+        actionUserGetAllFeedbacks(
+          res.data.sort((a, b) => Date.parse(b.createAt) - Date.parse(a.createAt))
+        )
+      );
+    });
 };

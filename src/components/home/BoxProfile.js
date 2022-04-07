@@ -43,6 +43,7 @@ function BoxProfile() {
   }, []);
   const logout = () => {
     localStorage.removeItem('admin');
+    localStorage.removeItem('token');
     dispatch(actionAuthLoggedIn(false));
     navigate('/login');
   };

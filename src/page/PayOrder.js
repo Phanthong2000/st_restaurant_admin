@@ -280,24 +280,40 @@ function PayOrder() {
       trangThai: '1'
     };
     axios
-      .put(`${api}donDatBan/edit`, {
-        ...bookNew
-      })
+      .put(
+        `${api}donDatBan/edit`,
+        {
+          ...bookNew
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+          }
+        }
+      )
       .then(() => {
         axios
-          .post(`${api}hoaDon/create`, {
-            donDatBan: {
-              id: bookPayOrder.id
+          .post(
+            `${api}hoaDon/create`,
+            {
+              donDatBan: {
+                id: bookPayOrder.id
+              },
+              ghiChu: description,
+              ngayLap: moment(new Date().getTime()).format(),
+              nguoiQuanLy: {
+                id: user.id
+              },
+              hinhThucThanhToan: {
+                id: wayPay.id
+              }
             },
-            ghiChu: description,
-            ngayLap: moment(new Date().getTime()).format(),
-            nguoiQuanLy: {
-              id: user.id
-            },
-            hinhThucThanhToan: {
-              id: wayPay.id
+            {
+              headers: {
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+              }
             }
-          })
+          )
           .then(() => {
             dispatch(actionGetOrdersNow());
             dispatch(actionGetBooksByKeyword(''));

@@ -59,10 +59,18 @@ function Notification({ notification, index }) {
     if (notification.trangThai === 'Chưa đọc') {
       dispatch(actionUserDeleteBadgeNotification());
       axios
-        .put(`${api}thongBao/edit`, {
-          ...notification,
-          trangThai: 'Đã đọc'
-        })
+        .put(
+          `${api}thongBao/edit`,
+          {
+            ...notification,
+            trangThai: 'Đã đọc'
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+            }
+          }
+        )
         .then((res) => {
           dispatch(
             actionUserUpdateNotification({

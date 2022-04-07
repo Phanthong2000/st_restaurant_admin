@@ -184,19 +184,35 @@ function ModalEditCustomer() {
         };
         if (modalEditCustomer.customer.taiKhoan.trangThai !== status) {
           axios
-            .put(`${api}taiKhoan/edit`, {
-              ...modalEditCustomer.customer.taiKhoan,
-              trangThai: status
-            })
+            .put(
+              `${api}taiKhoan/edit`,
+              {
+                ...modalEditCustomer.customer.taiKhoan,
+                trangThai: status
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+                }
+              }
+            )
             .then((res) => {
               axios
-                .put(`${api}khachHang/edit`, {
-                  ...modalEditCustomer.customer,
-                  ...customer,
-                  taiKhoan: {
-                    ...res.data
+                .put(
+                  `${api}khachHang/edit`,
+                  {
+                    ...modalEditCustomer.customer,
+                    ...customer,
+                    taiKhoan: {
+                      ...res.data
+                    }
+                  },
+                  {
+                    headers: {
+                      Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+                    }
                   }
-                })
+                )
                 .then((res) => {
                   dispatch(actionGetAllCustomers());
                   handleClose();
@@ -214,16 +230,24 @@ function ModalEditCustomer() {
             .catch((err) => console.log(err));
         } else {
           axios
-            .put(`${api}khachHang/edit`, {
-              ...modalEditCustomer.customer,
-              ...customer
-            })
+            .put(
+              `${api}khachHang/edit`,
+              {
+                ...modalEditCustomer.customer,
+                ...customer
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+                }
+              }
+            )
             .then((res) => {
               handleClose();
               dispatch(actionGetAllCustomerByKeyword(''));
               dispatch(
                 actionUserSnackbar({
-                  status: false,
+                  status: true,
                   content: 'Sửa thông tin khách hàng thành công',
                   type: 'success'
                 })
@@ -252,26 +276,42 @@ function ModalEditCustomer() {
               };
               if (modalEditCustomer.customer.taiKhoan.trangThai !== status) {
                 axios
-                  .put(`${api}taiKhoan/edit`, {
-                    ...modalEditCustomer.customer.taiKhoan,
-                    trangThai: status
-                  })
+                  .put(
+                    `${api}taiKhoan/edit`,
+                    {
+                      ...modalEditCustomer.customer.taiKhoan,
+                      trangThai: status
+                    },
+                    {
+                      headers: {
+                        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+                      }
+                    }
+                  )
                   .then((res) => {
                     axios
-                      .put(`${api}khachHang/edit`, {
-                        ...modalEditCustomer.customer,
-                        ...customer,
-                        taiKhoan: {
-                          ...res.data
+                      .put(
+                        `${api}khachHang/edit`,
+                        {
+                          ...modalEditCustomer.customer,
+                          ...customer,
+                          taiKhoan: {
+                            ...res.data
+                          }
+                        },
+                        {
+                          headers: {
+                            Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+                          }
                         }
-                      })
+                      )
                       .then((res) => {
                         dispatch(actionGetAllCustomers());
                         dispatch(actionGetAllCustomerByKeyword(''));
                         handleClose();
                         dispatch(
                           actionUserSnackbar({
-                            status: false,
+                            status: true,
                             content: 'Sửa thông tin khách hàng thành công',
                             type: 'success'
                           })
@@ -282,10 +322,18 @@ function ModalEditCustomer() {
                   .catch((err) => console.log(err));
               } else {
                 axios
-                  .put(`${api}khachHang/edit`, {
-                    ...modalEditCustomer.customer,
-                    ...customer
-                  })
+                  .put(
+                    `${api}khachHang/edit`,
+                    {
+                      ...modalEditCustomer.customer,
+                      ...customer
+                    },
+                    {
+                      headers: {
+                        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+                      }
+                    }
+                  )
                   .then((res) => {
                     handleClose();
                     dispatch(actionGetAllCustomerByKeyword(''));

@@ -4,8 +4,8 @@ const boxSortConfig = [
     value: 'all'
   },
   {
-    name: 'Đang làm',
-    value: 'Đang làm'
+    name: 'Hiệu lực',
+    value: 'Hiệu lực'
   },
   {
     name: 'Đã nghỉ',

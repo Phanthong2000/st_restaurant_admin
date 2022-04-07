@@ -183,19 +183,35 @@ function ModalEditEmployee() {
         };
         if (modalEditEmployee.employee.taiKhoan.trangThai !== status) {
           axios
-            .put(`${api}taiKhoan/edit`, {
-              ...modalEditEmployee.employee.taiKhoan,
-              trangThai: status
-            })
+            .put(
+              `${api}taiKhoan/edit`,
+              {
+                ...modalEditEmployee.employee.taiKhoan,
+                trangThai: status
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+                }
+              }
+            )
             .then((res) => {
               axios
-                .put(`${api}nhanVien/edit`, {
-                  ...modalEditEmployee.employee,
-                  ...employee,
-                  taiKhoan: {
-                    ...res.data
+                .put(
+                  `${api}nhanVien/edit`,
+                  {
+                    ...modalEditEmployee.employee,
+                    ...employee,
+                    taiKhoan: {
+                      ...res.data
+                    }
+                  },
+                  {
+                    headers: {
+                      Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+                    }
                   }
-                })
+                )
                 .then((res) => {
                   dispatch(actionGetEmployeesByKeywords(''));
                   dispatch(
@@ -212,10 +228,18 @@ function ModalEditEmployee() {
             .catch((err) => console.log(err));
         } else {
           axios
-            .put(`${api}nhanVien/edit`, {
-              ...modalEditEmployee.employee,
-              ...employee
-            })
+            .put(
+              `${api}nhanVien/edit`,
+              {
+                ...modalEditEmployee.employee,
+                ...employee
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+                }
+              }
+            )
             .then((res) => {
               dispatch(actionGetEmployeesByKeywords(''));
               dispatch(
@@ -250,19 +274,35 @@ function ModalEditEmployee() {
               };
               if (modalEditEmployee.employee.taiKhoan.trangThai !== status) {
                 axios
-                  .put(`${api}taiKhoan/edit`, {
-                    ...modalEditEmployee.employee.taiKhoan,
-                    trangThai: status
-                  })
+                  .put(
+                    `${api}taiKhoan/edit`,
+                    {
+                      ...modalEditEmployee.employee.taiKhoan,
+                      trangThai: status
+                    },
+                    {
+                      headers: {
+                        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+                      }
+                    }
+                  )
                   .then((res) => {
                     axios
-                      .put(`${api}nhanVien/edit`, {
-                        ...modalEditEmployee.employee,
-                        ...employee,
-                        taiKhoan: {
-                          ...res.data
+                      .put(
+                        `${api}nhanVien/edit`,
+                        {
+                          ...modalEditEmployee.employee,
+                          ...employee,
+                          taiKhoan: {
+                            ...res.data
+                          }
+                        },
+                        {
+                          headers: {
+                            Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+                          }
                         }
-                      })
+                      )
                       .then((res) => {
                         dispatch(actionGetEmployeesByKeywords(''));
                         dispatch(
@@ -279,10 +319,18 @@ function ModalEditEmployee() {
                   .catch((err) => console.log(err));
               } else {
                 axios
-                  .put(`${api}nhanVien/edit`, {
-                    ...modalEditEmployee.employee,
-                    ...employee
-                  })
+                  .put(
+                    `${api}nhanVien/edit`,
+                    {
+                      ...modalEditEmployee.employee,
+                      ...employee
+                    },
+                    {
+                      headers: {
+                        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+                      }
+                    }
+                  )
                   .then((res) => {
                     dispatch(actionGetEmployeesByKeywords(''));
                     dispatch(
@@ -400,14 +448,14 @@ function ModalEditEmployee() {
                     <FormLabel>Tình trạng</FormLabel>
                     <RadioGroup row>
                       <FormControlLabel
-                        value="Đang làm"
+                        value="Hiệu lực"
                         control={
                           <Radio
-                            onClick={() => setStatus('Đang làm')}
-                            checked={status === 'Đang làm'}
+                            onClick={() => setStatus('Hiệu lực')}
+                            checked={status === 'Hiệu lực'}
                           />
                         }
-                        label="Đang làm"
+                        label="Hiệu lực"
                       />
                       <FormControlLabel
                         value="Đã nghỉ"

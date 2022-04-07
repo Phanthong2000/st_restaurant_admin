@@ -97,22 +97,29 @@ function Login() {
     } else if (!password.match('^[a-zA-Z0-9]{5,32}$')) setError('Mật khẩu không hợp lệ');
     else {
       axios
-        .get(`${api}taiKhoan/detail/tenDangNhap/${username}`)
-        .then((res) => {
-          if (res.data.vaiTro.tenVaiTro !== 'ADMIN' || res.data.matKhau !== password)
-            setError('Tài khoản không tồn tại');
-          else {
-            axios
-              .get(`${api}nguoiQuanLy/detail/tenDangNhap/${username}`)
-              .then((res) => {
-                localStorage.setItem('admin', JSON.stringify(res.data));
-                window.location.reload();
-              })
-              .catch((err) => console.log(err));
-          }
+        .post(`${api}auth/login`, {
+          username,
+          password
         })
-        .catch((error) => {
-          setError('Tài khoản không tồn tại');
+        .then((res) => {
+          axios
+            .get(`${api}nguoiQuanLy/detail/tenDangNhap/${username}`, {
+              headers: {
+                Authorization: `Bearer ${res.data.accessToken}`
+              }
+            })
+            .then((resAdmin) => {
+              setError('');
+              localStorage.setItem('token', JSON.stringify(res.data.accessToken));
+              localStorage.setItem('admin', JSON.stringify(resAdmin.data));
+              window.location.reload();
+            })
+            .catch((err) => {
+              setError('Tên đăng nhập hoặc mật khẩu không hợp lệ');
+            });
+        })
+        .catch((err) => {
+          setError('Tên đăng nhập hoặc mật khẩu không hợp lệ');
         });
     }
   };
