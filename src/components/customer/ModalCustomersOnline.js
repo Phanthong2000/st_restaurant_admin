@@ -67,7 +67,11 @@ function Customer({ customerId }) {
     fontFamily: theme.typography.fontFamily.primary
   }));
   const getCustomer = async () => {
-    const data = await axios.get(`${api}khachHang/detail/${customerId}`);
+    const data = await axios.get(`${api}khachHang/detail/${customerId}`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+      }
+    });
     setCustomer(data.data);
   };
   useEffect(() => {

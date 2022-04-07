@@ -16,7 +16,7 @@ import { actionGetBooksNow, actionNewBooks } from '../redux/actions/orderAction'
 
 let socket;
 export const connectWithSocket = () => {
-  socket = io('http://localhost:3001/');
+  socket = io('http://cb44-14-186-173-204.ngrok.io/');
   store.dispatch(actionSocketGetSocket(socket));
   socket.on('broadcast', (data) => {
     store.dispatch(actionSocketBroadcastSocket(data));

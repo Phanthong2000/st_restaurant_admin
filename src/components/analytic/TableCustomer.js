@@ -254,7 +254,7 @@ function TableCustomer() {
     <RootStyle>
       <BoxContent>
         <BoxTitle>
-          <Title>Danh sách khách hàng {customerTable.length}</Title>
+          <Title>Danh sách khách hàng</Title>
           <BoxSort>
             <Box>
               <RadioGroup
