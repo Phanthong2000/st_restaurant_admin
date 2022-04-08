@@ -47,6 +47,7 @@ import {
   actionRevenueMonthNow,
   actionRevenueYearNow
 } from '../redux/actions/analyticAction';
+import { actionGetAllTables } from '../redux/actions/tableActions';
 
 function UtilRedux() {
   const dispatch = useDispatch();
@@ -86,6 +87,7 @@ function UtilRedux() {
     dispatch(actionColumnRevenueRevenue(new Date().getFullYear()));
     dispatch(actionGetTop10FoodsLove());
     dispatch(actionGetAllOrders());
+    dispatch(actionGetAllTables());
     if (loggedIn) dispatch(actionGetUser(JSON.parse(localStorage.getItem('admin')).id));
     return function () {
       return null;

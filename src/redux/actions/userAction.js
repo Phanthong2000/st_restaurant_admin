@@ -137,7 +137,6 @@ export const actionGetAllNotifications = () => (dispatch) => {
       }
     })
     .then((res) => {
-      console.log('noti', res.data);
       dispatch(
         actionUserGetBadgeNotification(
           res.data.filter((noti) => noti.trangThai === 'Chưa đọc').length

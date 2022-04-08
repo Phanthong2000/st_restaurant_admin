@@ -51,7 +51,11 @@ export const actionFoodSortFood = (data) => ({
 
 export const actionGetAllFoods = () => (dispatch) => {
   axios
-    .get(`${api}monAn/list`)
+    .get(`${api}monAn/list`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+      }
+    })
     .then((res) => {
       dispatch(actionFoodGetAllFoods(res.data));
       dispatch(
@@ -81,6 +85,9 @@ export const actionGetAllFoodsByName = (name) => (dispatch) => {
       .get(`${api}monAn/list/tenMonAn`, {
         params: {
           tenMonAn: name
+        },
+        headers: {
+          Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
         }
       })
       .then((res) => {
@@ -91,7 +98,11 @@ export const actionGetAllFoodsByName = (name) => (dispatch) => {
 };
 export const actionGetAllTypeFoods = () => (dispatch) => {
   axios
-    .get(`${api}loaiMonAn/list`)
+    .get(`${api}loaiMonAn/list`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+      }
+    })
     .then((res) => {
       dispatch(actionFoodGetAllTypeFoods(res.data));
     })

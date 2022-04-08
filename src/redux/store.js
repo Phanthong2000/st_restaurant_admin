@@ -9,6 +9,7 @@ import orderReducer from './reducers/orderReducer';
 import socketReducer from './reducers/socketReducer';
 import userReducer from './reducers/userReducer';
 import analyticReduce from './reducers/analyticReduce';
+import tableReducer from './reducers/tableReducer';
 
 const rootReducer = combineReducers({
   user: userReducer,
@@ -19,7 +20,8 @@ const rootReducer = combineReducers({
   employee: employeeReducer,
   area: areaReducer,
   socket: socketReducer,
-  analytic: analyticReduce
+  analytic: analyticReduce,
+  table: tableReducer
 });
 const store = createStore(rootReducer, applyMiddleware(thunk));
 export default store;

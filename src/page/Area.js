@@ -102,6 +102,10 @@ function Area() {
   }, [allAreas]);
   const header = [
     {
+      name: '',
+      width: '10%'
+    },
+    {
       name: 'STT',
       width: '10%'
     },
@@ -111,6 +115,10 @@ function Area() {
     },
     {
       name: 'Tên khu vực',
+      width: '20%'
+    },
+    {
+      name: 'Số lượng bàn',
       width: '20%'
     },
     {

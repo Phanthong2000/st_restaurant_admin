@@ -30,6 +30,11 @@ const sidebarHomeConfig = [
     icon: 'tabler:chart-area-line'
   },
   {
+    name: 'Bàn',
+    path: '/home/table',
+    icon: 'ic:outline-table-bar'
+  },
+  {
     name: 'Số liệu',
     path: '/home/analytic',
     icon: 'carbon:analytics'
