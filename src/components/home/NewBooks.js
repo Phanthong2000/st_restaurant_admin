@@ -62,7 +62,7 @@ function NewBooks() {
       width: '10%'
     },
     {
-      name: 'Số lượng món',
+      name: 'Số loại bàn',
       width: '10%'
     },
     {

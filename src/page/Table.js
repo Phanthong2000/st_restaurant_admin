@@ -215,6 +215,40 @@ function TablePage() {
     setPage(newValue);
     getTablesByPage(newValue);
   };
+  const handleChangeArea = (tableNew) => {
+    dispatch(
+      actionUserBackdrop({
+        status: true,
+        content: 'Thay đổi khu vực của bàn'
+      })
+    );
+    axios
+      .put(
+        `${api}ban/edit`,
+        { ...tableNew },
+        {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+          }
+        }
+      )
+      .then((res) => {
+        dispatch(actionGetAllTables());
+        dispatch(
+          actionUserBackdrop({
+            status: false,
+            content: 'Thay đổi khu vực của bàn'
+          })
+        );
+        dispatch(
+          actionUserSnackbar({
+            status: true,
+            content: 'Thay dổi khu vực của bàn thành công',
+            type: 'success'
+          })
+        );
+      });
+  };
   //   const goToStartTable = () => {
   //     setPage(0);
   //     getAreasByPage(0);
@@ -312,7 +346,7 @@ function TablePage() {
       </Scrollbar>
       {modalAddTable && <ModalAddTable add={addTable} />}
       {modalEditTable.status && <ModalEditTable edit={handleEdit} />}
-      {modalChangeArea.status && <ModalChangeArea />}
+      {modalChangeArea.status && <ModalChangeArea change={handleChangeArea} />}
     </RootStyle>
   );
 }

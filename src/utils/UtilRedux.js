@@ -57,6 +57,7 @@ function UtilRedux() {
     dispatch(actionGetAllTypeFoods());
     dispatch(actionGetAllFoods());
     // dispatch(actionGetAllEmployees());
+
     dispatch(actionGetEmployeesByKeywords(''));
     dispatch(actionGetAllFoodsByName(''));
     dispatch(actionGetAllCustomerByKeyword(''));

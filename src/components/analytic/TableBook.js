@@ -122,8 +122,10 @@ function TableRowBook({ book, index }) {
   }));
   const getTotal = () => {
     let total = 0;
-    book.listChiTietDonDatBan.forEach((don) => {
-      total += don.monAn.donGia * don.soLuong;
+    book.listLoaiBan.forEach((loaiBan) => {
+      loaiBan.listChiTietDonDatBan.forEach((item) => {
+        total += item.monAn.donGia * item.soLuong;
+      });
     });
     return total;
   };
@@ -152,7 +154,7 @@ function TableRowBook({ book, index }) {
       <Cell>{book.khachHang.soDienThoai}</Cell>
       <Cell>{moment(book.thoiGianNhanBan).format(`DD-MM-YYYY`)}</Cell>
       <Cell>{moment(book.createAt).format(`DD-MM-YYYY`)}</Cell>
-      <Cell>{book.listChiTietDonDatBan.length}</Cell>
+      <Cell>{book.listLoaiBan.length}</Cell>
       <Cell>{book.khuVuc && book.khuVuc.tenKhuVuc}</Cell>
       <Cell>{checkStatus()}</Cell>
       <Cell>{getTotal().toLocaleString(`es-US`)}</Cell>
@@ -193,7 +195,7 @@ function TableBook() {
       width: '15%'
     },
     {
-      name: 'Số lượng món',
+      name: 'Số loai bàn món',
       width: '10%'
     },
     {

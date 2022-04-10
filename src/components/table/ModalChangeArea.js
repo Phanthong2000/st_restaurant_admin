@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -8,12 +8,17 @@ import {
   Modal,
   styled,
   TextField,
-  Typography
+  Typography,
+  Grid
 } from '@mui/material';
 import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
 import { useDispatch, useSelector } from 'react-redux';
-import { actionTableModalChangeArea } from '../../redux/actions/tableActions';
+import axios from 'axios';
+import { Scrollbar } from 'smooth-scrollbar-react';
+import api from '../../assets/api/api';
+import { actionGetAllTables, actionTableModalChangeArea } from '../../redux/actions/tableActions';
+import { actionUserBackdrop, actionUserSnackbar } from '../../redux/actions/userAction';
 
 const BoxModal = styled(Card)(({ theme }) => ({
   position: 'absolute',
@@ -53,8 +58,94 @@ const ButtonAdd = styled(Button)(({ theme }) => ({
     background: theme.palette.mainHover
   }
 }));
-function ModalChangeArea() {
+const BoxArea = styled(Grid)(({ theme }) => ({
+  width: '100%',
+  background: theme.palette.lightgrey,
+  borderRadius: '5px',
+  padding: '10px'
+}));
+const BoxContent = styled(Box)(({ theme }) => ({
+  width: '100%',
+  maxHeight: '600px',
+  display: 'flex'
+}));
+const Title = styled(Typography)(({ theme }) => ({
+  fontWeight: 'bold',
+  fontSize: '20px'
+}));
+function Area({ area, chosen, handleChoose }) {
+  const [quantify, setQuantity] = useState(-1);
+  const getQuantityTableInArea = async () => {
+    const data = await axios.get(`${api}ban/list/khuVuc/${area.id}`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+      }
+    });
+    setQuantity(data.data.length);
+  };
+  useEffect(() => {
+    getQuantityTableInArea();
+    return function () {
+      return null;
+    };
+  }, []);
+  const Wrapper = styled(Button)(({ theme }) => ({
+    padding: '5px',
+    border: `1px solid lightgrey`,
+    width: '100%',
+    background: theme.palette.white,
+    ':hover': { background: '#fff' }
+  }));
+  const IconChoose = styled(Icon)(({ theme }) => ({
+    width: '20px',
+    height: '20px',
+    position: 'absolute',
+    right: -5,
+    top: -5,
+    background: '#fff',
+    borderRadius: '20px',
+    border: `1px solid #fff`
+  }));
+  const ImageATM = styled('img')(({ theme }) => ({
+    width: '100%',
+    height: '100px'
+  }));
+  const AreaName = styled(Typography)(({ theme }) => ({
+    textTransform: 'none',
+    color: theme.palette.gray,
+    fontWeight: 'bold',
+    fontSize: '14px'
+  }));
+  return (
+    <Grid sx={{ width: '100%', padding: '5px' }} item xs={3} sm={3} md={3} lg={3} xl={3}>
+      <Wrapper
+        sx={{ border: chosen === area && `1px solid blue` }}
+        onClick={(e) => {
+          e.preventDefault();
+          handleChoose(area, quantify);
+        }}
+      >
+        <Box>
+          <ImageATM src={area.hinhAnh} />
+          <AreaName>{area.tenKhuVuc}</AreaName>
+        </Box>
+        {chosen === area && <IconChoose icon="bi:check-circle-fill" />}
+      </Wrapper>
+    </Grid>
+  );
+}
+ModalChangeArea.prototype = {
+  change: PropTypes.object
+};
+function ModalChangeArea({ change }) {
   const modalChangeArea = useSelector((state) => state.table.modalChangeArea);
+  const [area, setArea] = useState({});
+  const [name, setName] = useState('');
+  const allAreas = useSelector((state) => state.area.allAreas);
+  const chooseArea = (area, quantity) => {
+    setArea(area);
+    setName(area.tenKhuVuc.concat(`${quantity + 1}`));
+  };
   const dispatch = useDispatch();
   const handleClose = () => {
     dispatch(
@@ -63,6 +154,10 @@ function ModalChangeArea() {
         table: {}
       })
     );
+  };
+  const handleChange = () => {
+    change({ ...modalChangeArea.table, tenBan: name, khuVuc: area });
+    handleClose();
   };
   return (
     <Modal open={modalChangeArea.status} onClose={handleClose}>
@@ -76,6 +171,36 @@ function ModalChangeArea() {
           </IconButton>
         </BoxTitle>
         <Divider sx={{ margin: '10px 0px' }} />
+        <BoxContent>
+          <Scrollbar style={{ padding: '10px' }} alwaysShowTracks>
+            <Title>Khu vực hiện tại</Title>
+            <ImageTable src={modalChangeArea.table.khuVuc.hinhAnh} />
+            <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-around' }}>
+              <Typography>
+                Tên khu vực <b>{modalChangeArea.table.khuVuc.tenKhuVuc}</b>
+              </Typography>
+              <Typography sx={{ fontSize: '18px' }}>
+                Tên bàn hiện tại: <b>{modalChangeArea.table.tenBan}</b>
+              </Typography>
+            </Box>
+            <BoxArea container>
+              {allAreas.map((item, index) => {
+                if (item.id === modalChangeArea.table.khuVuc.id) return null;
+                return <Area key={index} area={item} chosen={area} handleChoose={chooseArea} />;
+              })}
+            </BoxArea>
+            <Input
+              fullWidth
+              disabled
+              label="Tên bàn mới"
+              placeholder="Phát sinh khi chọn khu vực mới"
+              value={name}
+            />
+            <ButtonAdd onClick={handleChange} disabled={Boolean(name === '')}>
+              Thay đổi khu vực
+            </ButtonAdd>
+          </Scrollbar>
+        </BoxContent>
       </BoxModal>
     </Modal>
   );

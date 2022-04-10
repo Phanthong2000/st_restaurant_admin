@@ -12,12 +12,15 @@ import {
   Radio,
   RadioGroup,
   styled,
+  Tab,
   Table,
   TableBody,
   TableCell,
   TableContainer,
+  TableFooter,
   TableHead,
   TableRow,
+  Tabs,
   TextField,
   Typography
 } from '@mui/material';
@@ -35,7 +38,7 @@ const BoxModal = styled(Card)(({ theme }) => ({
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: '500px',
+  width: '700px',
   background: '#fff',
   padding: theme.spacing(2, 2, 2),
   display: 'block',
@@ -85,10 +88,70 @@ function TableRowFood({ food, index }) {
     </RootStyle>
   );
 }
+function TableFood({ tab, loaiBan }) {
+  const headerFood = [
+    { name: 'STT', minWidth: '10%' },
+    { name: 'Tên món ăn', minWidth: '25%' },
+    { name: 'Giá', minWidth: '20%' },
+    { name: 'Ghi chú', minWidth: '20%' },
+    { name: 'Thành tiền', minWidth: '20%' }
+  ];
+  const getTotalTab = () => {
+    let total = 0;
+    loaiBan.listChiTietDonDatBan.forEach((food) => {
+      total += food.monAn.donGia * food.soLuong;
+    });
+    return total;
+  };
+
+  if (tab !== loaiBan.order) return null;
+  return (
+    <Box sx={{ marginTop: '10px' }}>
+      <Typography
+        sx={{ width: '100%', padding: '10px 0px 0px 20px', fontWeight: 'bold', fontSize: '14px' }}
+      >
+        Số người mỗi bàn: {loaiBan.soNguoiMoiBan} - Số bàn: {loaiBan.soLuongBan}
+      </Typography>
+      <TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow>
+              {headerFood.map((item, index) => (
+                <TableCell
+                  key={index}
+                  sx={{
+                    width: item.minWidth,
+                    background: 'gray',
+                    color: '#fff'
+                  }}
+                >
+                  {item.name}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {loaiBan.listChiTietDonDatBan.map((item, index) => (
+              <TableRowFood key={index} index={index} food={item} />
+            ))}
+          </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TableCell colSpan={6} sx={{ fontWeight: 'bold', fontSize: '16px', color: '#000' }}>
+                Tổng tiền loại {loaiBan.order}: {`${getTotalTab().toLocaleString('es-US')} vnd`}
+              </TableCell>
+            </TableRow>
+          </TableFooter>
+        </Table>
+      </TableContainer>
+    </Box>
+  );
+}
 function ModalEditBook() {
   const dispatch = useDispatch();
   const [status, setStatus] = useState('');
   const modalEditBook = useSelector((state) => state.order.modalEditBook);
+  const [tab, setTab] = useState(modalEditBook.book.listLoaiBan.at(0).order);
   useEffect(() => {
     setStatus(modalEditBook.book.trangThai);
     return function () {
@@ -105,18 +168,13 @@ function ModalEditBook() {
   };
   const getTotal = () => {
     let total = 0;
-    modalEditBook.book.listChiTietDonDatBan.forEach((don) => {
-      total += don.monAn.donGia * don.soLuong;
+    modalEditBook.book.listLoaiBan.forEach((loaiBan) => {
+      loaiBan.listChiTietDonDatBan.forEach((item) => {
+        total += item.monAn.donGia * item.soLuong;
+      });
     });
     return total;
   };
-  const headerFood = [
-    { name: 'STT', minWidth: '10%' },
-    { name: 'Tên món ăn', minWidth: '25%' },
-    { name: 'Giá', minWidth: '20%' },
-    { name: 'Ghi chú', minWidth: '20%' },
-    { name: 'Thành tiền', minWidth: '20%' }
-  ];
   const checkStatus = () => {
     if (
       modalEditBook.book.trangThai === `0` &&
@@ -167,6 +225,9 @@ function ModalEditBook() {
       })
       .catch((err) => console.log(err));
   };
+  const handleChangeTab = (event, newValue) => {
+    setTab(newValue);
+  };
   return (
     <Modal open={modalEditBook.status} onClose={handleClose}>
       <BoxModal>
@@ -180,7 +241,7 @@ function ModalEditBook() {
         </BoxTitle>
         <Divider sx={{ margin: '10px 0px' }} />
         <BoxContent>
-          <Scrollbar alwaysShowTracks>
+          <Scrollbar style={{ padding: '0px 10px' }} alwaysShowTracks>
             <Box> </Box>
             <Typography sx={{ color: 'gray', fontWeight: 'bold', fontSize: '14px' }}>
               Thời gian đặt bàn:
@@ -240,39 +301,21 @@ function ModalEditBook() {
               }}
             >
               <Typography sx={{ color: 'gray', fontWeight: 'bold', fontSize: '14px' }}>
-                Số lượng món: {modalEditBook.book.listChiTietDonDatBan.length}
+                Số loại bàn: {modalEditBook.book.listLoaiBan.length}
               </Typography>
               <Typography sx={{ color: 'gray', fontWeight: 'bold', fontSize: '14px' }}>
                 Tổng tiền: {getTotal().toLocaleString(`es-US`)} vnđ
               </Typography>
             </Box>
-            <Box sx={{ marginTop: '10px', padding: '10px' }}>
-              <TableContainer>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      {headerFood.map((item, index) => (
-                        <TableCell
-                          key={index}
-                          sx={{
-                            width: item.minWidth,
-                            fontWeight: 'bold',
-                            background: 'gray',
-                            color: '#fff'
-                          }}
-                        >
-                          {item.name}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {modalEditBook.book.listChiTietDonDatBan.map((item, index) => (
-                      <TableRowFood key={index} index={index} food={item} />
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
+            <Box sx={{ width: '100%' }}>
+              <Tabs value={tab} onChange={handleChangeTab}>
+                {modalEditBook.book.listLoaiBan.map((item, index) => (
+                  <Tab key={index} value={item.order} label={`Loại ${item.order}`} />
+                ))}
+              </Tabs>
+              {modalEditBook.book.listLoaiBan.map((item, index) => (
+                <TableFood key={index} tab={tab} loaiBan={item} />
+              ))}
             </Box>
             <Box sx={{ marginTop: '10px' }}>
               {checkStatus() === 'Đã quá hạn' ? (

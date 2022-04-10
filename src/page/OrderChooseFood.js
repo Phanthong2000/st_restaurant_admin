@@ -310,7 +310,7 @@ function OrderChooseFood() {
               type: 'success'
             })
           );
-          navigate('/home/app');
+          navigate('/home/book');
         })
         .catch((err) => console.log(err));
     }
