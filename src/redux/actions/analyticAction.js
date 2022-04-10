@@ -162,13 +162,17 @@ export const actionRevenueDateNow = () => (dispatch) => {
       let total = 0;
       let totalLast = 0;
       allOrders.forEach((order) => {
-        order.donDatBan.listChiTietDonDatBan.forEach((ct) => {
-          total += ct.soLuong * ct.monAn.donGia;
+        order.donDatBan.listLoaiBan.forEach((loaiBan) => {
+          loaiBan.listChiTietDonDatBan.forEach((item) => {
+            total += item.monAn.donGia * item.soLuong;
+          });
         });
       });
       allOrdersLast.forEach((order) => {
-        order.donDatBan.listChiTietDonDatBan.forEach((ct) => {
-          totalLast += ct.soLuong * ct.monAn.donGia;
+        order.donDatBan.listLoaiBan.forEach((loaiBan) => {
+          loaiBan.listChiTietDonDatBan.forEach((item) => {
+            totalLast += item.monAn.donGia * item.soLuong;
+          });
         });
       });
       dispatch(actionAnalyticRevenueDateNow(total));
@@ -193,13 +197,17 @@ export const actionRevenueMonthNow = () => (dispatch) => {
       let total = 0;
       let totalLast = 0;
       allOrders.forEach((order) => {
-        order.donDatBan.listChiTietDonDatBan.forEach((ct) => {
-          total += ct.soLuong * ct.monAn.donGia;
+        order.donDatBan.listLoaiBan.forEach((loaiBan) => {
+          loaiBan.listChiTietDonDatBan.forEach((item) => {
+            total += item.monAn.donGia * item.soLuong;
+          });
         });
       });
       allOrdersLast.forEach((order) => {
-        order.donDatBan.listChiTietDonDatBan.forEach((ct) => {
-          totalLast += ct.soLuong * ct.monAn.donGia;
+        order.donDatBan.listLoaiBan.forEach((loaiBan) => {
+          loaiBan.listChiTietDonDatBan.forEach((item) => {
+            totalLast += item.monAn.donGia * item.soLuong;
+          });
         });
       });
       dispatch(actionAnalyticRevenueMonthNow(total));
@@ -221,13 +229,17 @@ export const actionRevenueYearNow = () => (dispatch) => {
       let total = 0;
       let totalLast = 0;
       allOrders.forEach((order) => {
-        order.donDatBan.listChiTietDonDatBan.forEach((ct) => {
-          total += ct.soLuong * ct.monAn.donGia;
+        order.donDatBan.listLoaiBan.forEach((loaiBan) => {
+          loaiBan.listChiTietDonDatBan.forEach((item) => {
+            total += item.monAn.donGia * item.soLuong;
+          });
         });
       });
       allOrdersLast.forEach((order) => {
-        order.donDatBan.listChiTietDonDatBan.forEach((ct) => {
-          totalLast += ct.soLuong * ct.monAn.donGia;
+        order.donDatBan.listLoaiBan.forEach((loaiBan) => {
+          loaiBan.listChiTietDonDatBan.forEach((item) => {
+            totalLast += item.monAn.donGia * item.soLuong;
+          });
         });
       });
       dispatch(actionAnalyticRevenueYearNow(total));

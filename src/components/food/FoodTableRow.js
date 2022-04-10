@@ -1,9 +1,9 @@
 import React from 'react';
-import { IconButton, styled, TableCell, TableRow } from '@mui/material';
+import { Box, IconButton, styled, TableCell, TableRow, Tooltip, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
 import { useDispatch } from 'react-redux';
-import { actionFoodModalEditFood } from '../../redux/actions/foodAction';
+import { actionFoodModalEditFood, actionFoodModalUserLove } from '../../redux/actions/foodAction';
 
 const RootStyle = styled(TableRow)(({ theme }) => ({
   background: theme.palette.white
@@ -31,7 +31,29 @@ function FoodTableRow({ food, index }) {
         <ImageFood src={food.hinhAnh.at(0)} />
       </Cell>
       <Cell>{food.tenMonAn}</Cell>
-      <Cell>{!food.thich || food.thich.length === 0 ? `0` : food.thich.length} yêu thích</Cell>
+      <Cell>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Typography>
+            {!food.listKhachHangThichMonAn || food.listKhachHangThichMonAn.length === 0
+              ? `0`
+              : food.listKhachHangThichMonAn.length}
+          </Typography>
+          <Tooltip title="Danh sách khách hàng yêu thích">
+            <IconButton
+              onClick={() =>
+                dispatch(
+                  actionFoodModalUserLove({
+                    status: true,
+                    food
+                  })
+                )
+              }
+            >
+              <IconSeeInfo icon="el:eye-open" />
+            </IconButton>
+          </Tooltip>
+        </Box>
+      </Cell>
       <Cell>{`${food.donGia.toLocaleString('es-US')} vnđ`}</Cell>
       <Cell>{food.loaiMonAn.tenLoaiMonAn}</Cell>
       <Cell>{food.trangThai}</Cell>

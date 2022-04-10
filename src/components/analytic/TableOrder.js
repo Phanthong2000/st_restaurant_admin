@@ -122,8 +122,10 @@ function TableRowOrder({ order, index }) {
   }));
   const getTotal = () => {
     let total = 0;
-    order.donDatBan.listChiTietDonDatBan.forEach((don) => {
-      total += don.monAn.donGia * don.soLuong;
+    order.donDatBan.listLoaiBan.forEach((loaiBan) => {
+      loaiBan.listChiTietDonDatBan.forEach((item) => {
+        total += item.monAn.donGia * item.soLuong;
+      });
     });
     return total;
   };

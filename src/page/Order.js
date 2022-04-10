@@ -399,7 +399,7 @@ function Order() {
       setPhone(userOrder.soDienThoai);
     }
     return function () {
-      dispatch(actionOrderGetUser({}));
+      // dispatch(actionOrderGetUser({}));
     };
   }, [user]);
   const order = () => {

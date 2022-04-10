@@ -37,6 +37,7 @@ import BoxSort from '../components/food/BoxSort';
 import api from '../assets/api/api';
 import { actionUserSnackbar, actionUserBackdrop } from '../redux/actions/userAction';
 import { storage } from '../firebase-config';
+import ModalUserLove from '../components/food/ModalUserLove';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -98,6 +99,7 @@ function Food() {
   const sortFood = useSelector((state) => state.food.sortFood);
   const [quantity, setQuantity] = useState(0);
   const modalAddTypeFood = useSelector((state) => state.food.modalAddTypeFood);
+  const modalUserLove = useSelector((state) => state.food.modalUserLove);
   const getFoodByPage = (page) => {
     const notPages = [];
     foodsByName.forEach((food) => {
@@ -428,6 +430,7 @@ function Food() {
       {modalAddTypeFood && <ModalAddTypeFood addTypeFood={addTypeFood} />}
       {modalEditFood.status && <ModalEditFood />}
       {modalEditTypeFood.status && <ModalEditTypeFood editTypeFood={editTypeFood} />}
+      {modalUserLove.status && <ModalUserLove />}
     </RootStyle>
   );
 }

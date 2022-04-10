@@ -22,13 +22,31 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import DatePicker from 'react-datepicker';
 import { Icon } from '@iconify/react';
+import moment from 'moment';
 import { Scrollbar } from 'smooth-scrollbar-react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import TypeFoodItem from '../components/food/TypeFoodItem';
 import { actionFoodGetTypeChosen } from '../redux/actions/foodAction';
-import { actionOrderModalInformation, actionOrderSetFoodsMany } from '../redux/actions/orderAction';
-import { actionUserSnackbar } from '../redux/actions/userAction';
+import {
+  actionGetBooksByKeyword,
+  actionGetBooksNow,
+  actionNewBooks,
+  actionOrderGetOrderMany,
+  actionOrderModalInformation,
+  actionOrderModalPayment,
+  actionOrderSetFoodsMany
+} from '../redux/actions/orderAction';
+import { actionUserBackdrop, actionUserSnackbar } from '../redux/actions/userAction';
 import ModalInformationFood from '../components/order/ModalInformationFood';
+import ModalPayment from '../components/order/ModalPayment';
+import api from '../assets/api/api';
+import {
+  actionBookDateNow,
+  actionBookMonthNow,
+  actionBookYearNow,
+  actionColumnRevenueBook
+} from '../redux/actions/analyticAction';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -550,6 +568,8 @@ function OrderChooseManyFood() {
   const typeChosen = useSelector((state) => state.food.typeChosen);
   const typefoods = useSelector((state) => state.food.typefoods);
   const foodsMany = useSelector((state) => state.order.foodsMany);
+  const modalPayment = useSelector((state) => state.order.modalPayment);
+  const userOrder = useSelector((state) => state.order.userOrder);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [tab, setTab] = useState(1);
@@ -592,8 +612,106 @@ function OrderChooseManyFood() {
         })
       );
     } else {
-      navigate('/home/order-payment-many');
+      dispatch(
+        actionOrderModalPayment({
+          status: true,
+          book: {}
+        })
+      );
+      // navigate('/home/order-payment-many');
     }
+  };
+  const confirmPayment = () => {
+    dispatch(
+      actionUserBackdrop({
+        status: true,
+        content: 'Xử lý đơn đặt bàn'
+      })
+    );
+    const data = [];
+    bookMany.listLoaiBan.forEach((loaiBan) => {
+      const listBookDetail = [];
+      foodsMany.forEach((item) => {
+        if (loaiBan.order === item.order) {
+          item.foods.forEach((food) => {
+            listBookDetail.push({
+              monAn: food.food,
+              soLuong: food.soLuong,
+              ghiChu: 'Thêm đầu'
+            });
+          });
+        }
+      });
+      data.push({
+        order: loaiBan.order,
+        soNguoiMoiBan: loaiBan.soNguoiMoiBan,
+        soLuongBan: loaiBan.soLuongBan,
+        listChiTietDonDatBan: listBookDetail
+      });
+    });
+    const book = {
+      khachHang: {
+        id: userOrder.id
+      },
+      soLuongKhach: bookMany.quantityCustomer,
+      thoiGianDuKienSuDung: bookMany.timeUse.value,
+      thoiGianNhanBan: moment(bookMany.date).format(),
+      trangThai: '0',
+      ghiChu: bookMany.description,
+      khuVuc: {
+        id: bookMany.area.id
+      },
+      listLoaiBan: data
+    };
+    axios
+      .post(
+        `${api}donDatBan/create`,
+        {
+          ...book
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+          }
+        }
+      )
+      .then((res) => {
+        dispatch(actionGetBooksNow());
+        dispatch(actionGetBooksByKeyword(''));
+        dispatch(actionNewBooks());
+        dispatch(actionBookDateNow());
+        dispatch(actionBookMonthNow());
+        dispatch(actionBookYearNow());
+        dispatch(actionColumnRevenueBook(new Date().getFullYear()));
+        dispatch(
+          actionUserBackdrop({
+            status: false,
+            content: 'Xử lý đơn đặt bàn'
+          })
+        );
+        dispatch(
+          actionUserSnackbar({
+            status: true,
+            content: 'Đặt bàn thành công',
+            type: 'success'
+          })
+        );
+        navigate('/home/book');
+        dispatch(actionOrderSetFoodsMany([]));
+        dispatch(
+          actionOrderGetOrderMany({
+            customerName: '',
+            email: '',
+            phone: '',
+            date: 0,
+            quantityCustomer: 0,
+            timeUse: 0,
+            area: {},
+            description: '',
+            listLoaiBan: []
+          })
+        );
+      });
   };
   return (
     <RootStyle>
@@ -727,6 +845,9 @@ function OrderChooseManyFood() {
           </BoxAllFood>
         </Box>
         {modalInformationFood.status && <ModalInformationFood tab={tab} />}
+        {modalPayment.status && (
+          <ModalPayment confirmPayment={confirmPayment} getTotal={getTotal} />
+        )}
       </Scrollbar>
     </RootStyle>
   );

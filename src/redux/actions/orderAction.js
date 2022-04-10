@@ -20,7 +20,8 @@ import {
   ACTION_ORDER_GET_BOOKS_NOW,
   ACTION_ORDER_GET_TOTAL_NOW,
   ACTION_ORDER_SET_FOODS_MANY,
-  ACTION_ORDER_GET_ORDER_MANY
+  ACTION_ORDER_GET_ORDER_MANY,
+  ACTION_ORDER_MODAL_PAYMENT
 } from './types';
 
 export const actionOrderGetOrder = (data) => ({
@@ -101,6 +102,10 @@ export const actionOrderGetOrderMany = (data) => ({
 });
 export const actionOrderSetFoodsMany = (data) => ({
   type: ACTION_ORDER_SET_FOODS_MANY,
+  payload: data
+});
+export const actionOrderModalPayment = (data) => ({
+  type: ACTION_ORDER_MODAL_PAYMENT,
   payload: data
 });
 export const actionGetBooksByKeyword = (keyword) => (dispatch) => {
@@ -215,8 +220,10 @@ export const actionGetTotalNow = () => (dispatch) => {
       );
       let total = 0;
       allOrders.forEach((order) => {
-        order.donDatBan.listChiTietDonDatBan.forEach((ct) => {
-          total += ct.soLuong * ct.monAn.donGia;
+        order.donDatBan.listLoaiBan.forEach((loaiBan) => {
+          loaiBan.listChiTietDonDatBan.forEach((item) => {
+            total += item.monAn.donGia * item.soLuong;
+          });
         });
       });
       dispatch(actionOrderGetTotalNow(total));

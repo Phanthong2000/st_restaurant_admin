@@ -6,7 +6,8 @@ import {
   ACTION_FOOD_GET_ALL_FOODS_BY_NAME,
   ACTION_FOOD_MODAL_EDIT_FOOD,
   ACTION_FOOD_MODAL_EDIT_TYPE_FOOD,
-  ACTION_FOOD_SORT_FOOD
+  ACTION_FOOD_SORT_FOOD,
+  ACTION_FOOD_MODAL_USER_LOVE
 } from '../actions/types';
 
 const defaultState = {
@@ -26,7 +27,11 @@ const defaultState = {
     status: false,
     typefood: {}
   },
-  sortFood: 'all'
+  sortFood: 'all',
+  modalUserLove: {
+    status: false,
+    food: {}
+  }
 };
 
 // eslint-disable-next-line default-param-last
@@ -71,6 +76,11 @@ const foodReducer = (state = defaultState, action) => {
       return {
         ...state,
         sortFood: action.payload
+      };
+    case ACTION_FOOD_MODAL_USER_LOVE:
+      return {
+        ...state,
+        modalUserLove: action.payload
       };
     default:
       return state;

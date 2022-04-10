@@ -11,12 +11,14 @@ import {
   Modal,
   Popper,
   styled,
+  Tab,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
+  Tabs,
   TextField,
   Typography
 } from '@mui/material';
@@ -210,6 +212,46 @@ function ModalConfirm({ open, close, confirm }) {
     </Modal>
   );
 }
+function TableFood({ tab, table }) {
+  const headerFood = [
+    { name: 'STT', minWidth: '10%' },
+    { name: 'Tên món ăn', minWidth: '25%' },
+    { name: 'Giá', minWidth: '20%' },
+    { name: 'Ghi chú', minWidth: '20%' },
+    { name: 'Thành tiền', minWidth: '20%' }
+  ];
+  if (tab !== table.order) return null;
+  return (
+    <Box sx={{ padding: '10px' }}>
+      <TableContainer>
+        <Table sx={{ border: `1px solid #fff`, borderRadius: '5px' }}>
+          <TableHead>
+            <TableRow>
+              {headerFood.map((item, index) => (
+                <TableCell
+                  key={index}
+                  sx={{
+                    width: item.minWidth,
+                    fontWeight: 'bold',
+                    background: 'gray',
+                    color: '#fff'
+                  }}
+                >
+                  {item.name}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {table.listChiTietDonDatBan.map((item, index) => (
+              <TableRowFood key={index} index={index} food={item} />
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
+  );
+}
 function PayOrder() {
   const user = useSelector((state) => state.user.user);
   const bookPayOrder = useSelector((state) => state.order.bookPayOrder);
@@ -217,6 +259,7 @@ function PayOrder() {
   const [wayPay, setWayPay] = useState({});
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [tab, setTab] = useState(1);
   const [description, setDescription] = useState('');
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [modalConfirm, setModalConfirm] = useState(false);
@@ -232,6 +275,8 @@ function PayOrder() {
           type: 'error'
         })
       );
+    } else {
+      setTab(bookPayOrder.listLoaiBan.at(0).order);
     }
     return function () {
       return null;
@@ -240,24 +285,21 @@ function PayOrder() {
   const handleClick = (event) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
-  const headerFood = [
-    { name: 'STT', minWidth: '10%' },
-    { name: 'Tên món ăn', minWidth: '25%' },
-    { name: 'Giá', minWidth: '20%' },
-    { name: 'Ghi chú', minWidth: '20%' },
-    { name: 'Thành tiền', minWidth: '20%' }
-  ];
   const getDeposit = () => {
-    let result = 0;
-    bookPayOrder.listChiTietDonDatBan.forEach((don) => {
-      if (don.ghiChu === 'Ban đầu' || !don.ghiChu) result += don.monAn.donGia * don.soLuong;
+    let total = 0;
+    bookPayOrder.listLoaiBan.forEach((loaiBan) => {
+      loaiBan.listChiTietDonDatBan.forEach((item) => {
+        if (!item.ghiChu || item.ghiChu === 'Thêm trước') total += item.monAn.donGia * item.soLuong;
+      });
     });
-    return result * 0.3;
+    return total * 0.3;
   };
   const getTotal = () => {
     let total = 0;
-    bookPayOrder.listChiTietDonDatBan.forEach((don) => {
-      total += don.monAn.donGia * don.soLuong;
+    bookPayOrder.listLoaiBan.forEach((loaiBan) => {
+      loaiBan.listChiTietDonDatBan.forEach((item) => {
+        total += item.monAn.donGia * item.soLuong;
+      });
     });
     return total;
   };
@@ -345,6 +387,9 @@ function PayOrder() {
           });
       });
   };
+  const handleChange = (event, newValue) => {
+    setTab(newValue);
+  };
   if (bookPayOrder.id === undefined) return null;
   return (
     <RootStyle>
@@ -352,37 +397,19 @@ function PayOrder() {
         <BoxContent container>
           <BoxLeft item xs={12} sm={12} md={12} lg={8} xl={8}>
             <Title>Thanh toán đặt bàn</Title>
-            <Card sx={{ width: '100%', marginTop: '10px', padding: '10px', background: 'gray' }}>
+            <Card sx={{ width: '100%', marginTop: '10px', padding: '10px', background: '#fff' }}>
               <Typography sx={{ fontSize: '20px', fontWeight: 'bold' }}>
                 Danh sách món ăn đã đặt
               </Typography>
-              <Box sx={{ padding: '10px' }}>
-                <TableContainer>
-                  <Table sx={{ border: `1px solid #fff`, borderRadius: '5px' }}>
-                    <TableHead>
-                      <TableRow>
-                        {headerFood.map((item, index) => (
-                          <TableCell
-                            key={index}
-                            sx={{
-                              width: item.minWidth,
-                              fontWeight: 'bold',
-                              background: 'gray',
-                              color: '#fff'
-                            }}
-                          >
-                            {item.name}
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {bookPayOrder.listChiTietDonDatBan.map((item, index) => (
-                        <TableRowFood key={index} index={index} food={item} />
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
+              <Box>
+                <Tabs value={tab} onChange={handleChange}>
+                  {bookPayOrder.listLoaiBan.map((item, index) => (
+                    <Tab label={`Loại: ${item.order}`} key={index} value={item.order} />
+                  ))}
+                </Tabs>
+                {bookPayOrder.listLoaiBan.map((item, index) => (
+                  <TableFood key={index} table={item} tab={tab} />
+                ))}
               </Box>
             </Card>
             <Grid container sx={{ width: '100%', marginTop: '20px' }}>
@@ -525,7 +552,7 @@ function PayOrder() {
               </InputWrapper>
               <InputWrapper>
                 <TitleInformation>Thời gian đặt bàn</TitleInformation>
-                <InputInfo value={`${bookPayOrder.thoiGianDuKienSuDung}p`} />
+                <InputInfo value={`${bookPayOrder.thoiGianDuKienSuDung / (60 * 1000)}p`} />
               </InputWrapper>
               <InputWrapper>
                 <TitleInformation>Khu vực</TitleInformation>
