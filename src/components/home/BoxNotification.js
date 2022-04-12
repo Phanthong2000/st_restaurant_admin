@@ -52,7 +52,7 @@ function BoxNotification() {
       <BoxContent>
         <Scrollbar alwaysShowTracks>
           {allNotifications.map((item, index) => (
-            <Notification key={index} notification={item} index={index} />
+            <Notification key={index} notification={item} indexNoti={index} />
           ))}
         </Scrollbar>
       </BoxContent>

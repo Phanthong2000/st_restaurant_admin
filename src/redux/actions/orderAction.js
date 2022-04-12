@@ -21,7 +21,8 @@ import {
   ACTION_ORDER_GET_TOTAL_NOW,
   ACTION_ORDER_SET_FOODS_MANY,
   ACTION_ORDER_GET_ORDER_MANY,
-  ACTION_ORDER_MODAL_PAYMENT
+  ACTION_ORDER_MODAL_PAYMENT,
+  ACTION_ORDER_UNSHIFT_ALL_BOOKS
 } from './types';
 
 export const actionOrderGetOrder = (data) => ({
@@ -106,6 +107,10 @@ export const actionOrderSetFoodsMany = (data) => ({
 });
 export const actionOrderModalPayment = (data) => ({
   type: ACTION_ORDER_MODAL_PAYMENT,
+  payload: data
+});
+export const actionOrderUnshiftAllBooks = (data) => ({
+  type: ACTION_ORDER_UNSHIFT_ALL_BOOKS,
   payload: data
 });
 export const actionGetBooksByKeyword = (keyword) => (dispatch) => {

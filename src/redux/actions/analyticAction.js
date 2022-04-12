@@ -593,10 +593,14 @@ export const actionColumnRevenueOrder = (year) => async (dispatch) => {
 };
 
 const getTotalItem = (field) => {
+  console.log(field);
   let total = 0;
-  field.donDatBan.listChiTietDonDatBan.forEach((ct) => {
-    total += ct.soLuong * ct.monAn.donGia;
+  field.donDatBan.listLoaiBan.forEach((loaiBan) => {
+    loaiBan.listChiTietDonDatBan.forEach((item) => {
+      total += item.monAn.donGia * item.soLuong;
+    });
   });
+  console.log('total', total);
   return total;
 };
 

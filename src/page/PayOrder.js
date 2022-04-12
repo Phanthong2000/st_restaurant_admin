@@ -289,7 +289,7 @@ function PayOrder() {
     let total = 0;
     bookPayOrder.listLoaiBan.forEach((loaiBan) => {
       loaiBan.listChiTietDonDatBan.forEach((item) => {
-        if (!item.ghiChu || item.ghiChu === 'Thêm trước') total += item.monAn.donGia * item.soLuong;
+        if (!item.ghiChu || item.ghiChu === 'Thêm đầu') total += item.monAn.donGia * item.soLuong;
       });
     });
     return total * 0.3;

@@ -18,7 +18,8 @@ import {
   ACTION_ORDER_GET_TOTAL_NOW,
   ACTION_ORDER_GET_ORDER_MANY,
   ACTION_ORDER_SET_FOODS_MANY,
-  ACTION_ORDER_MODAL_PAYMENT
+  ACTION_ORDER_MODAL_PAYMENT,
+  ACTION_ORDER_UNSHIFT_ALL_BOOKS
 } from '../actions/types';
 
 const defaultState = {
@@ -181,6 +182,12 @@ const orderReducer = (state = defaultState, action) => {
       return {
         ...state,
         modalPayment: action.payload
+      };
+    case ACTION_ORDER_UNSHIFT_ALL_BOOKS:
+      console.log(action.payload);
+      return {
+        ...state,
+        booksByKeyword: [action.payload].concat([...state.booksByKeyword])
       };
     default:
       return state;

@@ -39,15 +39,33 @@ function UserLove({ user }) {
     width: '100%',
     padding: theme.spacing(2),
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
+    background: theme.palette.white,
+    borderRadius: '5px',
+    marginTop: '5px'
   }));
   const AvatarUser = styled(Avatar)(() => ({
-    width: '40px',
-    height: '40px'
+    width: '50px',
+    height: '50px'
+  }));
+  const Username = styled(Typography)(({ theme }) => ({
+    fontWeight: 'bold',
+    fontSize: '16px',
+    fontFamily: theme.typography.fontFamily.primary
+  }));
+  const Phone = styled(Typography)(({ theme }) => ({
+    fontWeight: 'bold',
+    fontSize: '14px',
+    color: theme.palette.gray,
+    fontFamily: theme.typography.fontFamily.primary
   }));
   return (
     <BoxUserLove>
       <AvatarUser src={user.anhDaiDien} />
+      <Box sx={{ marginLeft: '10px' }}>
+        <Username>{user.hoTen}</Username>
+        <Phone>SĐT: {user.soDienThoai}</Phone>
+      </Box>
     </BoxUserLove>
   );
 }

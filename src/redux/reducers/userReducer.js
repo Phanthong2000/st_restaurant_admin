@@ -121,6 +121,7 @@ const userReducer = (state = defaultState, action) => {
         allNotifications: [action.payload].concat(state.allNotifications)
       };
     case ACTION_USER_UPDATE_NOTIFICATION:
+      console.log(action.payload);
       return {
         ...state,
         allNotifications: [

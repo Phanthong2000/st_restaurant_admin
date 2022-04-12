@@ -38,20 +38,22 @@ function FoodTableRow({ food, index }) {
               ? `0`
               : food.listKhachHangThichMonAn.length}
           </Typography>
-          <Tooltip title="Danh sách khách hàng yêu thích">
-            <IconButton
-              onClick={() =>
-                dispatch(
-                  actionFoodModalUserLove({
-                    status: true,
-                    food
-                  })
-                )
-              }
-            >
-              <IconSeeInfo icon="el:eye-open" />
-            </IconButton>
-          </Tooltip>
+          {food.listKhachHangThichMonAn && food.listKhachHangThichMonAn.length > 0 && (
+            <Tooltip title="Danh sách khách hàng yêu thích">
+              <IconButton
+                onClick={() =>
+                  dispatch(
+                    actionFoodModalUserLove({
+                      status: true,
+                      food
+                    })
+                  )
+                }
+              >
+                <IconSeeInfo icon="el:eye-open" />
+              </IconButton>
+            </Tooltip>
+          )}
         </Box>
       </Cell>
       <Cell>{`${food.donGia.toLocaleString('es-US')} vnđ`}</Cell>

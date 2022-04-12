@@ -39,7 +39,7 @@ Notification.prototype = {
   notification: PropTypes.object,
   index: PropTypes.number
 };
-function Notification({ notification, index }) {
+function Notification({ notification, indexNoti }) {
   const booksByKeyword = useSelector((state) => state.order.booksByKeyword);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -72,13 +72,13 @@ function Notification({ notification, index }) {
           }
         )
         .then((res) => {
+          dispatch(actionUserBoxNotification(false));
           dispatch(
             actionUserUpdateNotification({
-              index,
+              index: indexNoti,
               notification: res.data
             })
           );
-          dispatch(actionUserBoxNotification(false));
         });
     } else {
       dispatch(actionUserBoxNotification(false));

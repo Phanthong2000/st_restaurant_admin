@@ -180,6 +180,11 @@ function ColumnRevenueYear() {
             position: 'topLeft', // topRight, topLeft, bottomRight, bottomLeft
             offsetY: 30,
             offsetX: 60
+          },
+          y: {
+            formatter(val) {
+              return `${val.toFixed(0)}`;
+            }
           }
         },
         legend: {

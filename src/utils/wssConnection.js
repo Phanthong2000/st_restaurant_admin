@@ -12,7 +12,11 @@ import {
   actionUserAddNotification,
   actionUserAddBadgeNotification
 } from '../redux/actions/userAction';
-import { actionGetBooksNow, actionNewBooks } from '../redux/actions/orderAction';
+import {
+  actionGetBooksNow,
+  actionNewBooks,
+  actionOrderUnshiftAllBooks
+} from '../redux/actions/orderAction';
 
 let socket;
 export const connectWithSocket = () => {
@@ -35,6 +39,7 @@ export const connectWithSocket = () => {
   socket.on('receive-book', (data) => {
     store.dispatch(actionGetBooksNow());
     store.dispatch(actionNewBooks());
+    store.dispatch(actionOrderUnshiftAllBooks(data.book));
     store.dispatch(actionUserAddNotification(data.notification));
     store.dispatch(actionUserAddBadgeNotification());
   });
