@@ -82,7 +82,7 @@ function UtilRedux() {
     dispatch(actionBookYearNow());
     dispatch(actionOrderYearNow());
     dispatch(actionColumnTypefoodFood());
-    dispatch(actionColumnCustomersYear(new Date().getFullYear()));
+    dispatch(actionColumnCustomersYear('year', new Date().getMonth(), new Date().getFullYear()));
     dispatch(actionColumnRevenueBook(new Date().getFullYear()));
     dispatch(actionColumnRevenueOrder(new Date().getFullYear()));
     dispatch(actionColumnRevenueRevenue(new Date().getFullYear()));

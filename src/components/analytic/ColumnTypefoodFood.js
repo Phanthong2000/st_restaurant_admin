@@ -93,7 +93,7 @@ function ColumnTypefoodFood() {
   )
     return null;
   return (
-    <Box sx={{ width: '50%', padding: '10px' }}>
+    <Box sx={{ width: '70%', padding: '10px' }}>
       <RootStyle>
         <ReactApexChart options={state.options} series={state.series} type="bar" height={350} />
       </RootStyle>

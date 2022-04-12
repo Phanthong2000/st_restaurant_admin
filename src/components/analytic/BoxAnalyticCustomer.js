@@ -1,6 +1,7 @@
 import { Box, Grid, styled } from '@mui/material';
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { actionColumnCustomersYear } from '../../redux/actions/analyticAction';
 import ModalCustomersOnline from '../customer/ModalCustomersOnline';
 import BoxCustomer from './BoxCustomer';
 import ColumnCustomer from './ColumnCustomer';
@@ -12,6 +13,16 @@ const RootStyle = styled(Box)(({ theme }) => ({
 }));
 function BoxAnalyticCustomer() {
   const modalCustomersOnline = useSelector((state) => state.customer.modalCustomersOnline);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    console.log('');
+    return function () {
+      return dispatch(
+        actionColumnCustomersYear('year', new Date().getMonth(), new Date().getFullYear())
+      );
+    };
+  }, []);
   return (
     <RootStyle>
       <BoxCustomer />

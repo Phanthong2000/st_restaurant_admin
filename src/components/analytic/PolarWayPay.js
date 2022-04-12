@@ -27,6 +27,18 @@ function PolarWayPay() {
           fontFamily: 'san-serif'
         }
       },
+      grid: {
+        xaxis: {
+          lines: {
+            show: false
+          }
+        },
+        yaxis: {
+          lines: {
+            show: false
+          }
+        }
+      },
       plotOptions: {
         bar: {
           borderRadius: 4,
@@ -66,6 +78,12 @@ function PolarWayPay() {
             fontSize: '12px',
             fontFamily: 'san-serif'
           }
+        },
+        axisBorder: {
+          show: false
+        },
+        axisTicks: {
+          show: false
         }
       },
       yaxis: {
@@ -74,6 +92,12 @@ function PolarWayPay() {
             fontSize: '8px',
             fontWeight: 'bold'
           }
+        },
+        axisBorder: {
+          show: false
+        },
+        axisTicks: {
+          show: false
         }
       }
     }

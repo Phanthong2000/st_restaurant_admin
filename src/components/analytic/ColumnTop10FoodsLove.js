@@ -53,10 +53,22 @@ function ColumnTop10FoodsLove() {
         dataLabels: {
           enabled: false
         },
+        grid: {
+          xaxis: {
+            lines: {
+              show: false
+            }
+          },
+          yaxis: {
+            lines: {
+              show: false
+            }
+          }
+        },
         xaxis: {
           categories: top10FoodsLove.name,
           title: {
-            text: 'Số lượt thích',
+            text: '',
             style: {
               fontWeight: 'bold',
               fontSize: '12px',
@@ -67,6 +79,12 @@ function ColumnTop10FoodsLove() {
             formatter(val) {
               return `${val.toFixed(0)}`;
             }
+          },
+          axisBorder: {
+            show: false
+          },
+          axisTicks: {
+            show: false
           }
         },
         yaxis: {
@@ -77,6 +95,12 @@ function ColumnTop10FoodsLove() {
               fontSize: '8px',
               fontWeight: 'bold'
             }
+          },
+          axisBorder: {
+            show: false
+          },
+          axisTicks: {
+            show: false
           }
         },
         tooltip: {
@@ -94,7 +118,7 @@ function ColumnTop10FoodsLove() {
   }, [top10FoodsLove]);
   if (state.series === undefined) return null;
   return (
-    <Box sx={{ width: '50%', padding: '10px' }}>
+    <Box sx={{ width: '30%', padding: '10px' }}>
       <RootStyle>
         <ReactApexChart
           options={state.options}

@@ -389,133 +389,482 @@ export const actionColumnTypefoodFood = () => async (dispatch) => {
   );
 };
 
-export const actionColumnCustomersYear = (year) => async (dispatch) => {
-  const m1 = `${year}-01`;
-  const m2 = `${year}-02`;
-  const m3 = `${year}-03`;
-  const m4 = `${year}-04`;
-  const m5 = `${year}-05`;
-  const m6 = `${year}-06`;
-  const m7 = `${year}-07`;
-  const m8 = `${year}-08`;
-  const m9 = `${year}-09`;
-  const m10 = `${year}-10`;
-  const m11 = `${year}-11`;
-  const m12 = `${year}-12`;
-  const m1T = [];
-  const m1M = 0;
-  const m1F = 0;
-  const m2T = [];
-  const m2M = 0;
-  const m2F = 0;
-  const m3T = [];
-  const m3M = 0;
-  const m3F = 0;
-  const m4T = [];
-  const m4M = 0;
-  const m4F = 0;
-  const m5T = [];
-  const m5M = 0;
-  const m5F = 0;
-  const m6T = [];
-  const m6M = 0;
-  const m6F = 0;
-  const m7T = [];
-  const m7M = 0;
-  const m7F = 0;
-  const m8T = [];
-  const m8M = 0;
-  const m8F = 0;
-  const m9T = [];
-  const m9M = 0;
-  const m9F = 0;
-  const m10T = [];
-  const m10M = 0;
-  const m10F = 0;
-  const m11T = [];
-  const m11M = 0;
-  const m11F = 0;
-  const m12T = [];
-  const m12M = 0;
-  const m12F = 0;
-  const query = await axios.get(`${api}khachHang/list`, {
-    headers: {
-      Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
-    }
-  });
-  query.data.forEach((customer) => {
-    if (customer.createAt.substring(0, 7) === m1) {
-      m1T.push(customer);
-    } else if (customer.createAt.substring(0, 7) === m2) {
-      m2T.push(customer);
-    } else if (customer.createAt.substring(0, 7) === m3) {
-      m3T.push(customer);
-    } else if (customer.createAt.substring(0, 7) === m4) {
-      m4T.push(customer);
-    } else if (customer.createAt.substring(0, 7) === m5) {
-      m5T.push(customer);
-    } else if (customer.createAt.substring(0, 7) === m6) {
-      m6T.push(customer);
-    } else if (customer.createAt.substring(0, 7) === m7) {
-      m7T.push(customer);
-    } else if (customer.createAt.substring(0, 7) === m8) {
-      m8T.push(customer);
-    } else if (customer.createAt.substring(0, 7) === m9) {
-      m9T.push(customer);
-    } else if (customer.createAt.substring(0, 7) === m10) {
-      m10T.push(customer);
-    } else if (customer.createAt.substring(0, 7) === m11) {
-      m11T.push(customer);
-    } else if (customer.createAt.substring(0, 7) === m12) {
-      m12T.push(customer);
-    }
-  });
-  dispatch(
-    actionAnalyticColumnCustomersYear({
-      total: [
-        m1T.length,
-        m2T.length,
-        m3T.length,
-        m4T.length,
-        m5T.length,
-        m6T.length,
-        m7T.length,
-        m8T.length,
-        m9T.length,
-        m10T.length,
-        m11T.length,
-        m12T.length
-      ],
-      male: [
-        checkGender(m1T, 'Nam'),
-        checkGender(m2T, 'Nam'),
-        checkGender(m3T, 'Nam'),
-        checkGender(m4T, 'Nam'),
-        checkGender(m5T, 'Nam'),
-        checkGender(m6T, 'Nam'),
-        checkGender(m7T, 'Nam'),
-        checkGender(m8T, 'Nam'),
-        checkGender(m9T, 'Nam'),
-        checkGender(m10T, 'Nam'),
-        checkGender(m11T, 'Nam'),
-        checkGender(m12T, 'Nam')
-      ],
-      female: [
-        checkGender(m1T, 'Nữ'),
-        checkGender(m2T, 'Nữ'),
-        checkGender(m3T, 'Nữ'),
-        checkGender(m4T, 'Nữ'),
-        checkGender(m5T, 'Nữ'),
-        checkGender(m6T, 'Nữ'),
-        checkGender(m7T, 'Nữ'),
-        checkGender(m8T, 'Nữ'),
-        checkGender(m9T, 'Nữ'),
-        checkGender(m10T, 'Nữ'),
-        checkGender(m11T, 'Nữ'),
-        checkGender(m12T, 'Nữ')
-      ]
-    })
-  );
+export const actionColumnCustomersYear = (type, month, year) => async (dispatch) => {
+  if (type === 'year') {
+    const m1 = `${year}-01`;
+    const m2 = `${year}-02`;
+    const m3 = `${year}-03`;
+    const m4 = `${year}-04`;
+    const m5 = `${year}-05`;
+    const m6 = `${year}-06`;
+    const m7 = `${year}-07`;
+    const m8 = `${year}-08`;
+    const m9 = `${year}-09`;
+    const m10 = `${year}-10`;
+    const m11 = `${year}-11`;
+    const m12 = `${year}-12`;
+    const m1T = [];
+    const m2T = [];
+    const m3T = [];
+    const m4T = [];
+    const m5T = [];
+    const m6T = [];
+    const m7T = [];
+    const m8T = [];
+    const m9T = [];
+    const m10T = [];
+    const m11T = [];
+    const m12T = [];
+    const query = await axios.get(`${api}khachHang/list`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+      }
+    });
+    query.data.forEach((customer) => {
+      if (customer.createAt.substring(0, 7) === m1) {
+        m1T.push(customer);
+      } else if (customer.createAt.substring(0, 7) === m2) {
+        m2T.push(customer);
+      } else if (customer.createAt.substring(0, 7) === m3) {
+        m3T.push(customer);
+      } else if (customer.createAt.substring(0, 7) === m4) {
+        m4T.push(customer);
+      } else if (customer.createAt.substring(0, 7) === m5) {
+        m5T.push(customer);
+      } else if (customer.createAt.substring(0, 7) === m6) {
+        m6T.push(customer);
+      } else if (customer.createAt.substring(0, 7) === m7) {
+        m7T.push(customer);
+      } else if (customer.createAt.substring(0, 7) === m8) {
+        m8T.push(customer);
+      } else if (customer.createAt.substring(0, 7) === m9) {
+        m9T.push(customer);
+      } else if (customer.createAt.substring(0, 7) === m10) {
+        m10T.push(customer);
+      } else if (customer.createAt.substring(0, 7) === m11) {
+        m11T.push(customer);
+      } else if (customer.createAt.substring(0, 7) === m12) {
+        m12T.push(customer);
+      }
+    });
+    dispatch(
+      actionAnalyticColumnCustomersYear({
+        total: [
+          m1T.length,
+          m2T.length,
+          m3T.length,
+          m4T.length,
+          m5T.length,
+          m6T.length,
+          m7T.length,
+          m8T.length,
+          m9T.length,
+          m10T.length,
+          m11T.length,
+          m12T.length
+        ],
+        male: [
+          checkGender(m1T, 'Nam'),
+          checkGender(m2T, 'Nam'),
+          checkGender(m3T, 'Nam'),
+          checkGender(m4T, 'Nam'),
+          checkGender(m5T, 'Nam'),
+          checkGender(m6T, 'Nam'),
+          checkGender(m7T, 'Nam'),
+          checkGender(m8T, 'Nam'),
+          checkGender(m9T, 'Nam'),
+          checkGender(m10T, 'Nam'),
+          checkGender(m11T, 'Nam'),
+          checkGender(m12T, 'Nam')
+        ],
+        female: [
+          checkGender(m1T, 'Nữ'),
+          checkGender(m2T, 'Nữ'),
+          checkGender(m3T, 'Nữ'),
+          checkGender(m4T, 'Nữ'),
+          checkGender(m5T, 'Nữ'),
+          checkGender(m6T, 'Nữ'),
+          checkGender(m7T, 'Nữ'),
+          checkGender(m8T, 'Nữ'),
+          checkGender(m9T, 'Nữ'),
+          checkGender(m10T, 'Nữ'),
+          checkGender(m11T, 'Nữ'),
+          checkGender(m12T, 'Nữ')
+        ],
+        totalSum:
+          m1T.length +
+          m2T.length +
+          m3T.length +
+          m4T.length +
+          m5T.length +
+          m6T.length +
+          m7T.length +
+          m8T.length +
+          m9T.length +
+          m10T.length +
+          m11T.length +
+          m12T.length,
+        maleSum:
+          checkGender(m1T, 'Nam') +
+          checkGender(m2T, 'Nam') +
+          checkGender(m3T, 'Nam') +
+          checkGender(m4T, 'Nam') +
+          checkGender(m5T, 'Nam') +
+          checkGender(m6T, 'Nam') +
+          checkGender(m7T, 'Nam') +
+          checkGender(m8T, 'Nam') +
+          checkGender(m9T, 'Nam') +
+          checkGender(m10T, 'Nam') +
+          checkGender(m11T, 'Nam') +
+          checkGender(m12T, 'Nam'),
+        femaleSum:
+          checkGender(m1T, 'Nữ') +
+          checkGender(m2T, 'Nữ') +
+          checkGender(m3T, 'Nữ') +
+          checkGender(m4T, 'Nữ') +
+          checkGender(m5T, 'Nữ') +
+          checkGender(m6T, 'Nữ') +
+          checkGender(m7T, 'Nữ') +
+          checkGender(m8T, 'Nữ') +
+          checkGender(m9T, 'Nữ') +
+          checkGender(m10T, 'Nữ') +
+          checkGender(m11T, 'Nữ') +
+          checkGender(m12T, 'Nữ')
+      })
+    );
+  } else {
+    const m1 = `${year}-${month}-01`;
+    const m2 = `${year}-${month}-02`;
+    const m3 = `${year}-${month}-03`;
+    const m4 = `${year}-${month}-04`;
+    const m5 = `${year}-${month}-05`;
+    const m6 = `${year}-${month}-06`;
+    const m7 = `${year}-${month}-07`;
+    const m8 = `${year}-${month}-08`;
+    const m9 = `${year}-${month}-09`;
+    const m10 = `${year}-${month}-10`;
+    const m11 = `${year}-${month}-11`;
+    const m12 = `${year}-${month}-12`;
+    const m13 = `${year}-${month}-13`;
+    const m14 = `${year}-${month}-14`;
+    const m15 = `${year}-${month}-15`;
+    const m16 = `${year}-${month}-16`;
+    const m17 = `${year}-${month}-17`;
+    const m18 = `${year}-${month}-18`;
+    const m19 = `${year}-${month}-19`;
+    const m20 = `${year}-${month}-20`;
+    const m21 = `${year}-${month}-21`;
+    const m22 = `${year}-${month}-22`;
+    const m23 = `${year}-${month}-23`;
+    const m24 = `${year}-${month}-24`;
+    const m25 = `${year}-${month}-25`;
+    const m26 = `${year}-${month}-26`;
+    const m27 = `${year}-${month}-27`;
+    const m28 = `${year}-${month}-28`;
+    const m29 = `${year}-${month}-29`;
+    const m30 = `${year}-${month}-30`;
+    const m31 = `${year}-${month}-31`;
+    const m1T = [];
+    const m2T = [];
+    const m3T = [];
+    const m4T = [];
+    const m5T = [];
+    const m6T = [];
+    const m7T = [];
+    const m8T = [];
+    const m9T = [];
+    const m10T = [];
+    const m11T = [];
+    const m12T = [];
+    const m13T = [];
+    const m14T = [];
+    const m15T = [];
+    const m16T = [];
+    const m17T = [];
+    const m18T = [];
+    const m19T = [];
+    const m20T = [];
+    const m21T = [];
+    const m22T = [];
+    const m23T = [];
+    const m24T = [];
+    const m25T = [];
+    const m26T = [];
+    const m27T = [];
+    const m28T = [];
+    const m29T = [];
+    const m30T = [];
+    const m31T = [];
+    const query = await axios.get(`${api}khachHang/list`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+      }
+    });
+    query.data.forEach((customer) => {
+      if (customer.createAt.substring(0, 7) === m1) {
+        m1T.push(customer);
+      } else if (customer.createAt.substring(0, 10) === m2) {
+        m2T.push(customer);
+      } else if (customer.createAt.substring(0, 10) === m3) {
+        m3T.push(customer);
+      } else if (customer.createAt.substring(0, 10) === m4) {
+        m4T.push(customer);
+      } else if (customer.createAt.substring(0, 10) === m5) {
+        m5T.push(customer);
+      } else if (customer.createAt.substring(0, 10) === m6) {
+        m6T.push(customer);
+      } else if (customer.createAt.substring(0, 10) === m7) {
+        m7T.push(customer);
+      } else if (customer.createAt.substring(0, 10) === m8) {
+        m8T.push(customer);
+      } else if (customer.createAt.substring(0, 10) === m9) {
+        m9T.push(customer);
+      } else if (customer.createAt.substring(0, 10) === m10) {
+        m10T.push(customer);
+      } else if (customer.createAt.substring(0, 10) === m11) {
+        m11T.push(customer);
+      } else if (customer.createAt.substring(0, 10) === m12) {
+        m12T.push(customer);
+      } else if (customer.createAt.substring(0, 10) === m13) {
+        m13T.push(customer);
+      } else if (customer.createAt.substring(0, 10) === m14) {
+        m14T.push(customer);
+      } else if (customer.createAt.substring(0, 10) === m15) {
+        m15T.push(customer);
+      } else if (customer.createAt.substring(0, 10) === m16) {
+        m16T.push(customer);
+      } else if (customer.createAt.substring(0, 10) === m17) {
+        m17T.push(customer);
+      } else if (customer.createAt.substring(0, 10) === m18) {
+        m18T.push(customer);
+      } else if (customer.createAt.substring(0, 10) === m19) {
+        m19T.push(customer);
+      } else if (customer.createAt.substring(0, 10) === m20) {
+        m20T.push(customer);
+      } else if (customer.createAt.substring(0, 10) === m21) {
+        m21T.push(customer);
+      } else if (customer.createAt.substring(0, 10) === m22) {
+        m22T.push(customer);
+      } else if (customer.createAt.substring(0, 10) === m23) {
+        m23T.push(customer);
+      } else if (customer.createAt.substring(0, 10) === m24) {
+        m24T.push(customer);
+      } else if (customer.createAt.substring(0, 10) === m25) {
+        m25T.push(customer);
+      } else if (customer.createAt.substring(0, 10) === m26) {
+        m26T.push(customer);
+      } else if (customer.createAt.substring(0, 10) === m27) {
+        m27T.push(customer);
+      } else if (customer.createAt.substring(0, 10) === m28) {
+        m28T.push(customer);
+      } else if (customer.createAt.substring(0, 10) === m29) {
+        m29T.push(customer);
+      } else if (customer.createAt.substring(0, 10) === m30) {
+        m30T.push(customer);
+      } else if (customer.createAt.substring(0, 10) === m31) {
+        m31T.push(customer);
+      }
+    });
+    dispatch(
+      actionAnalyticColumnCustomersYear({
+        total: [
+          m1T.length,
+          m2T.length,
+          m3T.length,
+          m4T.length,
+          m5T.length,
+          m6T.length,
+          m7T.length,
+          m8T.length,
+          m9T.length,
+          m10T.length,
+          m11T.length,
+          m12T.length,
+          m13T.length,
+          m14T.length,
+          m15T.length,
+          m16T.length,
+          m17T.length,
+          m18T.length,
+          m19T.length,
+          m20T.length,
+          m21T.length,
+          m22T.length,
+          m23T.length,
+          m24T.length,
+          m25T.length,
+          m26T.length,
+          m27T.length,
+          m28T.length,
+          m29T.length,
+          m30T.length,
+          m31T.length
+        ],
+        male: [
+          checkGender(m1T, 'Nam'),
+          checkGender(m2T, 'Nam'),
+          checkGender(m3T, 'Nam'),
+          checkGender(m4T, 'Nam'),
+          checkGender(m5T, 'Nam'),
+          checkGender(m6T, 'Nam'),
+          checkGender(m7T, 'Nam'),
+          checkGender(m8T, 'Nam'),
+          checkGender(m9T, 'Nam'),
+          checkGender(m10T, 'Nam'),
+          checkGender(m11T, 'Nam'),
+          checkGender(m12T, 'Nam'),
+          checkGender(m13T, 'Nam'),
+          checkGender(m14T, 'Nam'),
+          checkGender(m15T, 'Nam'),
+          checkGender(m16T, 'Nam'),
+          checkGender(m17T, 'Nam'),
+          checkGender(m18T, 'Nam'),
+          checkGender(m19T, 'Nam'),
+          checkGender(m20T, 'Nam'),
+          checkGender(m21T, 'Nam'),
+          checkGender(m22T, 'Nam'),
+          checkGender(m23T, 'Nam'),
+          checkGender(m24T, 'Nam'),
+          checkGender(m25T, 'Nam'),
+          checkGender(m26T, 'Nam'),
+          checkGender(m27T, 'Nam'),
+          checkGender(m28T, 'Nam'),
+          checkGender(m29T, 'Nam'),
+          checkGender(m30T, 'Nam'),
+          checkGender(m31T, 'Nam')
+        ],
+        female: [
+          checkGender(m1T, 'Nữ'),
+          checkGender(m2T, 'Nữ'),
+          checkGender(m3T, 'Nữ'),
+          checkGender(m4T, 'Nữ'),
+          checkGender(m5T, 'Nữ'),
+          checkGender(m6T, 'Nữ'),
+          checkGender(m7T, 'Nữ'),
+          checkGender(m8T, 'Nữ'),
+          checkGender(m9T, 'Nữ'),
+          checkGender(m10T, 'Nữ'),
+          checkGender(m11T, 'Nữ'),
+          checkGender(m12T, 'Nữ'),
+          checkGender(m13T, 'Nữ'),
+          checkGender(m14T, 'Nữ'),
+          checkGender(m15T, 'Nữ'),
+          checkGender(m16T, 'Nữ'),
+          checkGender(m17T, 'Nữ'),
+          checkGender(m18T, 'Nữ'),
+          checkGender(m19T, 'Nữ'),
+          checkGender(m20T, 'Nữ'),
+          checkGender(m21T, 'Nữ'),
+          checkGender(m22T, 'Nữ'),
+          checkGender(m23T, 'Nữ'),
+          checkGender(m24T, 'Nữ'),
+          checkGender(m25T, 'Nữ'),
+          checkGender(m26T, 'Nữ'),
+          checkGender(m27T, 'Nữ'),
+          checkGender(m28T, 'Nữ'),
+          checkGender(m29T, 'Nữ'),
+          checkGender(m30T, 'Nữ'),
+          checkGender(m31T, 'Nữ')
+        ],
+        totalSum:
+          m1T.length +
+          m2T.length +
+          m3T.length +
+          m4T.length +
+          m5T.length +
+          m6T.length +
+          m7T.length +
+          m8T.length +
+          m9T.length +
+          m10T.length +
+          m11T.length +
+          m12T.length +
+          m13T.length +
+          m14T.length +
+          m15T.length +
+          m16T.length +
+          m17T.length +
+          m18T.length +
+          m19T.length +
+          m20T.length +
+          m21T.length +
+          m22T.length +
+          m23T.length +
+          m24T.length +
+          m25T.length +
+          m26T.length +
+          m27T.length +
+          m28T.length +
+          m29T.length +
+          m30T.length +
+          m31T.length,
+        maleSum:
+          checkGender(m1T, 'Nam') +
+          checkGender(m2T, 'Nam') +
+          checkGender(m3T, 'Nam') +
+          checkGender(m4T, 'Nam') +
+          checkGender(m5T, 'Nam') +
+          checkGender(m6T, 'Nam') +
+          checkGender(m7T, 'Nam') +
+          checkGender(m8T, 'Nam') +
+          checkGender(m9T, 'Nam') +
+          checkGender(m10T, 'Nam') +
+          checkGender(m11T, 'Nam') +
+          checkGender(m12T, 'Nam') +
+          checkGender(m13T, 'Nam') +
+          checkGender(m14T, 'Nam') +
+          checkGender(m15T, 'Nam') +
+          checkGender(m16T, 'Nam') +
+          checkGender(m17T, 'Nam') +
+          checkGender(m18T, 'Nam') +
+          checkGender(m19T, 'Nam') +
+          checkGender(m20T, 'Nam') +
+          checkGender(m21T, 'Nam') +
+          checkGender(m22T, 'Nam') +
+          checkGender(m23T, 'Nam') +
+          checkGender(m24T, 'Nam') +
+          checkGender(m25T, 'Nam') +
+          checkGender(m26T, 'Nam') +
+          checkGender(m27T, 'Nam') +
+          checkGender(m28T, 'Nam') +
+          checkGender(m29T, 'Nam') +
+          checkGender(m30T, 'Nam') +
+          checkGender(m31T, 'Nam'),
+        femaleSum:
+          checkGender(m1T, 'Nữ') +
+          checkGender(m2T, 'Nữ') +
+          checkGender(m3T, 'Nữ') +
+          checkGender(m4T, 'Nữ') +
+          checkGender(m5T, 'Nữ') +
+          checkGender(m6T, 'Nữ') +
+          checkGender(m7T, 'Nữ') +
+          checkGender(m8T, 'Nữ') +
+          checkGender(m9T, 'Nữ') +
+          checkGender(m10T, 'Nữ') +
+          checkGender(m11T, 'Nữ') +
+          checkGender(m12T, 'Nữ') +
+          checkGender(m13T, 'Nữ') +
+          checkGender(m14T, 'Nữ') +
+          checkGender(m15T, 'Nữ') +
+          checkGender(m16T, 'Nữ') +
+          checkGender(m17T, 'Nữ') +
+          checkGender(m18T, 'Nữ') +
+          checkGender(m19T, 'Nữ') +
+          checkGender(m20T, 'Nữ') +
+          checkGender(m21T, 'Nữ') +
+          checkGender(m22T, 'Nữ') +
+          checkGender(m23T, 'Nữ') +
+          checkGender(m24T, 'Nữ') +
+          checkGender(m25T, 'Nữ') +
+          checkGender(m26T, 'Nữ') +
+          checkGender(m27T, 'Nữ') +
+          checkGender(m28T, 'Nữ') +
+          checkGender(m29T, 'Nữ') +
+          checkGender(m30T, 'Nữ') +
+          checkGender(m31T, 'Nữ')
+      })
+    );
+  }
 };
 
 const checkGender = (data, condition) => data.filter((item) => item.gioiTinh === condition).length;
@@ -678,13 +1027,15 @@ export const actionGetAllOrders = () => async (dispatch) => {
 
 export const actionGetTop10FoodsLove = () => async (dispatch) => {
   const data = await axios(`${api}monAn/list`);
-  const temp = data.data.filter((food) => food.thich);
-  const tempSort = temp.sort((a, b) => b.thich.length - a.thich.length);
+  const temp = data.data.filter((food) => food.listKhachHangThichMonAn);
+  const tempSort = temp.sort(
+    (a, b) => b.listKhachHangThichMonAn.length - a.listKhachHangThichMonAn.length
+  );
   const name = [];
   const value = [];
   tempSort.slice(0, 10).forEach((food) => {
     name.push(food.tenMonAn);
-    value.push(food.thich.length);
+    value.push(food.listKhachHangThichMonAn.length);
   });
   dispatch(
     actionAnalyticGetTop10FoodsLove({
