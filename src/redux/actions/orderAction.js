@@ -225,10 +225,8 @@ export const actionGetTotalNow = () => (dispatch) => {
       );
       let total = 0;
       allOrders.forEach((order) => {
-        order.donDatBan.listLoaiBan.forEach((loaiBan) => {
-          loaiBan.listChiTietDonDatBan.forEach((item) => {
-            total += item.monAn.donGia * item.soLuong;
-          });
+        order.donDatBan.listChiTietDonDatBan.forEach((item) => {
+          total += item.monAn.donGia * item.soLuong;
         });
       });
       dispatch(actionOrderGetTotalNow(total));

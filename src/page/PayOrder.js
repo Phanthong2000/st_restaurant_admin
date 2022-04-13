@@ -69,12 +69,12 @@ const BoxLeft = styled(Grid)(({ theme }) => ({
 const BoxRight = styled(Grid)(({ theme }) => ({
   width: '100%',
   padding: theme.spacing(2, 1),
-  minHeight: `${heightScreen - 100}px`
+  height: `${heightScreen - 100}px`
 }));
 const InputWrapper = styled(Box)(({ theme }) => ({
   width: '100%',
   alignItems: 'center',
-  padding: theme.spacing(0.5, 1),
+  padding: theme.spacing(1),
   borderRadius: '20px'
 }));
 const TitleInformation = styled(Typography)(({ theme }) => ({
@@ -128,6 +128,41 @@ const ButtonConfirm = styled(Button)(({ theme }) => ({
     color: theme.palette.gray
   }
 }));
+const BoxTableTable = styled(Card)(({ theme }) => ({
+  width: '100%',
+  padding: '10px',
+  marginTop: '10px'
+}));
+function TableItem({ table }) {
+  const BoxTable = styled(Grid)(({ theme }) => ({
+    width: '100%',
+    height: '100px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    border: `1px solid ${theme.palette.main}`
+  }));
+  const Title = styled(Typography)(({ theme }) => ({
+    fontSize: '14px',
+    color: theme.palette.gray,
+    fontWeight: 'bold'
+  }));
+  const IconTable = styled(Icon)(({ theme }) => ({
+    width: '40px',
+    height: '40px',
+    color: theme.palette.gray
+  }));
+  return (
+    <Grid sx={{ padding: '5px', width: '100%' }} item xs={4} sm={4} md={2} lg={2} xl={2}>
+      <BoxTable>
+        <Title>{table.tenBan}</Title>
+        <IconTable icon="ic:round-table-restaurant" />
+        <Title>Số người: {table.soNguoiToiDa}</Title>
+      </BoxTable>
+    </Grid>
+  );
+}
 function TableRowFood({ food, index }) {
   const RootStyle = styled(TableRow)(({ theme }) => ({
     background: theme.palette.white
@@ -212,7 +247,7 @@ function ModalConfirm({ open, close, confirm }) {
     </Modal>
   );
 }
-function TableFood({ tab, table }) {
+function TableFood({ tab, listChiTietDonDatBan }) {
   const headerFood = [
     { name: 'STT', minWidth: '10%' },
     { name: 'Tên món ăn', minWidth: '25%' },
@@ -220,7 +255,6 @@ function TableFood({ tab, table }) {
     { name: 'Ghi chú', minWidth: '20%' },
     { name: 'Thành tiền', minWidth: '20%' }
   ];
-  if (tab !== table.order) return null;
   return (
     <Box sx={{ padding: '10px' }}>
       <TableContainer>
@@ -243,7 +277,7 @@ function TableFood({ tab, table }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {table.listChiTietDonDatBan.map((item, index) => (
+            {listChiTietDonDatBan.map((item, index) => (
               <TableRowFood key={index} index={index} food={item} />
             ))}
           </TableBody>
@@ -275,8 +309,6 @@ function PayOrder() {
           type: 'error'
         })
       );
-    } else {
-      setTab(bookPayOrder.listLoaiBan.at(0).order);
     }
     return function () {
       return null;
@@ -287,19 +319,15 @@ function PayOrder() {
   };
   const getDeposit = () => {
     let total = 0;
-    bookPayOrder.listLoaiBan.forEach((loaiBan) => {
-      loaiBan.listChiTietDonDatBan.forEach((item) => {
-        if (!item.ghiChu || item.ghiChu === 'Thêm đầu') total += item.monAn.donGia * item.soLuong;
-      });
+    bookPayOrder.listChiTietDonDatBan.forEach((item) => {
+      if (!item.ghiChu || item.ghiChu === 'Ban đầu') total += item.monAn.donGia * item.soLuong;
     });
     return total * 0.3;
   };
   const getTotal = () => {
     let total = 0;
-    bookPayOrder.listLoaiBan.forEach((loaiBan) => {
-      loaiBan.listChiTietDonDatBan.forEach((item) => {
-        total += item.monAn.donGia * item.soLuong;
-      });
+    bookPayOrder.listChiTietDonDatBan.forEach((item) => {
+      total += item.monAn.donGia * item.soLuong;
     });
     return total;
   };
@@ -398,20 +426,28 @@ function PayOrder() {
           <BoxLeft item xs={12} sm={12} md={12} lg={8} xl={8}>
             <Title>Thanh toán đặt bàn</Title>
             <Card sx={{ width: '100%', marginTop: '10px', padding: '10px', background: '#fff' }}>
-              <Typography sx={{ fontSize: '20px', fontWeight: 'bold' }}>
+              <Typography sx={{ fontSize: '18px', fontWeight: 'bold', fontFamily: 'sans-serif' }}>
                 Danh sách món ăn đã đặt
               </Typography>
               <Box>
-                <Tabs value={tab} onChange={handleChange}>
+                {/* <Tabs value={tab} onChange={handleChange}>
                   {bookPayOrder.listLoaiBan.map((item, index) => (
                     <Tab label={`Loại: ${item.order}`} key={index} value={item.order} />
                   ))}
-                </Tabs>
-                {bookPayOrder.listLoaiBan.map((item, index) => (
-                  <TableFood key={index} table={item} tab={tab} />
-                ))}
+                </Tabs> */}
+                <TableFood listChiTietDonDatBan={bookPayOrder.listChiTietDonDatBan} tab={tab} />
               </Box>
             </Card>
+            <BoxTableTable>
+              <Typography sx={{ fontSize: '18px', fontWeight: 'bold', fontFamily: 'sans-serif' }}>
+                Danh sách bàn
+              </Typography>
+              <Grid container sx={{ width: '100%' }}>
+                {bookPayOrder.listBan.map((item, index) => (
+                  <TableItem key={index} table={item} />
+                ))}
+              </Grid>
+            </BoxTableTable>
             <Grid container sx={{ width: '100%', marginTop: '20px' }}>
               <Grid
                 sx={{ width: '100%', padding: '10px' }}
@@ -553,10 +589,6 @@ function PayOrder() {
               <InputWrapper>
                 <TitleInformation>Thời gian đặt bàn</TitleInformation>
                 <InputInfo value={`${bookPayOrder.thoiGianDuKienSuDung / (60 * 1000)}p`} />
-              </InputWrapper>
-              <InputWrapper>
-                <TitleInformation>Khu vực</TitleInformation>
-                <InputInfo value={`${bookPayOrder.khuVuc ? bookPayOrder.khuVuc.tenKhuVuc : ''}`} />
               </InputWrapper>
               <ButtonConfirm onClick={openModalConfirm} disabled={wayPay.id === undefined}>
                 Xác nhận thanh toán

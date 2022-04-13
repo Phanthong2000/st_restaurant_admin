@@ -173,15 +173,19 @@ function Book() {
       width: '10%'
     },
     {
+      name: 'Thời gian sử dụng dự kiến',
+      width: '20%'
+    },
+    {
       name: 'Thời gian đặt bàn',
       width: '10%'
     },
     {
-      name: 'Số loại bàn',
+      name: 'Số lượng món ăn',
       width: '10%'
     },
     {
-      name: 'Khu vực',
+      name: 'Số lượng khách',
       width: '10%'
     },
     {

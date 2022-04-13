@@ -62,11 +62,7 @@ function NewBooks() {
       width: '10%'
     },
     {
-      name: 'Số loại bàn',
-      width: '10%'
-    },
-    {
-      name: 'Khu vực',
+      name: 'Số lượng món ăn',
       width: '10%'
     },
     {

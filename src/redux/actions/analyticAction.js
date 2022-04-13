@@ -162,17 +162,13 @@ export const actionRevenueDateNow = () => (dispatch) => {
       let total = 0;
       let totalLast = 0;
       allOrders.forEach((order) => {
-        order.donDatBan.listLoaiBan.forEach((loaiBan) => {
-          loaiBan.listChiTietDonDatBan.forEach((item) => {
-            total += item.monAn.donGia * item.soLuong;
-          });
+        order.donDatBan.listChiTietDonDatBan.forEach((item) => {
+          total += item.monAn.donGia * item.soLuong;
         });
       });
       allOrdersLast.forEach((order) => {
-        order.donDatBan.listLoaiBan.forEach((loaiBan) => {
-          loaiBan.listChiTietDonDatBan.forEach((item) => {
-            totalLast += item.monAn.donGia * item.soLuong;
-          });
+        order.donDatBan.listChiTietDonDatBan.forEach((item) => {
+          totalLast += item.monAn.donGia * item.soLuong;
         });
       });
       dispatch(actionAnalyticRevenueDateNow(total));
@@ -197,17 +193,13 @@ export const actionRevenueMonthNow = () => (dispatch) => {
       let total = 0;
       let totalLast = 0;
       allOrders.forEach((order) => {
-        order.donDatBan.listLoaiBan.forEach((loaiBan) => {
-          loaiBan.listChiTietDonDatBan.forEach((item) => {
-            total += item.monAn.donGia * item.soLuong;
-          });
+        order.donDatBan.listChiTietDonDatBan.forEach((item) => {
+          total += item.monAn.donGia * item.soLuong;
         });
       });
       allOrdersLast.forEach((order) => {
-        order.donDatBan.listLoaiBan.forEach((loaiBan) => {
-          loaiBan.listChiTietDonDatBan.forEach((item) => {
-            totalLast += item.monAn.donGia * item.soLuong;
-          });
+        order.donDatBan.listChiTietDonDatBan.forEach((item) => {
+          totalLast += item.monAn.donGia * item.soLuong;
         });
       });
       dispatch(actionAnalyticRevenueMonthNow(total));
@@ -229,17 +221,13 @@ export const actionRevenueYearNow = () => (dispatch) => {
       let total = 0;
       let totalLast = 0;
       allOrders.forEach((order) => {
-        order.donDatBan.listLoaiBan.forEach((loaiBan) => {
-          loaiBan.listChiTietDonDatBan.forEach((item) => {
-            total += item.monAn.donGia * item.soLuong;
-          });
+        order.donDatBan.listChiTietDonDatBan.forEach((item) => {
+          total += item.monAn.donGia * item.soLuong;
         });
       });
       allOrdersLast.forEach((order) => {
-        order.donDatBan.listLoaiBan.forEach((loaiBan) => {
-          loaiBan.listChiTietDonDatBan.forEach((item) => {
-            totalLast += item.monAn.donGia * item.soLuong;
-          });
+        order.donDatBan.listChiTietDonDatBan.forEach((item) => {
+          totalLast += item.monAn.donGia * item.soLuong;
         });
       });
       dispatch(actionAnalyticRevenueYearNow(total));
@@ -942,14 +930,10 @@ export const actionColumnRevenueOrder = (year) => async (dispatch) => {
 };
 
 const getTotalItem = (field) => {
-  console.log(field);
   let total = 0;
-  field.donDatBan.listLoaiBan.forEach((loaiBan) => {
-    loaiBan.listChiTietDonDatBan.forEach((item) => {
-      total += item.monAn.donGia * item.soLuong;
-    });
+  field.donDatBan.listChiTietDonDatBan.forEach((item) => {
+    total += item.monAn.donGia * item.soLuong;
   });
-  console.log('total', total);
   return total;
 };
 
