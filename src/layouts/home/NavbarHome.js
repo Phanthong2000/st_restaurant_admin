@@ -9,7 +9,8 @@ import {
   SwipeableDrawer,
   List,
   ListItem,
-  ListItemButton
+  ListItemButton,
+  Skeleton
 } from '@mui/material';
 import { Icon } from '@iconify/react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -41,7 +42,7 @@ const BoxLogo = styled(Box)(({ theme }) => ({
 }));
 const Logo = styled(Typography)(({ theme }) => ({
   fontWeight: 'bold',
-  fontSize: '20px',
+  fontSize: '18px',
   color: theme.palette.main
 }));
 const Admin = styled(Typography)(({ theme }) => ({
@@ -55,6 +56,44 @@ const Admin = styled(Typography)(({ theme }) => ({
 const BoxAvatar = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center'
+}));
+const AvatarAdmin = styled(Avatar)(({ theme }) => ({
+  width: '50px',
+  height: '50px',
+  outline: `1px solid ${theme.palette.main}`,
+  cursor: 'pointer'
+}));
+const WrapperAvatarAdmin = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  background: '#dcecf7',
+  borderRadius: '50px',
+  paddingRight: '20px',
+  width: '150px'
+}));
+const Username = styled(Typography)(({ theme }) => ({
+  fontSize: '18px',
+  fontFamily: theme.typography.fontFamily.primary,
+  marginLeft: '20px',
+  color: theme.palette.main,
+  fontWeight: 'bold'
+}));
+const WrapperIcon = styled(Box)(({ theme }) => ({
+  width: '45px',
+  height: '45px',
+  border: `1px solid lightgrey`,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  borderRadius: '50px',
+  marginRight: '20px',
+  cursor: 'pointer'
+}));
+const IconNav = styled(Icon)(({ theme }) => ({
+  width: '25px',
+  height: '25px',
+  color: theme.palette.main
 }));
 function NavbarHome() {
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -92,45 +131,53 @@ function NavbarHome() {
             <Admin>Quản lý</Admin>
           </Box>
           <IconButton onClick={openMenu} sx={{ marginLeft: '10px' }}>
-            <Icon icon="majesticons:menu" />
+            <IconNav style={{ width: '35px', height: '35px' }} icon="heroicons-solid:menu-alt-2" />
           </IconButton>
         </BoxLogo>
       </Responsive>
       <Typography> </Typography>
-      {!boxProfile ? (
-        <BoxAvatar>
-          <IconButton
-            onClick={(e) => {
-              e.stopPropagation();
-              dispatch(actionUserBoxFeedBack(!boxFeedBack));
-            }}
-            sx={{ marginRight: '20px' }}
-          >
-            <Badge color="error" badgeContent={badgeFeedback}>
-              <Icon icon="codicon:feedback" />
-            </Badge>
-          </IconButton>
-          <IconButton
-            onClick={(e) => {
-              e.stopPropagation();
-              dispatch(actionUserBoxNotification(!boxNotification));
-            }}
-            sx={{ marginRight: '20px' }}
-          >
-            <Badge color="error" badgeContent={badgeNotification}>
-              <Icon icon="clarity:notification-line" />
-            </Badge>
-          </IconButton>
-          <Avatar
-            sx={{ width: '40px', height: '40px', cursor: 'pointer' }}
-            onClick={(e) => {
-              e.stopPropagation();
-              dispatch(actionUserBoxProfile(true));
-            }}
-            src={user.anhDaiDien}
-          />
-        </BoxAvatar>
-      ) : (
+      {/* {!boxProfile ? ( */}
+      <BoxAvatar>
+        <WrapperIcon
+          onClick={(e) => {
+            e.stopPropagation();
+            dispatch(actionUserBoxFeedBack(!boxFeedBack));
+          }}
+        >
+          <Badge color="primary" badgeContent={badgeFeedback}>
+            <IconNav icon="codicon:feedback" />{' '}
+          </Badge>
+        </WrapperIcon>
+
+        <WrapperIcon
+          onClick={(e) => {
+            e.stopPropagation();
+            dispatch(actionUserBoxNotification(!boxNotification));
+          }}
+        >
+          <Badge color="primary" badgeContent={badgeNotification}>
+            <IconNav icon="clarity:notification-line" />
+          </Badge>
+        </WrapperIcon>
+        <WrapperAvatarAdmin>
+          {user.id === undefined ? (
+            <Skeleton variant="circular" sx={{ width: '50px', height: '50px' }} />
+          ) : (
+            <AvatarAdmin
+              onClick={(e) => {
+                e.stopPropagation();
+                dispatch(actionUserBoxProfile(!boxProfile));
+              }}
+              src={user.anhDaiDien}
+            />
+          )}
+          <Username>
+            {user.id !== undefined &&
+              `${user.hoTen.substring(user.hoTen.lastIndexOf(' '), user.hoTen.length)}`}
+          </Username>
+        </WrapperAvatarAdmin>
+      </BoxAvatar>
+      {/* ) : (
         <Box
           onClick={() => dispatch(actionUserBoxProfile(false))}
           sx={{
@@ -149,7 +196,7 @@ function NavbarHome() {
             icon="bxs:caret-right-circle"
           />
         </Box>
-      )}
+      )} */}
       <SwipeableDrawer open={openDrawer} onClose={() => setOpenDrawer(false)}>
         <List sx={{ width: '250px', minHeight: '100%', background: '#fff' }}>
           {sidebarHomeConfig.map((item, index) => (

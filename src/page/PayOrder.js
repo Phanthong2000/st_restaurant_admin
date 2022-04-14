@@ -34,7 +34,8 @@ import {
   actionGetBooksByKeyword,
   actionGetOrdersNow,
   actionGetTotalNow,
-  actionNewBooks
+  actionNewBooks,
+  actionOrderModalPayOrder
 } from '../redux/actions/orderAction';
 import {
   actionOrderDateNow,
@@ -45,8 +46,10 @@ import {
   actionRevenueYearNow,
   actionGetAllOrders,
   actionColumnRevenueOrder,
-  actionColumnRevenueRevenue
+  actionColumnRevenueRevenue,
+  actionGetRevenueWeek
 } from '../redux/actions/analyticAction';
+import ModalPayOrder from '../components/order/ModalPayOrder';
 
 const heightScreen = window.innerHeight - 1;
 const RootStyle = styled(Box)(({ theme }) => ({
@@ -193,60 +196,6 @@ function PaymentItem({ payment, click, handleClose }) {
     </ListItemButton>
   );
 }
-function ModalConfirm({ open, close, confirm }) {
-  const BoxModal = styled(Card)(({ theme }) => ({
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '600px',
-    background: '#fff',
-    padding: theme.spacing(2, 2, 2),
-    display: 'block',
-    [theme.breakpoints.down('sm')]: {
-      width: '500px'
-    }
-  }));
-  const BoxTitle = styled(Box)(({ theme }) => ({
-    width: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between'
-  }));
-  const ButtonConfirm = styled(Button)(({ theme }) => ({
-    padding: theme.spacing(0.5, 2),
-    textTransform: 'none',
-    color: theme.palette.white,
-    background: theme.palette.main,
-    marginTop: '10px',
-    fontWeight: 'bold',
-    ':hover': {
-      background: theme.palette.mainHover
-    }
-  }));
-  return (
-    <Modal open={open} onClose={close}>
-      <BoxModal>
-        <BoxTitle>
-          <Typography sx={{ fontWeight: 'bold', fontSize: '20px' }}>Xác nhận thanh toán</Typography>
-          <IconButton onClick={close}>
-            <Icon icon="ep:close-bold" />
-          </IconButton>
-        </BoxTitle>
-        <Divider sx={{ margin: '10px 0px' }} />
-        <Box sx={{ width: '100%', textAlign: 'center', margin: '20px 0px' }}>
-          <Typography sx={{ fontWeight: 'bold', fontSize: '18px', color: 'gray' }}>
-            Nhắc nhở: Bạn nên thu tiền trước khi xác nhận thanh toán
-          </Typography>
-        </Box>
-        <Divider sx={{ margin: '10px 0px' }} />
-        <Box sx={{ width: '100%', textAlign: 'center' }}>
-          <ButtonConfirm onClick={confirm}>Xác nhận</ButtonConfirm>
-        </Box>
-      </BoxModal>
-    </Modal>
-  );
-}
 function TableFood({ tab, listChiTietDonDatBan }) {
   const headerFood = [
     { name: 'STT', minWidth: '10%' },
@@ -290,6 +239,7 @@ function PayOrder() {
   const user = useSelector((state) => state.user.user);
   const bookPayOrder = useSelector((state) => state.order.bookPayOrder);
   const allWayPay = useSelector((state) => state.order.allWayPay);
+  const modalPayOrder = useSelector((state) => state.order.modalPayOrder);
   const [wayPay, setWayPay] = useState({});
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -335,10 +285,9 @@ function PayOrder() {
     setWayPay(payment);
   };
   const openModalConfirm = () => {
-    setModalConfirm(true);
+    dispatch(actionOrderModalPayOrder(true));
   };
   const confirm = () => {
-    setModalConfirm(false);
     dispatch(
       actionUserBackdrop({
         status: true,
@@ -396,6 +345,7 @@ function PayOrder() {
             dispatch(actionOrderMonthNow());
             dispatch(actionRevenueYearNow());
             dispatch(actionOrderYearNow());
+            dispatch(actionGetRevenueWeek());
             dispatch(actionColumnRevenueOrder(new Date().getFullYear()));
             dispatch(actionColumnRevenueRevenue(new Date().getFullYear()));
             dispatch(
@@ -598,7 +548,14 @@ function PayOrder() {
         </BoxContent>
         <Box> </Box>
       </Scrollbar>
-      <ModalConfirm open={modalConfirm} close={() => setModalConfirm(false)} confirm={confirm} />
+      {modalPayOrder && (
+        <ModalPayOrder
+          open={modalConfirm}
+          close={() => setModalConfirm(false)}
+          getTotal={getTotal() + getTotal() * 0.1 - getDeposit()}
+          confirm={confirm}
+        />
+      )}
     </RootStyle>
   );
 }

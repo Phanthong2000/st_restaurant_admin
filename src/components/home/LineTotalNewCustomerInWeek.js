@@ -1,4 +1,4 @@
-import { Box, styled } from '@mui/material';
+import { Box, styled, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
 import { useSelector } from 'react-redux';
@@ -9,6 +9,11 @@ const RootStyle = styled(Box)(({ theme }) => ({
   borderRadius: '5px',
   border: `1px solid lightgrey`,
   padding: '10px'
+}));
+const Title = styled(Typography)(({ theme }) => ({
+  fontWeight: 'bold',
+  fontSize: '15px',
+  fontFamily: theme.typography.fontFamily.primary
 }));
 function LineTotalNewCustomerInWeek() {
   const newCustomer = useSelector((state) => state.customer.newCustomer);
@@ -68,12 +73,12 @@ function LineTotalNewCustomerInWeek() {
           }
         },
         title: {
-          text: 'Khách hàng mới trong tuần',
+          text: '',
           align: 'left',
           style: {
-            fontSize: '16px',
-            color: '#666',
-            fontFamily: 'inherit'
+            fontSize: '15px',
+            color: '#000',
+            fontFamily: 'san-serif'
           }
         },
         yaxis: {
@@ -98,14 +103,17 @@ function LineTotalNewCustomerInWeek() {
   }, [newCustomer]);
   if (optionsNewCustomer.series === undefined) return null;
   return (
-    <RootStyle>
-      <ReactApexChart
-        options={optionsNewCustomer.options}
-        series={optionsNewCustomer.series}
-        type="bar"
-        height={250}
-      />
-    </RootStyle>
+    <Box sx={{ width: '100%', padding: '10px' }}>
+      <RootStyle>
+        <Title>Khách hàng mới trong tuần</Title>
+        <ReactApexChart
+          options={optionsNewCustomer.options}
+          series={optionsNewCustomer.series}
+          type="bar"
+          height={250}
+        />
+      </RootStyle>
+    </Box>
   );
 }
 

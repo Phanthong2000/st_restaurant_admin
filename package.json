@@ -44,7 +44,6 @@
     "@mui/material": "^5.4.2",
     "@mui/utils": "^5.4.2",
     "@testing-library/jest-dom": "^5.16.2",
-    "antd": "^4.19.5",
     "aos": "^2.3.4",
     "apexcharts": "^3.33.2",
     "axios": "^0.26.0",

@@ -8,15 +8,20 @@ import { actionUserBoxProfile } from '../../redux/actions/userAction';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '300px',
-  background: 'lightgrey',
+  background: theme.palette.lightgrey,
   position: 'absolute',
   padding: theme.spacing(2),
   borderRadius: '10px',
   zIndex: 2,
-  top: 40,
-  right: 110,
-  [theme.breakpoints.only('xs')]: {
-    right: 10
+  top: 60,
+  right: 240,
+  [theme.breakpoints.down('md')]: {
+    right: 170,
+    top: 50
+  },
+  [theme.breakpoints.only('sm')]: {
+    right: 170,
+    top: 60
   }
 }));
 const ArrowToProfile = styled(Icon)(({ theme }) => ({
@@ -27,7 +32,7 @@ const ArrowToProfile = styled(Icon)(({ theme }) => ({
   zIndex: 3,
   right: -20,
   top: 15,
-  color: 'lightgrey'
+  color: theme.palette.lightgrey
 }));
 function BoxProfile() {
   const user = useSelector((state) => state.user.user);

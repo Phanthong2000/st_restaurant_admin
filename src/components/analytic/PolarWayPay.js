@@ -1,11 +1,13 @@
 import { Box, styled } from '@mui/material';
 import React, { useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
+import { useSelector } from 'react-redux';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%'
 }));
 function PolarWayPay() {
+  const user = useSelector((state) => state.user.user);
   const [state, setState] = useState({
     series: [
       {
@@ -99,6 +101,10 @@ function PolarWayPay() {
         axisTicks: {
           show: false
         }
+      },
+      tooltip: {
+        // eslint-disable-next-line react/no-unstable-nested-components
+        custom: ({ series, seriesIndex, dataPointIndex, w }) => `<img src={${user.anhDaiDien}} />`
       }
     }
   });

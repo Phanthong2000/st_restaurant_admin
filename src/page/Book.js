@@ -94,7 +94,7 @@ function Book() {
         if (
           new Date().getTime() -
             (Date.parse(booksByKeyword.at(i).thoiGianNhanBan) +
-              booksByKeyword.at(i).thoiGianDuKienSuDung * 60 * 1000) >
+              booksByKeyword.at(i).thoiGianDuKienSuDung) >
             0 &&
           booksByKeyword.at(i).trangThai === `0`
         ) {
@@ -104,7 +104,7 @@ function Book() {
         if (
           new Date().getTime() -
             (Date.parse(booksByKeyword.at(i).thoiGianNhanBan) +
-              booksByKeyword.at(i).thoiGianDuKienSuDung * 60 * 1000) <
+              booksByKeyword.at(i).thoiGianDuKienSuDung) <
             0 &&
           booksByKeyword.at(i).trangThai === `0`
         ) {

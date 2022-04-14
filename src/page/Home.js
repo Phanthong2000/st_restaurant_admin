@@ -13,10 +13,14 @@ import BoxCustomerDetail from './BoxCustomerDetail';
 import BoxTotalUser from '../components/home/BoxTotalUser';
 import BoxStatusUser from '../components/home/BoxStatusUser';
 import BoxUserJoin from '../components/home/BoxUserJoin';
+import AreaChartRevenueWeek from '../components/home/AreaChartRevenueWeek';
+import BoxQuickStat from '../components/home/BoxQuickStat';
 
+const heightScreen = window.innerHeight - 1;
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
-  display: 'flex'
+  display: 'flex',
+  background: '#f0f4f5'
 }));
 const BoxTotal = styled(Grid)(({ theme }) => ({
   width: '100%'
@@ -24,7 +28,7 @@ const BoxTotal = styled(Grid)(({ theme }) => ({
 function Home() {
   return (
     <RootStyle>
-      <Scrollbar alwaysShowTracks>
+      <Scrollbar thumbMinSize={0} alwaysShowTracks>
         <Box sx={{ width: '100%' }}>
           <BoxTotal container>
             <Grid sx={{ padding: '20px' }} item xs={12} sm={6} md={2.4} lg={2.4} xl={2.4}>
@@ -56,8 +60,15 @@ function Home() {
               <BoxCustomerDetail />
             </Grid>
           </Grid>
+          <AreaChartRevenueWeek />
         </Box>
-        <NewBooks />
+        <Box sx={{ width: '100%' }}>
+          <Grid sx={{ width: '100%' }} container>
+            <Grid sx={{ padding: '10px' }} item xs={6} sm={6} md={6} lg={4} xl={4}>
+              <BoxQuickStat />
+            </Grid>
+          </Grid>
+        </Box>
       </Scrollbar>
     </RootStyle>
   );

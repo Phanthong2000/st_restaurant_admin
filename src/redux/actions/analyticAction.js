@@ -29,7 +29,8 @@ import {
   ACTION_ANALYTIC_COLUMN_REVENUE_ORDER,
   ACTION_ANALYTIC_COLUMN_REVENUE_REVENUE,
   ACTION_ANALYTIC_GET_ALL_ORDERS,
-  ACTION_ANALYTIC_GET_TOP10_FOODS_LOVE
+  ACTION_ANALYTIC_GET_TOP10_FOODS_LOVE,
+  ACTION_ANALYTIC_GET_REVENUE_WEEK
 } from './types';
 
 export const actionAnalyticRevenueDateNow = (data) => ({
@@ -140,6 +141,10 @@ export const actionAnalyticGetAllOrders = (data) => ({
 });
 export const actionAnalyticGetTop10FoodsLove = (data) => ({
   type: ACTION_ANALYTIC_GET_TOP10_FOODS_LOVE,
+  payload: data
+});
+export const actionAnalyticGetRevenueWeek = (data) => ({
+  type: ACTION_ANALYTIC_GET_REVENUE_WEEK,
   payload: data
 });
 export const actionRevenueDateNow = () => (dispatch) => {
@@ -1027,4 +1032,64 @@ export const actionGetTop10FoodsLove = () => async (dispatch) => {
       value
     })
   );
+};
+
+export const actionGetRevenueWeek = () => async (dispatch) => {
+  const startOfWeek = Date.parse(moment().startOf('week').toDate());
+  const sunday = new Date(startOfWeek);
+  const sundayString = moment(sunday).format('YYYY-MM-DD');
+  const monday = new Date(startOfWeek + 86400000);
+  const mondayString = moment(monday).format('YYYY-MM-DD');
+  const tuesday = new Date(startOfWeek + 86400000 * 2);
+  const tuesdayString = moment(tuesday).format('YYYY-MM-DD');
+  const wednesday = new Date(startOfWeek + 86400000 * 3);
+  const wednesdayString = moment(wednesday).format('YYYY-MM-DD');
+  const thursday = new Date(startOfWeek + 86400000 * 4);
+  const thursdayString = moment(thursday).format('YYYY-MM-DD');
+  const friday = new Date(startOfWeek + 86400000 * 5);
+  const fridayString = moment(friday).format('YYYY-MM-DD');
+  const saturday = new Date(startOfWeek + 86400000 * 6);
+  const saturdayString = moment(saturday).format('YYYY-MM-DD');
+  let sun = 0;
+  let mon = 0;
+  let tue = 0;
+  let wed = 0;
+  let thu = 0;
+  let fri = 0;
+  let sat = 0;
+  const data = await axios.get(`${api}hoaDon/list`, {
+    headers: {
+      Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+    }
+  });
+  data.data.forEach((order) => {
+    if (order.createAt.substring(0, 10) === sundayString) sun += getTotalRevenue(order);
+    else if (order.createAt.substring(0, 10) === mondayString) mon += getTotalRevenue(order);
+    else if (order.createAt.substring(0, 10) === tuesdayString) tue += getTotalRevenue(order);
+    else if (order.createAt.substring(0, 10) === wednesdayString) wed += getTotalRevenue(order);
+    else if (order.createAt.substring(0, 10) === thursdayString) thu += getTotalRevenue(order);
+    else if (order.createAt.substring(0, 10) === fridayString) fri += getTotalRevenue(order);
+    else if (order.createAt.substring(0, 10) === saturdayString) sat += getTotalRevenue(order);
+  });
+  dispatch(
+    actionAnalyticGetRevenueWeek({
+      categories: [
+        moment(sunday).format(`DD-MM`),
+        moment(monday).format(`DD-MM`),
+        moment(tuesday).format(`DD-MM`),
+        moment(wednesday).format(`DD-MM`),
+        moment(thursday).format(`DD-MM`),
+        moment(friday).format(`DD-MM`),
+        moment(saturday).format(`DD-MM`)
+      ],
+      data: [sun, mon, tue, wed, thu, fri, sat]
+    })
+  );
+};
+const getTotalRevenue = (order) => {
+  let total = 0;
+  order.donDatBan.listChiTietDonDatBan.forEach((ct) => {
+    total += ct.monAn.donGia * ct.soLuong;
+  });
+  return total;
 };

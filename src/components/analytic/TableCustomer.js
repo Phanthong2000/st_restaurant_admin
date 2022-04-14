@@ -249,7 +249,6 @@ function TableCustomer() {
       setTo(newValue);
     }
   };
-  if (customerTable.length === 0) return null;
   return (
     <RootStyle>
       <BoxContent>

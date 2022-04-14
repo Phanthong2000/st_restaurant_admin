@@ -13,34 +13,52 @@ const heightScreen = window.innerHeight - 1;
 const RootStyle = styled(Stack)(({ theme }) => ({
   width: '100%',
   minHeight: `${heightScreen}px`,
-  maxHeight: `${heightScreen}px`
+  maxHeight: `${heightScreen}px`,
+  background: theme.palette.main,
+  padding: '10px 10px',
+  overflow: 'hidden',
+  [theme.breakpoints.down('sm')]: {
+    padding: '0px'
+  }
+}));
+const Wrapper = styled(Box)(({ theme }) => ({
+  width: '100%',
+  display: 'flex',
+  background: '#fff',
+  borderRadius: '10px',
+  padding: '10px',
+  [theme.breakpoints.down('md')]: {
+    borderRadius: '0px'
+  }
 }));
 const BoxContent = styled(Box)(({ theme }) => ({
   width: '100%',
-  margin: '0px 50px'
-  // [theme.breakpoints.down('md')]: {
-  //   margin: '0px 10px'
-  // }
+  margin: '0px 50px',
+  [theme.breakpoints.down('md')]: {
+    margin: '0px 10px'
+  }
 }));
 const MainStyle = styled(Box)(({ theme }) => ({
   width: '100%',
   display: 'flex',
-  maxHeight: `${heightScreen - 100}px`,
-  minHeight: `${heightScreen - 100}px`
+  maxHeight: `${heightScreen - 150}px`,
+  minHeight: `${heightScreen - 140}px`
 }));
 function HomeLayout() {
   const modalFeedback = useSelector((state) => state.user.modalFeedback);
   return (
     <RootStyle direction="row">
-      <Responsive width="lgDown">
-        <SidebarHome />
-      </Responsive>
-      <BoxContent>
-        <NavbarHome />
-        <MainStyle>
-          <Outlet />
-        </MainStyle>
-      </BoxContent>
+      <Wrapper>
+        <Responsive width="lgDown">
+          <SidebarHome />
+        </Responsive>
+        <BoxContent>
+          <NavbarHome />
+          <MainStyle>
+            <Outlet />
+          </MainStyle>
+        </BoxContent>
+      </Wrapper>
       {modalFeedback.status && <ModalFeedback />}
       <BackdropUser />
       <Snack />

@@ -14,6 +14,7 @@ import {
 import { useSelector } from 'react-redux';
 import moment from 'moment';
 import { keyframes } from '@emotion/react';
+import { useNavigate } from 'react-router-dom';
 
 const run = keyframes`
     0% {
@@ -48,6 +49,7 @@ function TableRowBook({ index, book }) {
 }
 function TableNewUserOrder() {
   const newBooks = useSelector((state) => state.order.newBooks);
+  const navigate = useNavigate();
   const header = [
     {
       name: 'Khách hàng',
@@ -62,6 +64,9 @@ function TableNewUserOrder() {
       width: '30%'
     }
   ];
+  const goToBook = () => {
+    navigate(`/home/book`);
+  };
   return (
     <RootStyle>
       <Box>
@@ -99,6 +104,20 @@ function TableNewUserOrder() {
               ))}
             </TableBody>
           </Table>
+          <Box sx={{ width: '100%', textAlign: 'center' }}>
+            <Typography
+              onClick={goToBook}
+              sx={{
+                color: '#000',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                marginTop: '5px',
+                '&:hover': { color: 'gray' }
+              }}
+            >
+              Xem thêm
+            </Typography>
+          </Box>
         </TableContainer>
       </Box>
     </RootStyle>

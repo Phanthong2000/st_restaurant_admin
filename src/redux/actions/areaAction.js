@@ -3,7 +3,8 @@ import api from '../../assets/api/api';
 import {
   ACTION_AREA_MODAL_ADD_AREA,
   ACTION_AREA_GET_ALL_AREAS,
-  ACTION_AREA_MODAL_EDIT_AREA
+  ACTION_AREA_MODAL_EDIT_AREA,
+  ACTION_AREA_GET_ALL_TABLES
 } from './types';
 
 export const actionAreaModalAdd = (data) => ({

@@ -22,7 +22,10 @@ import {
   ACTION_ORDER_SET_FOODS_MANY,
   ACTION_ORDER_GET_ORDER_MANY,
   ACTION_ORDER_MODAL_PAYMENT,
-  ACTION_ORDER_UNSHIFT_ALL_BOOKS
+  ACTION_ORDER_UNSHIFT_ALL_BOOKS,
+  ACTION_ORDER_GET_AREAS_FOR_ORDER,
+  ACTION_ORDER_MODAL_CHOOSE_AREA,
+  ACTION_ODER_MODAL_PAY_ORDER
 } from './types';
 
 export const actionOrderGetOrder = (data) => ({
@@ -111,6 +114,18 @@ export const actionOrderModalPayment = (data) => ({
 });
 export const actionOrderUnshiftAllBooks = (data) => ({
   type: ACTION_ORDER_UNSHIFT_ALL_BOOKS,
+  payload: data
+});
+export const actionOrderGetAreasForOrder = (data) => ({
+  type: ACTION_ORDER_GET_AREAS_FOR_ORDER,
+  payload: data
+});
+export const actionOrderModalChooseArea = (data) => ({
+  type: ACTION_ORDER_MODAL_CHOOSE_AREA,
+  payload: data
+});
+export const actionOrderModalPayOrder = (data) => ({
+  type: ACTION_ODER_MODAL_PAY_ORDER,
   payload: data
 });
 export const actionGetBooksByKeyword = (keyword) => (dispatch) => {
@@ -231,4 +246,43 @@ export const actionGetTotalNow = () => (dispatch) => {
       });
       dispatch(actionOrderGetTotalNow(total));
     });
+};
+
+export const actionGetAreasForOrder = (checkin, use) => async (dispatch) => {
+  const data = await axios.get(`${api}donDatBan/list`, {
+    headers: {
+      Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+    }
+  });
+  const newBook = [];
+  data.data.forEach((book) => {
+    const a = Date.parse(book.thoiGianNhanBan);
+    const b = book.thoiGianDuKienSuDung;
+    if (book.trangThai !== '1') {
+      if (
+        (checkin >= a && checkin + use <= a + b) ||
+        (checkin <= a + b && checkin + use >= a + b) ||
+        (checkin <= a && checkin + use >= a)
+      )
+        newBook.push(book);
+    }
+  });
+  const tableUsing = [];
+  const tableDontUse = [];
+  newBook.forEach((book) => {
+    console.log(book);
+    if (book.trangThai === '0') {
+      tableDontUse.push(...book.listBan);
+    } else if (book.trangThai === '2') {
+      tableUsing.push(...book.listBan);
+    }
+  });
+  console.log('using', tableUsing);
+  console.log('dont use', tableDontUse);
+  dispatch(
+    actionOrderGetAreasForOrder({
+      using: tableUsing,
+      dontUse: tableDontUse
+    })
+  );
 };

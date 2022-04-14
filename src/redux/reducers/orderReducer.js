@@ -19,7 +19,10 @@ import {
   ACTION_ORDER_GET_ORDER_MANY,
   ACTION_ORDER_SET_FOODS_MANY,
   ACTION_ORDER_MODAL_PAYMENT,
-  ACTION_ORDER_UNSHIFT_ALL_BOOKS
+  ACTION_ORDER_UNSHIFT_ALL_BOOKS,
+  ACTION_ORDER_MODAL_CHOOSE_AREA,
+  ACTION_ORDER_GET_AREAS_FOR_ORDER,
+  ACTION_ODER_MODAL_PAY_ORDER
 } from '../actions/types';
 
 const defaultState = {
@@ -67,7 +70,16 @@ const defaultState = {
   modalPayment: {
     status: false,
     book: {}
-  }
+  },
+  modalChooseArea: {
+    status: false,
+    area: {}
+  },
+  areaForOrder: {
+    using: [],
+    dontUse: []
+  },
+  modalPayOrder: false
 };
 
 // eslint-disable-next-line default-param-last
@@ -188,6 +200,22 @@ const orderReducer = (state = defaultState, action) => {
       return {
         ...state,
         booksByKeyword: [action.payload].concat([...state.booksByKeyword])
+      };
+    case ACTION_ORDER_MODAL_CHOOSE_AREA:
+      return {
+        ...state,
+        modalChooseArea: action.payload
+      };
+    case ACTION_ORDER_GET_AREAS_FOR_ORDER:
+      console.log(action.payload);
+      return {
+        ...state,
+        areaForOrder: action.payload
+      };
+    case ACTION_ODER_MODAL_PAY_ORDER:
+      return {
+        ...state,
+        modalPayOrder: action.payload
       };
     default:
       return state;

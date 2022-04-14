@@ -53,16 +53,12 @@ function TableRowBook({ book, index }) {
   const checkStatus = () => {
     if (
       book.trangThai === `0` &&
-      new Date().getTime() -
-        (Date.parse(book.thoiGianNhanBan) + book.thoiGianDuKienSuDung * 60 * 1000) <=
-        0
+      new Date().getTime() - (Date.parse(book.thoiGianNhanBan) + book.thoiGianDuKienSuDung) <= 0
     )
       return `Chưa sử dụng`;
     if (book.trangThai === '1') return 'Đã sử dụng';
     if (
-      new Date().getTime() -
-        (Date.parse(book.thoiGianNhanBan) + book.thoiGianDuKienSuDung * 60 * 1000) >
-        0 &&
+      new Date().getTime() - (Date.parse(book.thoiGianNhanBan) + book.thoiGianDuKienSuDung) > 0 &&
       book.trangThai === `0`
     )
       return `Đã quá hạn`;

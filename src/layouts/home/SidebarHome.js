@@ -7,7 +7,7 @@ import UtilRedux from '../../utils/UtilRedux';
 const heightScreen = window.innerHeight - 1;
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '350px',
-  minHeight: `${heightScreen}px`,
+  minHeight: `${heightScreen - 40}px`,
   background: theme.palette.white,
   padding: theme.spacing(5)
 }));

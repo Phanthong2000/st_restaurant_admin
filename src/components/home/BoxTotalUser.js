@@ -14,7 +14,8 @@ const Wrapper = styled(Box)(({ theme }) => ({
   width: '48%',
   height: '120px',
   border: `1px solid lightgrey`,
-  borderRadius: '5px'
+  borderRadius: '5px',
+  background: '#fff'
 }));
 const IconUser = styled(Icon)(({ theme }) => ({
   width: '50px',

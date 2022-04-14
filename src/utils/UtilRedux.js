@@ -39,6 +39,7 @@ import {
   actionColumnRevenueRevenue,
   actionColumnTypefoodFood,
   actionGetAllOrders,
+  actionGetRevenueWeek,
   actionGetTop10FoodsLove,
   actionOrderDateNow,
   actionOrderMonthNow,
@@ -89,6 +90,7 @@ function UtilRedux() {
     dispatch(actionGetTop10FoodsLove());
     dispatch(actionGetAllOrders());
     dispatch(actionGetAllTables());
+    dispatch(actionGetRevenueWeek());
     if (loggedIn) dispatch(actionGetUser(JSON.parse(localStorage.getItem('admin')).id));
     return function () {
       return null;

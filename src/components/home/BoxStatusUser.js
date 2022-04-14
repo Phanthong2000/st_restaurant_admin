@@ -13,7 +13,8 @@ const RootStyle = styled(Box)(({ theme }) => ({
 const Wrapper = styled(Box)(({ theme }) => ({
   width: '50%',
   height: '150px',
-  border: `1px solid lightgrey`
+  border: `1px solid lightgrey`,
+  background: '#fff'
 }));
 const IconUser = styled(Icon)(({ theme }) => ({
   width: '50px',

@@ -1,12 +1,14 @@
 import {
   ACTION_AREA_MODAL_ADD_AREA,
   ACTION_AREA_GET_ALL_AREAS,
-  ACTION_AREA_MODAL_EDIT_AREA
+  ACTION_AREA_MODAL_EDIT_AREA,
+  ACTION_AREA_GET_ALL_TABLES
 } from '../actions/types';
 
 const defaultState = {
   modalAddArea: false,
   allAreas: [],
+  allTables: [],
   modalEditArea: {
     status: false,
     area: {}
@@ -30,6 +32,11 @@ const areaReducer = (state = defaultState, action) => {
       return {
         ...state,
         modalEditArea: action.payload
+      };
+    case ACTION_AREA_GET_ALL_TABLES:
+      return {
+        ...state,
+        allTables: action.payload
       };
     default:
       return state;
