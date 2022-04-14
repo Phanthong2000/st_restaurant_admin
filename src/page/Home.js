@@ -15,6 +15,8 @@ import BoxStatusUser from '../components/home/BoxStatusUser';
 import BoxUserJoin from '../components/home/BoxUserJoin';
 import AreaChartRevenueWeek from '../components/home/AreaChartRevenueWeek';
 import BoxQuickStat from '../components/home/BoxQuickStat';
+import AreaChartBookWeek from '../components/home/AreaChartBookWeek';
+import AreaChartOrderWeek from '../components/home/AreaChartOrderWeek';
 
 const heightScreen = window.innerHeight - 1;
 const RootStyle = styled(Box)(({ theme }) => ({
@@ -28,7 +30,7 @@ const BoxTotal = styled(Grid)(({ theme }) => ({
 function Home() {
   return (
     <RootStyle>
-      <Scrollbar thumbMinSize={0} alwaysShowTracks>
+      <Scrollbar alwaysShowTracks>
         <Box sx={{ width: '100%' }}>
           <BoxTotal container>
             <Grid sx={{ padding: '20px' }} item xs={12} sm={6} md={2.4} lg={2.4} xl={2.4}>
@@ -61,6 +63,16 @@ function Home() {
             </Grid>
           </Grid>
           <AreaChartRevenueWeek />
+        </Box>
+        <Box sx={{ width: '100%' }}>
+          <Grid sx={{ width: '100%' }} container>
+            <Grid sx={{ padding: '10px' }} item xs={12} sm={12} md={12} lg={6} xl={6}>
+              <AreaChartBookWeek />
+            </Grid>
+            <Grid sx={{ padding: '10px' }} item xs={12} sm={12} md={12} lg={6} xl={6}>
+              <AreaChartOrderWeek />
+            </Grid>
+          </Grid>
         </Box>
         <Box sx={{ width: '100%' }}>
           <Grid sx={{ width: '100%' }} container>

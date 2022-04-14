@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Divider, styled, Typography } from '@mui/material';
-import ReactApexChart from 'react-apexcharts';
 import { useSelector } from 'react-redux';
+import ReactApexChart from 'react-apexcharts';
 import { fShortenNumber } from '../../utils/formatNumber';
 
 const RootStyle = styled(Box)(({ theme }) => ({
@@ -23,21 +23,22 @@ const Title = styled(Typography)(({ theme }) => ({
 const BoxTotal = styled(Box)(({ theme }) => ({
   display: 'flex',
   color: theme.palette.white,
-  background: theme.palette.mainHover,
+  background: '#B72136',
   fontWeight: 'bold',
   padding: '5px 10px',
   fontFamily: theme.typography.fontFamily.primary,
-  borderRadius: '5px'
+  borderRadius: '5px',
+  fontSize: '15px'
 }));
-function AreaChartRevenueWeek() {
+function AreaChartBookWeek() {
   const [state, setState] = useState({});
-  const revenueWeek = useSelector((state) => state.analytic.revenueWeek);
+  const bookWeek = useSelector((state) => state.analytic.bookWeek);
   useEffect(() => {
     setState({
       series: [
         {
-          name: 'Doanh thu',
-          data: revenueWeek.data
+          name: 'Đơn đặt bàn',
+          data: bookWeek.data
         }
       ],
       options: {
@@ -57,12 +58,13 @@ function AreaChartRevenueWeek() {
         dataLabels: {
           enabled: false
         },
+        colors: ['#B72136'],
         stroke: {
           curve: 'smooth',
           width: 3
         },
         xaxis: {
-          categories: revenueWeek.categories,
+          categories: bookWeek.categories,
           labels: {
             style: {
               fontSize: '10px',
@@ -81,7 +83,7 @@ function AreaChartRevenueWeek() {
         },
         tooltip: {
           y: {
-            formatter: (val) => `${val.toLocaleString(`es-US`)} vnđ`
+            formatter: (val) => `${val.toLocaleString(`es-US`)}`
           }
         }
       }
@@ -89,14 +91,14 @@ function AreaChartRevenueWeek() {
     return function () {
       return null;
     };
-  }, [revenueWeek]);
+  }, [bookWeek]);
   if (state.series === undefined) return null;
   return (
     <RootStyle>
       <Wrapper>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Title>Doanh thu trong tuần</Title>
-          <BoxTotal>Tổng doanh thu: {revenueWeek.total.toLocaleString(`es-US`)} vnđ</BoxTotal>
+          <Title>Đơn đặt bàn trong tuần</Title>
+          <BoxTotal>Tổng đơn đặt bàn: {bookWeek.total.toLocaleString(`es-US`)} đơn</BoxTotal>
         </Box>
         <Divider sx={{ marginTop: '20px' }} />
         <ReactApexChart
@@ -111,4 +113,4 @@ function AreaChartRevenueWeek() {
   );
 }
 
-export default AreaChartRevenueWeek;
+export default AreaChartBookWeek;

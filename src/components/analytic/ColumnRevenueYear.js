@@ -161,7 +161,8 @@ function ColumnRevenueYear() {
             labels: {
               style: {
                 colors: '#FEB019'
-              }
+              },
+              formatter: (val) => `${fShortenNumber(val)}`
             },
             title: {
               text: 'Doanh thu (vnđ)',
@@ -183,7 +184,7 @@ function ColumnRevenueYear() {
           },
           y: {
             formatter(val) {
-              return `${val.toFixed(0)}`;
+              return `${val.toLocaleString(`es-US`)}`;
             }
           }
         },

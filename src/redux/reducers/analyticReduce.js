@@ -26,7 +26,9 @@ import {
   ACTION_ANALYTIC_COLUMN_REVENUE_REVENUE,
   ACTION_ANALYTIC_GET_ALL_ORDERS,
   ACTION_ANALYTIC_GET_TOP10_FOODS_LOVE,
-  ACTION_ANALYTIC_GET_REVENUE_WEEK
+  ACTION_ANALYTIC_GET_REVENUE_WEEK,
+  ACTION_ANALYTIC_GET_BOOK_WEEK,
+  ACTION_ANALYTIC_GET_ORDER_WEEK
 } from '../actions/types';
 
 const defaultState = {
@@ -69,7 +71,18 @@ const defaultState = {
   },
   revenueWeek: {
     categories: [],
-    data: []
+    data: [],
+    total: 0
+  },
+  bookWeek: {
+    categories: [],
+    data: [],
+    total: 0
+  },
+  orderWeek: {
+    categories: [],
+    data: [],
+    total: 0
   }
 };
 
@@ -215,6 +228,16 @@ const analyticReduce = (state = defaultState, action) => {
       return {
         ...state,
         revenueWeek: action.payload
+      };
+    case ACTION_ANALYTIC_GET_BOOK_WEEK:
+      return {
+        ...state,
+        bookWeek: action.payload
+      };
+    case ACTION_ANALYTIC_GET_ORDER_WEEK:
+      return {
+        ...state,
+        orderWeek: action.payload
       };
     default:
       return state;

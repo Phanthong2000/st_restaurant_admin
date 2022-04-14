@@ -58,6 +58,9 @@ function QuickStat({ icon, value, label }) {
 function BoxQuickStat() {
   const customers = useSelector((state) => state.customer.customers);
   const foods = useSelector((state) => state.food.foods);
+  const employees = useSelector((state) => state.employee.employees);
+  const allTables = useSelector((state) => state.table.allTables);
+  const allAreas = useSelector((state) => state.area.allAreas);
   const data = [
     {
       icon: 'ant-design:user-outlined',
@@ -68,6 +71,21 @@ function BoxQuickStat() {
       icon: 'fluent:food-pizza-24-regular',
       value: foods.length,
       label: 'Món ăn'
+    },
+    {
+      icon: 'clarity:employee-line',
+      value: employees.length,
+      label: 'Nhân viên'
+    },
+    {
+      icon: 'ic:outline-table-bar',
+      value: allTables.length,
+      label: 'Bàn'
+    },
+    {
+      icon: 'tabler:chart-area-line',
+      value: allAreas.length,
+      label: 'Khu vực'
     }
   ];
   return (

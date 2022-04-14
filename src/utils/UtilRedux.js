@@ -39,6 +39,8 @@ import {
   actionColumnRevenueRevenue,
   actionColumnTypefoodFood,
   actionGetAllOrders,
+  actionGetBookWeek,
+  actionGetOrderWeek,
   actionGetRevenueWeek,
   actionGetTop10FoodsLove,
   actionOrderDateNow,
@@ -57,8 +59,7 @@ function UtilRedux() {
     dispatch(actionGetAllCustomers());
     dispatch(actionGetAllTypeFoods());
     dispatch(actionGetAllFoods());
-    // dispatch(actionGetAllEmployees());
-
+    dispatch(actionGetAllEmployees());
     dispatch(actionGetEmployeesByKeywords(''));
     dispatch(actionGetAllFoodsByName(''));
     dispatch(actionGetAllCustomerByKeyword(''));
@@ -91,6 +92,8 @@ function UtilRedux() {
     dispatch(actionGetAllOrders());
     dispatch(actionGetAllTables());
     dispatch(actionGetRevenueWeek());
+    dispatch(actionGetBookWeek());
+    dispatch(actionGetOrderWeek());
     if (loggedIn) dispatch(actionGetUser(JSON.parse(localStorage.getItem('admin')).id));
     return function () {
       return null;
