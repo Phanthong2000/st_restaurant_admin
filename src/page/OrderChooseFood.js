@@ -541,14 +541,14 @@ import {
   actionBookDateNow,
   actionBookMonthNow,
   actionBookYearNow,
-  actionColumnRevenueBook
+  actionColumnRevenueBook,
+  actionGetBookWeek,
+  actionGetTop10Customer
 } from '../redux/actions/analyticAction';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
   background: '#f0f4f5',
-  padding: '10px',
-  height: '100%',
   display: 'flex'
 }));
 const BoxInformationCustomer = styled(Grid)(({ theme }) => ({
@@ -849,6 +849,8 @@ function OrderChooseFood() {
         dispatch(actionBookDateNow());
         dispatch(actionBookMonthNow());
         dispatch(actionBookYearNow());
+        dispatch(actionGetTop10Customer());
+        dispatch(actionGetBookWeek());
         dispatch(actionColumnRevenueBook(new Date().getFullYear()));
         dispatch(
           actionUserBackdrop({

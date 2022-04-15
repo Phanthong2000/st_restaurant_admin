@@ -61,7 +61,7 @@ function TableRowFoodChosen({ cell, index }) {
     );
   };
   return (
-    <RootStyle sx={{ background: index % 2 === 0 ? '#fff' : 'lightgrey' }}>
+    <RootStyle sx={{ background: index % 2 === 0 ? '#fff' : '#f0fafc' }}>
       <Cell>{index + 1}</Cell>
       <Cell>{cell.food.tenMonAn}</Cell>
       <Cell>{cell.food.donGia.toLocaleString('es-US')}</Cell>

@@ -12,9 +12,22 @@ import {
 } from '@mui/material';
 import { Scrollbar } from 'smooth-scrollbar-react';
 import { Icon } from '@iconify/react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
+import axios from 'axios';
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
+import { storage } from '../firebase-config';
 import ChooseEmployee from '../components/employee/ChooseEmployee';
+import AddEmployee from '../components/employee/AddEmployee';
+import { actionUserBackdrop, actionUserSnackbar } from '../redux/actions/userAction';
+import api from '../assets/api/api';
+import {
+  actionEmployeeModalAddEmployee,
+  actionEmployeeModalEditEmployee,
+  actionGetAllEmployees,
+  actionGetEmployeesByKeywords
+} from '../redux/actions/employeeAction';
+import ModalEditEmployee from '../components/employee/ModalEditEmployee';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -207,6 +220,9 @@ function Employee2() {
   const [sort, setSort] = useState('all');
   const [employeesSort, setEmployeesSort] = useState([]);
   const [employeeChosen, setEmployeeChosen] = useState();
+  const modalEditEmployee = useSelector((state) => state.employee.modalEditEmployee);
+  const dispatch = useDispatch();
+  const [search, setSearch] = useState('');
   const employees = useSelector((state) => state.employee.employeesKeyword);
   const sortEmployee = (sort) => {
     if (sort === 'all') {
@@ -218,7 +234,7 @@ function Employee2() {
     }
   };
   useEffect(() => {
-    sortEmployee('all');
+    sortEmployee(sort);
     return function () {
       return null;
     };
@@ -228,8 +244,62 @@ function Employee2() {
     sortEmployee(value);
   };
   const handleChooseEmployee = (employee) => {
-    console.log(employee);
     setEmployeeChosen(employee);
+  };
+  const addEmployee = (employee, image) => {
+    dispatch(
+      actionUserBackdrop({
+        status: true,
+        content: 'Thêm nhân viên'
+      })
+    );
+    const storageRef = ref(storage, `avatar/${employee.hoTen}.${new Date().getTime()}`);
+    const uploadTask = uploadBytesResumable(storageRef, image);
+    uploadTask.on(
+      'state_changed',
+      (snapshot) => {},
+      (error) => {},
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          axios
+            .post(
+              `${api}nhanVien/create`,
+              {
+                ...employee,
+                anhDaiDien: downloadURL
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+                  // 'Content-Type': 'application/json'
+                }
+              }
+            )
+            .then((res) => {
+              dispatch(actionGetEmployeesByKeywords(''));
+              handleChooseEmployee(res.data);
+              dispatch(
+                actionUserBackdrop({
+                  status: false,
+                  content: 'Thêm nhân viên'
+                })
+              );
+              dispatch(
+                actionUserSnackbar({
+                  status: true,
+                  content: 'Thêm nhân viên thành công',
+                  type: 'success'
+                })
+              );
+            })
+            .catch((err) => console.log(err));
+        });
+      }
+    );
+  };
+  const searchEmployees = (text) => {
+    setSearch(text);
+    dispatch(actionGetEmployeesByKeywords(text));
   };
   return (
     <RootStyle>
@@ -237,14 +307,21 @@ function Employee2() {
         <Box sx={{ width: '100%', padding: '10px' }}>
           <BoxTitle>
             <Title>Danh sách nhân viên</Title>
-            <ButtonAddEmployee>Thêm nhân viên</ButtonAddEmployee>
+            <ButtonAddEmployee onClick={() => dispatch(actionEmployeeModalAddEmployee(true))}>
+              Thêm nhân viên
+            </ButtonAddEmployee>
           </BoxTitle>
           <BoxContent container>
             <BoxLeft item xs={12} sm={12} md={12} lg={4} xl={4}>
               <WrapperLeft>
                 <BoxSearch>
                   <Icon style={{ width: '25px', height: '25px' }} icon="system-uicons:search" />
-                  <InputSearch fullWidth placeholder="Tìm kiếm nhân viên" />
+                  <InputSearch
+                    value={search}
+                    onChange={(e) => searchEmployees(e.target.value)}
+                    fullWidth
+                    placeholder="Tìm kiếm nhân viên"
+                  />
                 </BoxSearch>
                 <BoxSort>
                   <ButtonSort handleSort={handleSort} label="Tất cả" value="all" sort={sort} />
@@ -305,7 +382,12 @@ function Employee2() {
                                 {employeeChosen.gioiTinh}
                               </Typography>
                             </BoxGender>
-                            <BoxGender sx={{ marginLeft: '10px' }}>
+                            <BoxGender
+                              sx={{
+                                marginLeft: '10px',
+                                background: employeeChosen.taiKhoan.trangThai === 'Đã nghỉ' && 'red'
+                              }}
+                            >
                               <Icon style={{ color: '#fff' }} icon="ps:work-case" />
                               <Typography
                                 sx={{
@@ -325,7 +407,16 @@ function Employee2() {
                         </Box>
                       </Box>
                       <Box>
-                        <BoxEdit>
+                        <BoxEdit
+                          onClick={() =>
+                            dispatch(
+                              actionEmployeeModalEditEmployee({
+                                status: true,
+                                employee: employeeChosen
+                              })
+                            )
+                          }
+                        >
                           <Icon icon="dashicons:edit-large" />
                           <Typography
                             sx={{
@@ -383,6 +474,10 @@ function Employee2() {
           </BoxContent>
         </Box>
         <Box> </Box>
+        <AddEmployee handleChooseEmployee={handleChooseEmployee} addEmployee={addEmployee} />
+        {modalEditEmployee.status && (
+          <ModalEditEmployee handleChooseEmployee={handleChooseEmployee} />
+        )}
       </Scrollbar>
     </RootStyle>
   );

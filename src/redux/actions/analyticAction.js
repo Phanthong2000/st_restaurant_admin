@@ -32,7 +32,8 @@ import {
   ACTION_ANALYTIC_GET_TOP10_FOODS_LOVE,
   ACTION_ANALYTIC_GET_REVENUE_WEEK,
   ACTION_ANALYTIC_GET_BOOK_WEEK,
-  ACTION_ANALYTIC_GET_ORDER_WEEK
+  ACTION_ANALYTIC_GET_ORDER_WEEK,
+  ACTION_ANALYTIC_GET_TOP10_CUSTOMER
 } from './types';
 
 export const actionAnalyticRevenueDateNow = (data) => ({
@@ -155,6 +156,10 @@ export const actionAnalyticGetBookWeek = (data) => ({
 });
 export const actionAnalyticGetOrderWeek = (data) => ({
   type: ACTION_ANALYTIC_GET_ORDER_WEEK,
+  payload: data
+});
+export const actionAnalyticGetTop10Customer = (data) => ({
+  type: ACTION_ANALYTIC_GET_TOP10_CUSTOMER,
   payload: data
 });
 export const actionRevenueDateNow = () => (dispatch) => {
@@ -1209,6 +1214,27 @@ export const actionGetOrderWeek = () => async (dispatch) => {
       ],
       data: [sun, mon, tue, wed, thu, fri, sat],
       total: sun + mon + tue + wed + thu + fri + sat
+    })
+  );
+};
+
+export const actionGetTop10Customer = () => async (dispatch) => {
+  const query = await axios.get(`${api}khachHang/list/datNhieuNhat/${10}`, {
+    headers: {
+      Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+    }
+  });
+  const categories = [];
+  const data = [];
+  query.data.forEach((customer) => {
+    categories.push(customer.khachHang.hoTen);
+    data.push(customer.count);
+  });
+  dispatch(
+    actionAnalyticGetTop10Customer({
+      categories,
+      data,
+      customers: query.data
     })
   );
 };

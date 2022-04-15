@@ -41,7 +41,8 @@ import ModalUserLove from '../components/food/ModalUserLove';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
-  display: 'flex'
+  display: 'flex',
+  background: '#f0f4f5'
 }));
 const BoxSearch = styled(Box)(({ theme }) => ({
   width: '50%',
@@ -288,7 +289,7 @@ function Food() {
   };
   return (
     <RootStyle>
-      <Scrollbar alwaysShowTracks>
+      <Scrollbar style={{ padding: '10px' }} alwaysShowTracks>
         <BoxSearch>
           <InputBase
             value={search}
@@ -310,7 +311,7 @@ function Food() {
             <ButtonAddFood onClick={goToCreateFood}>Thêm món ăn</ButtonAddFood>
           </BoxListFood>
           <TableContainer>
-            <Table>
+            <Table sx={{ background: '#fff', borderRadius: '10px' }}>
               <TableHead>
                 <TableRow>
                   {headerFood.map((item, index) => (
@@ -319,8 +320,7 @@ function Food() {
                       sx={{
                         width: item.minWidth,
                         fontWeight: 'bold',
-                        background: 'gray',
-                        color: '#fff'
+                        color: '#000'
                       }}
                     >
                       {item.name}
@@ -380,7 +380,7 @@ function Food() {
             </ButtonAddFood>
           </BoxListFood>
           <TableContainer>
-            <Table>
+            <Table sx={{ background: '#fff', borderRadius: '10px' }}>
               <TableHead>
                 <TableRow>
                   {headerType.map((item, index) => (
@@ -389,8 +389,7 @@ function Food() {
                       sx={{
                         width: item.minWidth,
                         fontWeight: 'bold',
-                        background: 'gray',
-                        color: '#fff'
+                        color: '#000'
                       }}
                     >
                       {item.name}

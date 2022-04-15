@@ -60,11 +60,16 @@ const ButtonAdd = styled(Button)(({ theme }) => ({
   fontWeight: 'bold',
   width: '90%',
   marginLeft: '5%',
+  marginTop: '20px',
   color: theme.palette.white,
   background: theme.palette.main,
   ':hover': {
     background: theme.palette.mainHover
   }
+}));
+const BoxTable = styled(Grid)(({ theme }) => ({
+  padding: '5px',
+  display: 'flex'
 }));
 function Area({ area, chosen, handleChoose }) {
   const [quantify, setQuantity] = useState(-1);
@@ -127,23 +132,59 @@ function Area({ area, chosen, handleChoose }) {
     </Grid>
   );
 }
+function Table({ table }) {
+  const BoxTable = styled(Grid)(({ theme }) => ({
+    width: '100%',
+    height: '100px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    border: `1px solid ${theme.palette.main}`
+  }));
+  const Title = styled(Typography)(({ theme }) => ({
+    fontSize: '14px',
+    color: theme.palette.gray,
+    fontWeight: 'bold'
+  }));
+  const IconTable = styled(Icon)(({ theme }) => ({
+    width: '40px',
+    height: '40px',
+    color: theme.palette.gray
+  }));
+  return (
+    <Grid sx={{ padding: '5px', width: '100%' }} item xs={4} sm={4} md={4} lg={3} xl={3}>
+      <BoxTable>
+        <Title>{table.tenBan}</Title>
+        <IconTable icon="ic:round-table-restaurant" />
+        <Title>Số người: {table.soNguoiToiDa}</Title>
+      </BoxTable>
+    </Grid>
+  );
+}
 ModalAddTable.prototype = {
   add: PropTypes.func
 };
 function ModalAddTable({ add }) {
   const modalAddTable = useSelector((state) => state.table.modalAddTable);
   const allAreas = useSelector((state) => state.area.allAreas);
+  const allTables = useSelector((state) => state.table.allTables);
   const [name, setName] = useState('');
   const [area, setArea] = useState({});
   const [max, setMax] = useState('');
   const [min, setMin] = useState('');
+  const [tables, setTables] = useState([]);
   const dispatch = useDispatch();
+  const getTablesByArea = (area) => {
+    setTables(allTables.filter((table) => table.khuVuc.id === area.id));
+  };
   const handleClose = () => {
     dispatch(actionTableModalAddTable(false));
   };
   const chooseArea = (area, quantity) => {
     setArea(area);
     setName(area.tenKhuVuc.concat(`${quantity + 1}`));
+    getTablesByArea(area);
   };
   const handleChange = (text) => {
     if (text.match(`^[0-9]{0,}$`)) {
@@ -164,7 +205,6 @@ function ModalAddTable({ add }) {
         id: area.id
       },
       tenBan: name,
-      soNguoiToiThieu: parseInt(min, 10),
       soNguoiToiDa: parseInt(max, 10),
       trangThai: 'Đang sử dụng'
     };
@@ -192,6 +232,41 @@ function ModalAddTable({ add }) {
             <Box
               sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
             >
+              <Typography
+                sx={{ fontWeight: 'bold', fontSize: '14px', width: '100%', marginTop: '10px' }}
+              >
+                Danh sách bàn hiện tại khu vực {area.tenKhuVuc}
+              </Typography>
+              <Box
+                sx={{
+                  width: '100%',
+                  border: `1px solid lightgrey`,
+                  borderRadius: '5px',
+                  marginTop: '10px',
+                  padding: '0px 10px'
+                }}
+              >
+                {area.id !== undefined ? (
+                  <BoxTable container>
+                    {tables.map((item, index) => (
+                      <Table key={item.id} table={item} />
+                    ))}
+                  </BoxTable>
+                ) : (
+                  <Typography
+                    sx={{
+                      fontWeight: 'bold',
+                      color: 'red',
+                      fontSize: '14px',
+                      width: '100%',
+                      textAlign: 'center',
+                      margin: '10px 0px'
+                    }}
+                  >
+                    Vui lòng chọn khu vực
+                  </Typography>
+                )}
+              </Box>
               <Input
                 helperText={
                   <Typography sx={{ color: 'red', fontSize: '13px' }}>
@@ -207,7 +282,7 @@ function ModalAddTable({ add }) {
                 onChange={(e) => handleChange(e.target.value)}
                 label="Số người tối đa"
               />
-              <Input
+              {/* <Input
                 value={min}
                 helperText={
                   <Typography sx={{ color: 'red', fontSize: '13px' }}>
@@ -216,7 +291,7 @@ function ModalAddTable({ add }) {
                 }
                 disabled
                 label="Số người tối thiểu"
-              />
+              /> */}
             </Box>
             <ButtonAdd onClick={handleAddTable} disabled={Boolean(!max || !area)}>
               Thêm bàn

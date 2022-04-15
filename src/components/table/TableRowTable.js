@@ -25,10 +25,9 @@ TableRowTable.prototype = {
 function TableRowTable({ table, index }) {
   const dispatch = useDispatch();
   return (
-    <RootStyle sx={{ background: index % 2 === 0 ? '#fff' : 'lightgrey' }}>
+    <RootStyle sx={{ background: index % 2 === 0 ? '#fff' : '#f0fafc' }}>
       <Cell>{index + 1}</Cell>
       <Cell>{table.tenBan}</Cell>
-      <Cell>{table.soNguoiToiThieu}</Cell>
       <Cell>{table.soNguoiToiDa}</Cell>
       <Cell>{table.khuVuc.tenKhuVuc}</Cell>
       <Cell>

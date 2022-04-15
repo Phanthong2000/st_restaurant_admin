@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Avatar, Box, IconButton, styled, TableCell, TableRow, Typography } from '@mui/material';
 import { Icon } from '@iconify/react';
@@ -24,16 +24,23 @@ function CustomerTableRow({ customer, index }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const broadcast = useSelector((state) => state.socket.broadcast);
+  const goToCustomerDetail = () => {
+    navigate(`/home/customer-detail/${customer.id}`);
+  };
   if (customer.id === undefined) return null;
   return (
-    <RootStyle sx={{ background: index % 2 === 0 ? '#fff' : 'lightgrey' }}>
+    <RootStyle
+      sx={{
+        background: index % 2 === 0 ? '#fff' : '#f0fafc'
+      }}
+    >
       <Cell>{index + 1}</Cell>
       <Cell>
         <Avatar src={customer.anhDaiDien} />
       </Cell>
       <Cell>{customer.hoTen}</Cell>
       <Cell>{customer.soDienThoai}</Cell>
-      <Cell>{customer.gioiTinh}</Cell>
+      {/* <Cell>{customer.gioiTinh}</Cell> */}
       <Cell>{customer.taiKhoan.trangThai}</Cell>
       <Cell>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -53,19 +60,20 @@ function CustomerTableRow({ customer, index }) {
       </Cell>
       <Cell>
         <IconButton
-          onClick={() =>
-            dispatch(
-              actionCustomerModalEditCustomer({
-                status: true,
-                customer
-              })
-            )
+          onClick={
+            goToCustomerDetail
+            // dispatch(
+            //   actionCustomerModalEditCustomer({
+            //     status: true,
+            //     customer
+            //   })
+            // )
           }
         >
           <IconSeeInfo icon="el:eye-open" />
         </IconButton>
       </Cell>
-      {customer.taiKhoan.trangThai === 'Hiệu lực' ? (
+      {/* {customer.taiKhoan.trangThai === 'Hiệu lực' ? (
         <Cell>
           <IconButton
             onClick={() => {
@@ -86,7 +94,7 @@ function CustomerTableRow({ customer, index }) {
             <Icon style={{ color: 'red' }} icon="ep:close-bold" />
           </IconButton>
         </Cell>
-      )}
+      )} */}
     </RootStyle>
   );
 }

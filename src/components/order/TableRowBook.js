@@ -75,7 +75,7 @@ function TableRowBook({ book, index }) {
   return (
     <RootStyle
       sx={{
-        background: index % 2 === 0 ? '#fff' : 'lightgrey',
+        background: index % 2 === 0 ? '#fff' : '#f0fafc',
         animation: book.id === chooseNotification.id && `${bounce} 3s alternate`
       }}
     >

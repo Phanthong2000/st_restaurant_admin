@@ -75,10 +75,6 @@ function AreaTableRow({ area, index }) {
       width: '20%'
     },
     {
-      name: 'Số lượng tối thiểu',
-      width: '20%'
-    },
-    {
       name: 'Số lượng tối đa',
       width: '20%'
     }
@@ -86,7 +82,7 @@ function AreaTableRow({ area, index }) {
   if (quantity === -1) return null;
   return (
     <>
-      <RootStyle sx={{ background: index % 2 !== 0 && 'lightgrey' }}>
+      <RootStyle sx={{ background: index % 2 !== 0 && '#f0fafc' }}>
         <Cell>
           <IconButton onClick={() => setOpen(!open)}>
             {open ? <Icon icon="akar-icons:chevron-down" /> : <Icon icon="akar-icons:chevron-up" />}
@@ -124,7 +120,6 @@ function AreaTableRow({ area, index }) {
                     <TableRow key={index}>
                       <CellTable>{index + 1}</CellTable>
                       <CellTable>{item.tenBan}</CellTable>
-                      <CellTable>{item.soNguoiToiThieu}</CellTable>
                       <CellTable>{item.soNguoiToiDa}</CellTable>
                     </TableRow>
                   ))}

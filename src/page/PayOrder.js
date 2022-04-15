@@ -47,14 +47,16 @@ import {
   actionGetAllOrders,
   actionColumnRevenueOrder,
   actionColumnRevenueRevenue,
-  actionGetRevenueWeek
+  actionGetRevenueWeek,
+  actionGetOrderWeek
 } from '../redux/actions/analyticAction';
 import ModalPayOrder from '../components/order/ModalPayOrder';
 
 const heightScreen = window.innerHeight - 1;
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
-  display: 'flex'
+  display: 'flex',
+  background: '#f0f4f5'
 }));
 const BoxContent = styled(Grid)(({ theme }) => ({
   width: '100%',
@@ -81,7 +83,7 @@ const InputWrapper = styled(Box)(({ theme }) => ({
   borderRadius: '20px'
 }));
 const TitleInformation = styled(Typography)(({ theme }) => ({
-  color: theme.palette.lightgrey,
+  color: theme.palette.main,
   fontWeight: 'bold',
   fontSize: '14px',
   fontFamily: theme.typography.fontFamily.primary
@@ -89,12 +91,12 @@ const TitleInformation = styled(Typography)(({ theme }) => ({
 const InputInfo = styled(Input)(({ theme }) => ({
   fontSize: '16px',
   width: '100%',
-  color: theme.palette.white,
+  color: theme.palette.black,
   fontWeight: 'bold'
 }));
 const ButtonWayPay = styled(Box)(({ theme }) => ({
   width: '300px',
-  background: theme.palette.gray,
+  background: theme.palette.main,
   color: theme.palette.white,
   display: 'flex',
   alignItems: 'center',
@@ -103,8 +105,7 @@ const ButtonWayPay = styled(Box)(({ theme }) => ({
   borderRadius: '10px',
   cursor: 'pointer',
   ':hover': {
-    background: theme.palette.black,
-    color: theme.palette.white
+    background: theme.palette.mainHover
   }
 }));
 const BoxPrice = styled(Box)(({ theme }) => ({
@@ -121,20 +122,21 @@ const PriceDetail = styled(Typography)(({ theme }) => ({
 const ButtonConfirm = styled(Button)(({ theme }) => ({
   width: '100%',
   textTransform: 'none',
-  color: theme.palette.gray,
-  background: theme.palette.white,
+  color: theme.palette.white,
+  background: theme.palette.main,
   fontWeight: 'bold',
   fontSize: '18px',
   marginTop: '20px',
   ':hover': {
-    background: theme.palette.lightgrey,
-    color: theme.palette.gray
+    background: theme.palette.mainHover
+    // color: theme.palette.gray
   }
 }));
 const BoxTableTable = styled(Card)(({ theme }) => ({
   width: '100%',
   padding: '10px',
-  marginTop: '10px'
+  marginTop: '10px',
+  background: theme.palette.white
 }));
 function TableItem({ table }) {
   const BoxTable = styled(Grid)(({ theme }) => ({
@@ -174,7 +176,7 @@ function TableRowFood({ food, index }) {
     fontWeight: 'bold'
   }));
   return (
-    <RootStyle sx={{ background: index % 2 !== 0 && 'lightgrey' }}>
+    <RootStyle sx={{ background: index % 2 !== 0 && '#f0fafc' }}>
       <Cell>{index + 1}</Cell>
       <Cell>{food.monAn.tenMonAn}</Cell>
       <Cell>{`${food.monAn.donGia.toLocaleString('es-US')} vnđ`}</Cell>
@@ -207,7 +209,7 @@ function TableFood({ tab, listChiTietDonDatBan }) {
   return (
     <Box sx={{ padding: '10px' }}>
       <TableContainer>
-        <Table sx={{ border: `1px solid #fff`, borderRadius: '5px' }}>
+        <Table sx={{ border: `1px solid lightgrey`, borderRadius: '10px' }}>
           <TableHead>
             <TableRow>
               {headerFood.map((item, index) => (
@@ -216,8 +218,7 @@ function TableFood({ tab, listChiTietDonDatBan }) {
                   sx={{
                     width: item.minWidth,
                     fontWeight: 'bold',
-                    background: 'gray',
-                    color: '#fff'
+                    color: '#000'
                   }}
                 >
                   {item.name}
@@ -346,6 +347,7 @@ function PayOrder() {
             dispatch(actionRevenueYearNow());
             dispatch(actionOrderYearNow());
             dispatch(actionGetRevenueWeek());
+            dispatch(actionGetOrderWeek());
             dispatch(actionColumnRevenueOrder(new Date().getFullYear()));
             dispatch(actionColumnRevenueRevenue(new Date().getFullYear()));
             dispatch(
@@ -502,7 +504,7 @@ function PayOrder() {
             </Grid>
           </BoxLeft>
           <BoxRight item xs={12} sm={12} md={12} lg={4} xl={4}>
-            <Card sx={{ background: 'gray', padding: '10px', minHeight: '100%' }}>
+            <Card sx={{ background: '#fff', padding: '10px', minHeight: '100%' }}>
               <Typography sx={{ fontWeight: 'bold', fontSize: '20px', fontFamily: 'sans-serif' }}>
                 Thông tin đơn đặt bàn
               </Typography>

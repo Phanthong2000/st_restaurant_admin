@@ -95,11 +95,11 @@ function TableTable({ listBan }) {
   ];
   return (
     <TableContainer>
-      <Table sx={{ marginTop: '10px' }}>
+      <Table sx={{ marginTop: '10px', border: `1px solid lightgrey` }}>
         <TableHead>
-          <TableRow sx={{ background: 'gray' }}>
+          <TableRow>
             {headers.map((item, index) => (
-              <TableCell key={index} sx={{ width: item.width, color: '#fff', fontWeight: 'bold' }}>
+              <TableCell key={index} sx={{ width: item.width, color: '#000', fontWeight: 'bold' }}>
                 {item.name}
               </TableCell>
             ))}
@@ -107,14 +107,7 @@ function TableTable({ listBan }) {
         </TableHead>
         <TableBody>
           {listBan.map((item, index) => (
-            <TableRow
-              sx={
-                index % 2 === 0
-                  ? { background: 'lightgrey', color: '#fff' }
-                  : { background: '#fff', color: '#000' }
-              }
-              key={index}
-            >
+            <TableRow sx={{ background: index % 2 !== 0 && '#f0fafc' }} key={index}>
               <Cell>{index + 1}</Cell>
               <Cell>{item.tenBan}</Cell>
               <Cell>{item.soNguoiToiDa}</Cell>
@@ -134,7 +127,7 @@ function TableRowFood({ food, index }) {
     fontWeight: 'bold'
   }));
   return (
-    <RootStyle sx={{ background: index % 2 !== 0 && 'lightgrey' }}>
+    <RootStyle sx={{ background: index % 2 !== 0 && '#f0fafc' }}>
       <Cell>{index + 1}</Cell>
       <Cell>{food.monAn.tenMonAn}</Cell>
       <Cell>{`${food.monAn.donGia.toLocaleString('es-US')} vnđ`}</Cell>
@@ -163,7 +156,7 @@ function TableFood({ tab, listChiTietDonDatBan }) {
   return (
     <Box sx={{ marginTop: '10px' }}>
       <TableContainer>
-        <Table>
+        <Table sx={{ border: `1px solid lightgrey` }}>
           <TableHead>
             <TableRow>
               {headerFood.map((item, index) => (
@@ -171,8 +164,8 @@ function TableFood({ tab, listChiTietDonDatBan }) {
                   key={index}
                   sx={{
                     width: item.minWidth,
-                    background: 'gray',
-                    color: '#fff'
+                    fontWeight: 'bold',
+                    color: '#000'
                   }}
                 >
                   {item.name}

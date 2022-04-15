@@ -21,6 +21,7 @@ import Area from './page/Area';
 import Table from './page/Table';
 import OrderChooseManyFood from './page/OrderChooseManyFood';
 import Employee2 from './page/Employee2';
+import CustomerDetail from './page/CustomerDetail';
 
 export default function Router() {
   return useRoutes([
@@ -47,6 +48,7 @@ export default function Router() {
           element: <Food />
         },
         { path: 'customer', element: <Customer /> },
+        { path: 'customer-detail/:id', element: <CustomerDetail /> },
         // { path: 'employee', element: <Employee /> },
         { path: 'employee', element: <Employee2 /> },
         { path: 'analytic', element: <Analytic /> },

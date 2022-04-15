@@ -26,7 +26,7 @@ TypeFoodTableRow.prototype = {
 function TypeFoodTableRow({ type, index }) {
   const dispatch = useDispatch();
   return (
-    <RootStyle sx={{ background: index % 2 !== 0 && 'lightgrey' }}>
+    <RootStyle sx={{ background: index % 2 !== 0 && '#f0fafc' }}>
       <Cell>{index + 1}</Cell>
       <Cell>
         <ImageTypeFood src={type.hinhAnh} />

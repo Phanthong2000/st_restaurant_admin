@@ -127,7 +127,7 @@ function ModalEditTable({ edit }) {
           onChange={(e) => handleChange(e.target.value)}
           label="Số người tối đa"
         />
-        <Input fullWidth disabled value={min} label="Số người tối thiểu" />
+        {/* <Input fullWidth disabled value={min} label="Số người tối thiểu" /> */}
         <ButtonAdd
           onClick={handleEdit}
           disabled={Boolean(parseInt(modalEditTable.table.soNguoiToiDa, 10) === parseInt(max, 10))}

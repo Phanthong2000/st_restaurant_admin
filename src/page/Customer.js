@@ -38,7 +38,8 @@ import { actionUserSnackbar, actionUserBackdrop } from '../redux/actions/userAct
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
-  display: 'flex'
+  display: 'flex',
+  background: '#f0f4f5'
 }));
 const BoxSearch = styled(Box)(({ theme }) => ({
   width: '50%',
@@ -134,10 +135,10 @@ function Customer() {
       name: 'Số điện thoại',
       width: '15%'
     },
-    {
-      name: 'Giới tính',
-      width: '10%'
-    },
+    // {
+    //   name: 'Giới tính',
+    //   width: '10%'
+    // },
     {
       name: 'Trạng thái',
       width: '15%'
@@ -149,11 +150,11 @@ function Customer() {
     {
       name: 'Xem thông tin',
       width: '10%'
-    },
-    {
-      name: 'Đặt bàn',
-      width: '10%'
     }
+    // {
+    //   name: 'Đặt bàn',
+    //   width: '10%'
+    // }
   ];
   const handleChangePage = (event, newValue) => {
     setPage(newValue);
@@ -186,7 +187,9 @@ function Customer() {
     uploadTask.on(
       'state_changed',
       (snapshot) => {},
-      (error) => {},
+      (error) => {
+        console.log(error);
+      },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           axios
@@ -218,7 +221,7 @@ function Customer() {
   };
   return (
     <RootStyle>
-      <Scrollbar alwaysShowTracks>
+      <Scrollbar style={{ padding: '0px 10px' }} alwaysShowTracks>
         <BoxSearch>
           <InputBase
             value={search}
@@ -244,7 +247,7 @@ function Customer() {
             </ButtonAddCustomer>
           </BoxListCustomer>
           <TableContainer>
-            <Table id="tb">
+            <Table sx={{ background: '#fff', borderRadius: '10px' }}>
               <TableHead>
                 <TableRow>
                   {header.map((item, index) => (
@@ -253,8 +256,7 @@ function Customer() {
                       sx={{
                         width: item.minWidth,
                         fontWeight: 'bold',
-                        background: 'gray',
-                        color: '#fff'
+                        color: '#000'
                       }}
                     >
                       {item.name}
@@ -280,7 +282,7 @@ function Customer() {
                   ))}
                 </TableBody>
               )}
-              <TableFooter>
+              {/* <TableFooter>
                 <TableRow>
                   <TableCell colSpan={9}>
                     <Tooltip title="Về đầu bảng">
@@ -305,7 +307,7 @@ function Customer() {
                     </Tooltip>
                   </TableCell>
                 </TableRow>
-              </TableFooter>
+              </TableFooter> */}
             </Table>
           </TableContainer>
           <TablePagination
@@ -320,7 +322,7 @@ function Customer() {
         {/* <ReactHtmlTableToExcel table="tb" filename="test" sheet="Sheet" buttonText="btn test" /> */}
       </Scrollbar>
       <AddCustomer add={addCustomer} />
-      {modalEditCustomer.status && <ModalEditCustomer />}
+      {/* {modalEditCustomer.status && <ModalEditCustomer />} */}
     </RootStyle>
   );
 }

@@ -1169,7 +1169,8 @@ import api from '../assets/api/api';
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
   padding: theme.spacing(1, 2),
-  display: 'flex'
+  display: 'flex',
+  background: '#f0f4f5'
 }));
 const BoxInformationCustomer = styled(Grid)(({ theme }) => ({
   width: '100%',
@@ -1322,7 +1323,7 @@ function TableRowFood({ food, index }) {
     fontWeight: 'bold'
   }));
   return (
-    <RootStyle sx={{ background: index % 2 !== 0 && 'lightgrey' }}>
+    <RootStyle sx={{ background: index % 2 !== 0 && '#f0fafc' }}>
       <Cell>{index + 1}</Cell>
       <Cell>{food.monAn.tenMonAn}</Cell>
       <Cell>{food.ghiChu}</Cell>
@@ -1567,13 +1568,15 @@ function UpdateFoodsForBook() {
             </Grid>
           </BoxInformationCustomer>
         </Card>
-        <Card sx={{ width: '100%', marginTop: '10px', padding: '10px' }}>
+        <Card sx={{ width: '100%', marginTop: '10px', padding: '10px', background: '#fff' }}>
           <Typography sx={{ fontSize: '20px', fontWeight: 'bold' }}>
             Danh sách món ăn đã đặt
           </Typography>
-          <Box sx={{ padding: '10px' }}>
+          <Box sx={{ padding: '10px', background: '#fff' }}>
             <TableContainer>
-              <Table>
+              <Table
+                sx={{ background: '#fff', borderRadius: '10px', border: `1px solid lightgrey` }}
+              >
                 <TableHead>
                   <TableRow>
                     {headerFood.map((item, index) => (
@@ -1582,8 +1585,7 @@ function UpdateFoodsForBook() {
                         sx={{
                           width: item.minWidth,
                           fontWeight: 'bold',
-                          background: 'gray',
-                          color: '#fff'
+                          color: '#000'
                         }}
                       >
                         {item.name}
@@ -1622,12 +1624,12 @@ function UpdateFoodsForBook() {
         <BoxTable>
           <Paper sx={{ width: '100%', overflow: 'hidden', background: '#fff', padding: '10px' }}>
             <TableContainer>
-              <Table stickyHeader aria-label="sticky table">
-                <TableHead sx={{ background: 'gray' }}>
+              <Table sx={{ border: `1px solid lightgrey` }} stickyHeader aria-label="sticky table">
+                <TableHead>
                   <TableRow>
                     {headers.map((item, index) => (
                       <CellHeader
-                        sx={{ textAlign: item.align, width: item.minWidth, color: '#fff' }}
+                        sx={{ textAlign: item.align, width: item.minWidth, color: '#000' }}
                         key={index}
                       >
                         {item.name}

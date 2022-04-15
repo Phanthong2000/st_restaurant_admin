@@ -42,6 +42,7 @@ import {
   actionGetBookWeek,
   actionGetOrderWeek,
   actionGetRevenueWeek,
+  actionGetTop10Customer,
   actionGetTop10FoodsLove,
   actionOrderDateNow,
   actionOrderMonthNow,
@@ -94,6 +95,7 @@ function UtilRedux() {
     dispatch(actionGetRevenueWeek());
     dispatch(actionGetBookWeek());
     dispatch(actionGetOrderWeek());
+    dispatch(actionGetTop10Customer());
     if (loggedIn) dispatch(actionGetUser(JSON.parse(localStorage.getItem('admin')).id));
     return function () {
       return null;

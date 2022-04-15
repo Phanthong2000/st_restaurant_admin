@@ -23,6 +23,8 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { Icon } from '@iconify/react';
 import axios from 'axios';
+import moment from 'moment';
+import PropTypes from 'prop-types';
 import { Scrollbar } from 'smooth-scrollbar-react';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import api from '../../assets/api/api';
@@ -31,7 +33,6 @@ import {
   actionGetEmployeesByKeywords,
   actionEmployeeModalEditEmployee
 } from '../../redux/actions/employeeAction';
-
 import { storage } from '../../firebase-config';
 
 const BoxModal = styled(Card)(({ theme }) => ({
@@ -98,7 +99,10 @@ const ButtonAddEmployee = styled(Button)(({ theme }) => ({
     background: theme.palette.mainHover
   }
 }));
-function ModalEditEmployee() {
+ModalEditEmployee.prototype = {
+  handleChooseEmployee: PropTypes.func
+};
+function ModalEditEmployee({ handleChooseEmployee }) {
   const dispatch = useDispatch();
   const fileRef = useRef();
   const [gender, setGender] = useState('');
@@ -214,6 +218,7 @@ function ModalEditEmployee() {
                 )
                 .then((res) => {
                   dispatch(actionGetEmployeesByKeywords(''));
+                  handleChooseEmployee(res.data);
                   dispatch(
                     actionUserSnackbar({
                       status: true,
@@ -242,6 +247,7 @@ function ModalEditEmployee() {
             )
             .then((res) => {
               dispatch(actionGetEmployeesByKeywords(''));
+              handleChooseEmployee(res.data);
               dispatch(
                 actionUserSnackbar({
                   status: true,
@@ -305,6 +311,7 @@ function ModalEditEmployee() {
                       )
                       .then((res) => {
                         dispatch(actionGetEmployeesByKeywords(''));
+                        handleChooseEmployee(res.data);
                         dispatch(
                           actionUserSnackbar({
                             status: true,
@@ -333,6 +340,7 @@ function ModalEditEmployee() {
                   )
                   .then((res) => {
                     dispatch(actionGetEmployeesByKeywords(''));
+                    handleChooseEmployee(res.data);
                     dispatch(
                       actionUserSnackbar({
                         status: true,
@@ -371,9 +379,15 @@ function ModalEditEmployee() {
                 Chọn ảnh
               </ButtonChooseAvatar>
             </BoxAvatar>
+
             <FormikProvider value={formik}>
               <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
                 <BoxInput>
+                  <Typography
+                    sx={{ fontWeight: 'bold', fontSize: '14px', fontFamily: 'sans-serif' }}
+                  >
+                    Ngày vào làm {moment(modalEditEmployee.employee.createAt).format(`DD/MM/YYYY`)}
+                  </Typography>
                   <Input
                     {...getFieldProps('fullname')}
                     error={Boolean(touched.fullname && errors.fullname)}

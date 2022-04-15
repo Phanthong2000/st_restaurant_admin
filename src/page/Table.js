@@ -34,7 +34,8 @@ import ModalChangeArea from '../components/table/ModalChangeArea';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
-  display: 'flex'
+  display: 'flex',
+  background: '#f0f4f5'
 }));
 const BoxSearch = styled(Box)(({ theme }) => ({
   width: '50%',
@@ -125,11 +126,7 @@ function TablePage() {
       width: '15%'
     },
     {
-      name: 'Số lượng tối thiểu',
-      width: '15%'
-    },
-    {
-      name: 'Số lượng tối đa',
+      name: 'Số người tối đa',
       width: '15%'
     },
     {
@@ -283,15 +280,15 @@ function TablePage() {
         </Box>
         <Box sx={{ width: '100%', padding: '0px 10px', marginTop: '10px' }}>
           <TableContainer sx={{ borderRadius: '10px' }}>
-            <Table>
+            <Table sx={{ background: '#fff' }}>
               <TableHead>
-                <TableRow sx={{ background: 'gray' }}>
+                <TableRow>
                   {header.map((item, index) => (
                     <TableCell
                       key={index}
                       sx={{
                         width: item.width,
-                        color: '#fff',
+                        color: '#000',
                         fontWeight: 'bold',
                         textAlign: 'center'
                       }}

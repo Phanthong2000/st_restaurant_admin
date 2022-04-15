@@ -29,7 +29,8 @@ import { actionUserChooseNotification } from '../redux/actions/userAction';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
-  display: 'flex'
+  display: 'flex',
+  background: '#f0f4f5'
 }));
 const BoxSearch = styled(Box)(({ theme }) => ({
   width: '50%',
@@ -265,13 +266,13 @@ function Book() {
         </Box>
         <Box sx={{ width: '100%', padding: '0px 10px' }}>
           <TableContainer sx={{ borderRadius: '10px' }}>
-            <Table>
+            <Table sx={{ background: '#fff' }}>
               <TableHead>
-                <TableRow sx={{ background: 'gray' }}>
+                <TableRow>
                   {header.map((item, index) => (
                     <TableCell
                       key={index}
-                      sx={{ width: item.width, color: '#fff', fontWeight: 'bold' }}
+                      sx={{ width: item.width, color: '#000', fontWeight: 'bold' }}
                     >
                       {item.name}
                     </TableCell>

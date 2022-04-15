@@ -303,7 +303,7 @@ function Employee() {
           />
         </Box>
       </Scrollbar>
-      <AddEmployee addEmployee={addEmployee} />
+      {/* <AddEmployee addEmployee={addEmployee} /> */}
       {modalEditEmployee.status && <ModalEditEmployee />}
     </RootStyle>
   );

@@ -17,6 +17,7 @@ import AreaChartRevenueWeek from '../components/home/AreaChartRevenueWeek';
 import BoxQuickStat from '../components/home/BoxQuickStat';
 import AreaChartBookWeek from '../components/home/AreaChartBookWeek';
 import AreaChartOrderWeek from '../components/home/AreaChartOrderWeek';
+import SliderTop10Customer from '../components/home/SliderTop10Customer';
 
 const heightScreen = window.innerHeight - 1;
 const RootStyle = styled(Box)(({ theme }) => ({
@@ -76,8 +77,27 @@ function Home() {
         </Box>
         <Box sx={{ width: '100%' }}>
           <Grid sx={{ width: '100%' }} container>
-            <Grid sx={{ padding: '10px' }} item xs={6} sm={6} md={6} lg={4} xl={4}>
+            <Grid
+              sx={{ padding: '10px', width: '100%' }}
+              item
+              xs={12}
+              sm={12}
+              md={12}
+              lg={4}
+              xl={4}
+            >
               <BoxQuickStat />
+            </Grid>
+            <Grid
+              sx={{ padding: '10px 20px', width: '100%' }}
+              item
+              xs={12}
+              sm={12}
+              md={12}
+              lg={8}
+              xl={8}
+            >
+              <SliderTop10Customer />
             </Grid>
           </Grid>
         </Box>

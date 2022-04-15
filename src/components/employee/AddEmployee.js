@@ -99,9 +99,10 @@ const ButtonAddEmployee = styled(Button)(({ theme }) => ({
   }
 }));
 AddEmployee.prototype = {
-  addEmployee: PropTypes.func
+  addEmployee: PropTypes.func,
+  handleChooseEmployee: PropTypes.func
 };
-function AddEmployee({ addEmployee }) {
+function AddEmployee({ addEmployee, handleChooseEmployee }) {
   const dispatch = useDispatch();
   const fileRef = useRef();
   const [gender, setGender] = useState('Nam');
@@ -212,6 +213,7 @@ function AddEmployee({ addEmployee }) {
                 )
                 .then((res) => {
                   dispatch(actionGetEmployeesByKeywords(''));
+                  handleChooseEmployee(res.data);
                   dispatch(
                     actionUserSnackbar({
                       status: true,

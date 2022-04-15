@@ -24,6 +24,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Icon } from '@iconify/react';
 import axios from 'axios';
 import { Scrollbar } from 'smooth-scrollbar-react';
+import PropTypes from 'prop-types';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { storage } from '../../firebase-config';
 import api from '../../assets/api/api';
@@ -99,7 +100,10 @@ const ButtonAddEmployee = styled(Button)(({ theme }) => ({
     background: theme.palette.mainHover
   }
 }));
-function ModalEditCustomer() {
+ModalEditCustomer.prototype = {
+  handleUpdateCustomer: PropTypes.func
+};
+function ModalEditCustomer({ handleUpdateCustomer }) {
   const fileRef = useRef();
   const dispatch = useDispatch();
   const [gender, setGender] = useState('');
@@ -215,6 +219,7 @@ function ModalEditCustomer() {
                 )
                 .then((res) => {
                   dispatch(actionGetAllCustomers());
+                  handleUpdateCustomer(res.data);
                   handleClose();
                   dispatch(actionGetAllCustomerByKeyword(''));
                   dispatch(
@@ -244,6 +249,7 @@ function ModalEditCustomer() {
             )
             .then((res) => {
               handleClose();
+              handleUpdateCustomer(res.data);
               dispatch(actionGetAllCustomerByKeyword(''));
               dispatch(
                 actionUserSnackbar({
@@ -307,6 +313,7 @@ function ModalEditCustomer() {
                       )
                       .then((res) => {
                         dispatch(actionGetAllCustomers());
+                        handleUpdateCustomer(res.data);
                         dispatch(actionGetAllCustomerByKeyword(''));
                         handleClose();
                         dispatch(
@@ -336,6 +343,7 @@ function ModalEditCustomer() {
                   )
                   .then((res) => {
                     handleClose();
+                    handleUpdateCustomer(res.data);
                     dispatch(actionGetAllCustomerByKeyword(''));
                     dispatch(
                       actionUserSnackbar({
