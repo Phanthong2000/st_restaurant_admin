@@ -29,7 +29,8 @@ import {
   ACTION_ANALYTIC_GET_REVENUE_WEEK,
   ACTION_ANALYTIC_GET_BOOK_WEEK,
   ACTION_ANALYTIC_GET_ORDER_WEEK,
-  ACTION_ANALYTIC_GET_TOP10_CUSTOMER
+  ACTION_ANALYTIC_GET_TOP10_CUSTOMER,
+  ACTION_ANALYTIC_GET_TOTAL_REVENUE_REVENUE
 } from '../actions/types';
 
 const defaultState = {
@@ -65,6 +66,7 @@ const defaultState = {
   columnRevenueBook: [],
   columnRevenueOrder: [],
   columnRevenueRevenue: [],
+  totalRevenueRevenue: 0,
   allOrders: [],
   top10FoodsLove: {
     name: [],
@@ -249,6 +251,11 @@ const analyticReduce = (state = defaultState, action) => {
       return {
         ...state,
         top10Customer: action.payload
+      };
+    case ACTION_ANALYTIC_GET_TOTAL_REVENUE_REVENUE:
+      return {
+        ...state,
+        totalRevenueRevenue: action.payload
       };
     default:
       return state;

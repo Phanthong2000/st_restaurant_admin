@@ -33,7 +33,8 @@ import {
   ACTION_ANALYTIC_GET_REVENUE_WEEK,
   ACTION_ANALYTIC_GET_BOOK_WEEK,
   ACTION_ANALYTIC_GET_ORDER_WEEK,
-  ACTION_ANALYTIC_GET_TOP10_CUSTOMER
+  ACTION_ANALYTIC_GET_TOP10_CUSTOMER,
+  ACTION_ANALYTIC_GET_TOTAL_REVENUE_REVENUE
 } from './types';
 
 export const actionAnalyticRevenueDateNow = (data) => ({
@@ -160,6 +161,10 @@ export const actionAnalyticGetOrderWeek = (data) => ({
 });
 export const actionAnalyticGetTop10Customer = (data) => ({
   type: ACTION_ANALYTIC_GET_TOP10_CUSTOMER,
+  payload: data
+});
+export const actionAnalyticGetTotalRevenueRevenue = (data) => ({
+  type: ACTION_ANALYTIC_GET_TOTAL_REVENUE_REVENUE,
   payload: data
 });
 export const actionRevenueDateNow = () => (dispatch) => {
@@ -1014,6 +1019,11 @@ export const actionColumnRevenueRevenue = (year) => async (dispatch) => {
     }
   });
   dispatch(actionAnalyticColumnRevenueRevenue([m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12]));
+  dispatch(
+    actionAnalyticGetTotalRevenueRevenue(
+      m1 + m2 + m3 + m4 + m5 + m6 + m7 + m8 + m9 + m10 + m11 + m12
+    )
+  );
 };
 
 export const actionGetAllOrders = () => async (dispatch) => {

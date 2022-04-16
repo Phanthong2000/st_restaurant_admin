@@ -127,6 +127,72 @@ const BoxLoadingBooks = styled(Box)(({ theme }) => ({
   justifyContent: 'center',
   color: theme.palette.main
 }));
+const BoxFood = styled(Box)(({ theme }) => ({
+  width: '100%',
+  display: 'flex',
+  padding: '10px'
+}));
+const WrapperFood = styled(Card)(({ theme }) => ({
+  width: '100%',
+  background: theme.palette.white,
+  overflow: 'auto',
+  padding: '10px'
+}));
+function Food({ food }) {
+  const BoxFood = styled(Box)(({ theme }) => ({
+    width: '100%',
+    border: `1px solid lightgrey`,
+    borderRadius: '5px',
+    padding: '10px',
+    [theme.breakpoints.down('md')]: {
+      padding: '5px'
+    }
+  }));
+  const ImageFood = styled('img')(({ theme }) => ({
+    width: '100%',
+    height: '200px',
+    borderRadius: '10px',
+    [theme.breakpoints.down('md')]: {
+      height: '150px'
+    }
+  }));
+  const FoodName = styled(Typography)(({ theme }) => ({
+    fontFamily: theme.typography.fontFamily.primary,
+    fontSize: '14px',
+    fontWeight: 'bold',
+    color: theme.palette.gray,
+    [theme.breakpoints.down('md')]: {
+      fontSize: '10px'
+    }
+  }));
+  const Price = styled(Typography)(({ theme }) => ({
+    fontWeight: 'bold',
+    fontSize: '13px',
+    color: theme.palette.main,
+    fontFamily: theme.typography.fontFamily.primary,
+    [theme.breakpoints.down('md')]: {
+      fontSize: '10px'
+    }
+  }));
+  return (
+    <Grid sx={{ width: '100%', padding: '10px' }} xs={6} sm={6} md={4} lg={3} xl={3}>
+      <BoxFood>
+        <ImageFood src={food.hinhAnh.at(0)} />
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginTop: '5px'
+          }}
+        >
+          <FoodName>{food.tenMonAn}</FoodName>
+          <Price>{food.donGia.toLocaleString(`es-US`)} vnđ</Price>
+        </Box>
+      </BoxFood>
+    </Grid>
+  );
+}
 function BoxInfo({ icon, value, label }) {
   const Wrapper = styled(Box)(({ theme }) => ({
     width: '100%',
@@ -173,7 +239,16 @@ function CustomerDetail() {
   const [quantityBook, setQuantityBook] = useState(-1);
   const [booksByCustomer, setBooksByCustomer] = useState([]);
   const modalEditCustomer = useSelector((state) => state.customer.modalEditCustomer);
+  const [foods, setFoods] = useState([]);
   const dispatch = useDispatch();
+  const getFoodsLove = async () => {
+    const data = await axios.get(`${api}monAn/list/yeuThich/${id}`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+      }
+    });
+    setFoods(data.data.sort((a, b) => Date.parse(b.createAt) - Date.parse(a.createAt)));
+  };
   const getBooksById = async () => {
     const data = await axios.get(`${api}donDatBan/list/maKhachHang`, {
       headers: {
@@ -202,6 +277,7 @@ function CustomerDetail() {
   };
   useEffect(() => {
     getCustomer();
+    getFoodsLove();
     getBooksById();
     return function () {
       return null;
@@ -459,6 +535,18 @@ function CustomerDetail() {
             </WrapperRight>
           </BoxRight>
         </BoxContent>
+        <BoxFood>
+          <WrapperFood>
+            <Typography sx={{ fontWeight: 'bold', fontSize: '14px', fontFamily: 'sans-serif' }}>
+              Món ăn khách hàng thích
+            </Typography>
+            <Grid sx={{ width: '100%' }} container>
+              {foods.map((item, index) => (
+                <Food key={item.id} food={item} />
+              ))}
+            </Grid>
+          </WrapperFood>
+        </BoxFood>
         {modalEditCustomer.status && (
           <ModalEditCustomer handleUpdateCustomer={handleUpdateCustomer} />
         )}
