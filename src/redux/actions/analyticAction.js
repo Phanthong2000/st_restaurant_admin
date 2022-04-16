@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { get } from 'lodash';
 import moment from 'moment';
 import api from '../../assets/api/api';
 import {
@@ -34,7 +33,9 @@ import {
   ACTION_ANALYTIC_GET_BOOK_WEEK,
   ACTION_ANALYTIC_GET_ORDER_WEEK,
   ACTION_ANALYTIC_GET_TOP10_CUSTOMER,
-  ACTION_ANALYTIC_GET_TOTAL_REVENUE_REVENUE
+  ACTION_ANALYTIC_GET_TOTAL_REVENUE_REVENUE,
+  ACTION_ANALYTIC_COLUMN_AREA_TABLE,
+  ACTION_ANALYTIC_COLUMN_TOP10_TABLE
 } from './types';
 
 export const actionAnalyticRevenueDateNow = (data) => ({
@@ -165,6 +166,14 @@ export const actionAnalyticGetTop10Customer = (data) => ({
 });
 export const actionAnalyticGetTotalRevenueRevenue = (data) => ({
   type: ACTION_ANALYTIC_GET_TOTAL_REVENUE_REVENUE,
+  payload: data
+});
+export const actionAnalyticColumnAreaTable = (data) => ({
+  type: ACTION_ANALYTIC_COLUMN_AREA_TABLE,
+  payload: data
+});
+export const actionAnalyticColumnTop10Table = (data) => ({
+  type: ACTION_ANALYTIC_COLUMN_TOP10_TABLE,
   payload: data
 });
 export const actionRevenueDateNow = () => (dispatch) => {
@@ -1245,6 +1254,43 @@ export const actionGetTop10Customer = () => async (dispatch) => {
       categories,
       data,
       customers: query.data
+    })
+  );
+};
+
+export const actionColumnAreaTable = () => async (dispatch) => {
+  const areaQuery = await axios.get(`${api}khuVuc/list`);
+  const columnName = [];
+  const columnData = [];
+  areaQuery.data
+    .sort((a, b) => Date.parse(b.createAt) - Date.parse(a.createAt))
+    .forEach((area) => {
+      columnName.push(area.tenKhuVuc);
+      const data = axios.get(`${api}ban/list/khuVuc/${area.id}`);
+      data.then((res) => {
+        columnData.push(res.data.length);
+      });
+    });
+  dispatch(
+    actionAnalyticColumnAreaTable({
+      columnName,
+      columnData
+    })
+  );
+};
+
+export const actionColumnTop10Table = () => async (dispatch) => {
+  const data = await axios.get(`${api}ban/list/datNhieuNhat/10`);
+  const columnName = [];
+  const columnData = [];
+  data.data.forEach((table) => {
+    columnName.push(table.ban.tenBan);
+    columnData.push(table.count);
+  });
+  dispatch(
+    actionAnalyticColumnTop10Table({
+      columnName,
+      columnData
     })
   );
 };

@@ -75,6 +75,39 @@ const ButtonOrder = styled(Button)(({ theme }) => ({
     background: theme.palette.mainHover
   }
 }));
+const BoxPage = styled(Box)(({ theme }) => ({
+  width: '100%',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'end'
+}));
+const ButtonChangePage = styled(Box)(({ theme }) => ({
+  width: '35px',
+  height: '35px',
+  color: theme.palette.white,
+  background: theme.palette.main,
+  borderRadius: '35px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  cursor: 'pointer'
+}));
+const QuantityPage = styled(Typography)(({ theme }) => ({
+  fontWeight: 'bold',
+  fontSize: '16px',
+  color: theme.palette.main,
+  fontFamily: theme.typography.fontFamily.primary,
+  width: '50px',
+  textAlign: 'center'
+}));
+const CountPage = styled(Typography)(({ theme }) => ({
+  fontWeight: 'bold',
+  fontSize: '13px',
+  color: theme.palette.main,
+  fontFamily: theme.typography.fontFamily.primary,
+  width: '30px',
+  textAlign: 'center'
+}));
 function Area() {
   const user = useSelector((state) => state.user.user);
   const modalAddArea = useSelector((state) => state.area.modalAddArea);
@@ -271,6 +304,22 @@ function Area() {
     setPage(parseInt(page, 10));
     getAreasByPage(parseInt(page, 10));
   };
+  const handleNext = () => {
+    if (
+      ((allAreas.length - 1) / 5)
+        .toString()
+        .substring(0, ((allAreas.length - 1) / 5).toFixed(1).toString().indexOf('.')) !== `${page}`
+    ) {
+      getAreasByPage(page + 1);
+      setPage(page + 1);
+    }
+  };
+  const handlePrev = () => {
+    if (page > 0) {
+      getAreasByPage(page - 1);
+      setPage(page - 1);
+    }
+  };
   return (
     <RootStyle>
       <Scrollbar alwaysShowTracks>
@@ -313,40 +362,112 @@ function Area() {
               </TableBody>
               <TableFooter>
                 <TableRow>
-                  <TableCell colSpan={11}>
-                    <Tooltip title="Về đầu bảng">
-                      <IconButton onClick={goToStartTable} disabled={page === 0}>
-                        <Icon icon="bi:skip-start-fill" />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Đến cuối bảng">
-                      <IconButton
-                        disabled={
-                          ((allAreas.length - 1) / 5)
-                            .toString()
-                            .substring(
-                              0,
-                              ((allAreas.length - 1) / 5).toFixed(1).toString().indexOf('.')
-                            ) === `${page}`
-                        }
+                  <TableCell colSpan={7}>
+                    <BoxPage>
+                      <CountPage>{page * 5 + 1}</CountPage>
+                      <Typography sx={{ fontWeight: 'bold', fontSize: '13px' }}>-</Typography>
+                      <CountPage>
+                        {page * 5 + 5 >= allAreas.length ? allAreas.length : page * 5 + 5}
+                      </CountPage>
+                      <Typography sx={{ fontWeight: 'bold', fontSize: '13px' }}>/</Typography>
+                      <CountPage>{allAreas.length}</CountPage>
+                      <ButtonChangePage
+                        sx={{ background: page === 0 && 'red', marginRight: '10px' }}
+                        onClick={goToStartTable}
+                      >
+                        {page === 0 ? (
+                          <Icon
+                            style={{ width: '25px', height: '25px', color: '#fff' }}
+                            icon="bx:x"
+                          />
+                        ) : (
+                          <Icon style={{ width: '25px', height: '25px' }} icon="bx:arrow-to-left" />
+                        )}
+                      </ButtonChangePage>
+                      <ButtonChangePage
+                        sx={{ background: page === 0 && 'red' }}
+                        onClick={handlePrev}
+                      >
+                        {page === 0 ? (
+                          <Icon
+                            style={{ width: '25px', height: '25px', color: '#fff' }}
+                            icon="bx:x"
+                          />
+                        ) : (
+                          <Icon style={{ width: '25px', height: '25px' }} icon="bx:chevron-left" />
+                        )}
+                      </ButtonChangePage>
+                      <QuantityPage>{page + 1}</QuantityPage>
+                      <ButtonChangePage
+                        sx={{
+                          background:
+                            ((allAreas.length - 1) / 5)
+                              .toString()
+                              .substring(
+                                0,
+                                ((allAreas.length - 1) / 5).toFixed(1).toString().indexOf('.')
+                              ) === `${page}` && 'red'
+                        }}
+                        onClick={handleNext}
+                      >
+                        {((allAreas.length - 1) / 5)
+                          .toString()
+                          .substring(
+                            0,
+                            ((allAreas.length - 1) / 5).toFixed(1).toString().indexOf('.')
+                          ) === `${page}` ? (
+                          <Icon
+                            style={{ width: '25px', height: '25px', color: '#fff' }}
+                            icon="bx:x"
+                          />
+                        ) : (
+                          <Icon style={{ width: '25px', height: '25px' }} icon="bx:chevron-right" />
+                        )}
+                      </ButtonChangePage>
+                      <ButtonChangePage
+                        sx={{
+                          background:
+                            ((allAreas.length - 1) / 5)
+                              .toString()
+                              .substring(
+                                0,
+                                ((allAreas.length - 1) / 5).toFixed(1).toString().indexOf('.')
+                              ) === `${page}` && 'red',
+                          marginLeft: '10px'
+                        }}
                         onClick={goToEndTable}
                       >
-                        <Icon icon="bi:skip-end-fill" />
-                      </IconButton>
-                    </Tooltip>
+                        {((allAreas.length - 1) / 5)
+                          .toString()
+                          .substring(
+                            0,
+                            ((allAreas.length - 1) / 5).toFixed(1).toString().indexOf('.')
+                          ) === `${page}` ? (
+                          <Icon
+                            style={{ width: '25px', height: '25px', color: '#fff' }}
+                            icon="bx:x"
+                          />
+                        ) : (
+                          <Icon
+                            style={{ width: '25px', height: '25px' }}
+                            icon="bx:arrow-from-left"
+                          />
+                        )}
+                      </ButtonChangePage>
+                    </BoxPage>
                   </TableCell>
                 </TableRow>
               </TableFooter>
             </Table>
           </TableContainer>
-          <TablePagination
+          {/* <TablePagination
             rowsPerPageOptions
             component="div"
             count={allAreas.length}
             rowsPerPage={5}
             page={page}
             onPageChange={handleChangePage}
-          />
+          /> */}
         </Box>
       </Scrollbar>
       {modalAddArea && <ModalAddArea click={handleAddArea} />}

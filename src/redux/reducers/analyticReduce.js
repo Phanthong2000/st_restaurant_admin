@@ -30,7 +30,9 @@ import {
   ACTION_ANALYTIC_GET_BOOK_WEEK,
   ACTION_ANALYTIC_GET_ORDER_WEEK,
   ACTION_ANALYTIC_GET_TOP10_CUSTOMER,
-  ACTION_ANALYTIC_GET_TOTAL_REVENUE_REVENUE
+  ACTION_ANALYTIC_GET_TOTAL_REVENUE_REVENUE,
+  ACTION_ANALYTIC_COLUMN_AREA_TABLE,
+  ACTION_ANALYTIC_COLUMN_TOP10_TABLE
 } from '../actions/types';
 
 const defaultState = {
@@ -91,6 +93,14 @@ const defaultState = {
     categories: [],
     data: [],
     customers: []
+  },
+  columnAreaTable: {
+    columnName: [],
+    columnData: []
+  },
+  top10Table: {
+    columnName: [],
+    columnData: []
   }
 };
 
@@ -256,6 +266,16 @@ const analyticReduce = (state = defaultState, action) => {
       return {
         ...state,
         totalRevenueRevenue: action.payload
+      };
+    case ACTION_ANALYTIC_COLUMN_AREA_TABLE:
+      return {
+        ...state,
+        columnAreaTable: action.payload
+      };
+    case ACTION_ANALYTIC_COLUMN_TOP10_TABLE:
+      return {
+        ...state,
+        top10Table: action.payload
       };
     default:
       return state;

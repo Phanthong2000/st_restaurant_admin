@@ -1,23 +1,23 @@
-import { Box, styled } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import ReactApexChart from 'react-apexcharts';
+import { Box, styled } from '@mui/material';
 import { useSelector } from 'react-redux';
+import ReactApexChart from 'react-apexcharts';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
-  border: `1px solid lightgrey`,
+  background: theme.palette.white,
   borderRadius: '2px',
-  background: theme.palette.white
+  border: `1px solid lightgrey`
 }));
-function ColumnTypefoodFood() {
-  const columnTypefoodFood = useSelector((state) => state.analytic.columnTypefoodFood);
+function ColumnAreaTable() {
+  const columnAreaTable = useSelector((state) => state.analytic.columnAreaTable);
   const [state, setState] = useState({});
   useEffect(() => {
     setState({
       series: [
         {
-          name: 'Món ăn',
-          data: columnTypefoodFood.data
+          name: 'Bàn',
+          data: columnAreaTable.columnData
         }
       ],
       options: {
@@ -26,12 +26,12 @@ function ColumnTypefoodFood() {
           height: 350
         },
         title: {
-          text: 'Thống kê món ăn theo từng loại',
+          text: 'Thống kê bàn theo khu vực',
           align: 'center',
           style: {
             fontFamily: 'san-serif',
             fontWeight: 'bold',
-            fontSize: '16px'
+            fontSize: '14px'
           }
         },
         plotOptions: {
@@ -50,13 +50,17 @@ function ColumnTypefoodFood() {
           width: 2,
           colors: ['transparent']
         },
+        legend: {
+          position: 'top'
+        },
         xaxis: {
-          categories: columnTypefoodFood.name,
+          categories: columnAreaTable.columnName,
           labels: {
             style: {
+              fontSize: '12px',
+              fontFamily: 'Helvetica, Arial, sans-serif',
               fontWeight: 'bold',
-              fontFamily: 'san-serif',
-              fontSize: '12px'
+              cssClass: 'apexcharts-xaxis-label'
             }
           }
         },
@@ -76,7 +80,7 @@ function ColumnTypefoodFood() {
         tooltip: {
           y: {
             formatter(val) {
-              return `${+val} món ăn`;
+              return `${val} người`;
             }
           }
         }
@@ -85,26 +89,15 @@ function ColumnTypefoodFood() {
     return function () {
       return null;
     };
-  }, [columnTypefoodFood]);
-  if (
-    columnTypefoodFood.name.length === 0 ||
-    columnTypefoodFood.data.length === 0 ||
-    state.series === undefined
-  )
-    return null;
+  }, [columnAreaTable]);
+  if (state.series === undefined) return null;
   return (
     <Box sx={{ width: '60%', padding: '10px' }}>
       <RootStyle>
-        <ReactApexChart
-          options={state.options}
-          width="100%"
-          series={state.series}
-          type="bar"
-          height={350}
-        />
+        <ReactApexChart options={state.options} series={state.series} type="bar" height={350} />
       </RootStyle>
     </Box>
   );
 }
 
-export default ColumnTypefoodFood;
+export default ColumnAreaTable;

@@ -6,6 +6,7 @@ import { Scrollbar } from 'smooth-scrollbar-react';
 import BoxAnalyticRevenue from '../components/analytic/BoxAnalyticRevenue';
 import BoxAnalyticCustomer from '../components/analytic/BoxAnalyticCustomer';
 import BoxAnalyticFood from '../components/analytic/BoxAnalyticFood';
+import BoxAnalyticArea from '../components/analytic/BoxAnalyticArea';
 
 const animRight = keyframes`
     0% {
@@ -111,7 +112,7 @@ function BoxType({ type, chosen, choose }) {
 function Analytic() {
   const [menu, setMenu] = useState(false);
   const [choose, setChoose] = useState('Khách hàng');
-  const data = ['Doanh thu', 'Khách hàng', 'Món ăn'];
+  const data = ['Doanh thu', 'Khách hàng', 'Món ăn', 'Khu vực'];
   const handleChoose = (type) => {
     setChoose(type);
     setMenu(false);
@@ -142,6 +143,7 @@ function Analytic() {
         {choose === 'Doanh thu' && <BoxAnalyticRevenue />}
         {choose === 'Khách hàng' && <BoxAnalyticCustomer />}
         {choose === 'Món ăn' && <BoxAnalyticFood />}
+        {choose === 'Khu vực' && <BoxAnalyticArea />}
         <Box> </Box>
       </Scrollbar>
     </RootStyle>

@@ -78,6 +78,39 @@ const ButtonOrder = styled(Button)(({ theme }) => ({
     background: theme.palette.mainHover
   }
 }));
+const BoxPage = styled(Box)(({ theme }) => ({
+  width: '100%',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'end'
+}));
+const ButtonChangePage = styled(Box)(({ theme }) => ({
+  width: '35px',
+  height: '35px',
+  color: theme.palette.white,
+  background: theme.palette.main,
+  borderRadius: '35px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  cursor: 'pointer'
+}));
+const QuantityPage = styled(Typography)(({ theme }) => ({
+  fontWeight: 'bold',
+  fontSize: '16px',
+  color: theme.palette.main,
+  fontFamily: theme.typography.fontFamily.primary,
+  width: '50px',
+  textAlign: 'center'
+}));
+const CountPage = styled(Typography)(({ theme }) => ({
+  fontWeight: 'bold',
+  fontSize: '13px',
+  color: theme.palette.main,
+  fontFamily: theme.typography.fontFamily.primary,
+  width: '30px',
+  textAlign: 'center'
+}));
 function TablePage() {
   const user = useSelector((state) => state.user.user);
   const modalAddTable = useSelector((state) => state.table.modalAddTable);
@@ -246,17 +279,33 @@ function TablePage() {
         );
       });
   };
-  //   const goToStartTable = () => {
-  //     setPage(0);
-  //     getAreasByPage(0);
-  //   };
-  //   const goToEndTable = () => {
-  //     const page = ((allAreas.length - 1) / 5)
-  //       .toString()
-  //       .substring(0, ((allAreas.length - 1) / 5).toFixed(1).toString().indexOf('.'));
-  //     setPage(parseInt(page, 10));
-  //     getAreasByPage(parseInt(page, 10));
-  //   };
+  const goToStartTable = () => {
+    setPage(0);
+    getTablesByPage(0);
+  };
+  const goToEndTable = () => {
+    const page = ((allTables.length - 1) / 5)
+      .toString()
+      .substring(0, ((allTables.length - 1) / 5).toFixed(1).toString().indexOf('.'));
+    setPage(parseInt(page, 10));
+    getTablesByPage(parseInt(page, 10));
+  };
+  const handleNext = () => {
+    if (
+      ((allTables.length - 1) / 5)
+        .toString()
+        .substring(0, ((allTables.length - 1) / 5).toFixed(1).toString().indexOf('.')) !== `${page}`
+    ) {
+      getTablesByPage(page + 1);
+      setPage(page + 1);
+    }
+  };
+  const handlePrev = () => {
+    if (page > 0) {
+      getTablesByPage(page - 1);
+      setPage(page - 1);
+    }
+  };
   return (
     <RootStyle>
       <Scrollbar alwaysShowTracks>
@@ -303,42 +352,114 @@ function TablePage() {
                   <TableRowTable key={index} index={index} table={item} />
                 ))}
               </TableBody>
-              {/* <TableFooter>
+              <TableFooter>
                 <TableRow>
-                  <TableCell colSpan={11}>
-                    <Tooltip title="Về đầu bảng">
-                      <IconButton onClick={goToStartTable} disabled={page === 0}>
-                        <Icon icon="bi:skip-start-fill" />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Đến cuối bảng">
-                      <IconButton
-                        disabled={
-                          ((allAreas.length - 1) / 5)
-                            .toString()
-                            .substring(
-                              0,
-                              ((allAreas.length - 1) / 5).toFixed(1).toString().indexOf('.')
-                            ) === `${page}`
-                        }
+                  <TableCell colSpan={7}>
+                    <BoxPage>
+                      <CountPage>{page * 5 + 1}</CountPage>
+                      <Typography sx={{ fontWeight: 'bold', fontSize: '13px' }}>-</Typography>
+                      <CountPage>
+                        {page * 5 + 5 >= allTables.length ? allTables.length : page * 5 + 5}
+                      </CountPage>
+                      <Typography sx={{ fontWeight: 'bold', fontSize: '13px' }}>/</Typography>
+                      <CountPage>{allTables.length}</CountPage>
+                      <ButtonChangePage
+                        sx={{ background: page === 0 && 'red', marginRight: '10px' }}
+                        onClick={goToStartTable}
+                      >
+                        {page === 0 ? (
+                          <Icon
+                            style={{ width: '25px', height: '25px', color: '#fff' }}
+                            icon="bx:x"
+                          />
+                        ) : (
+                          <Icon style={{ width: '25px', height: '25px' }} icon="bx:arrow-to-left" />
+                        )}
+                      </ButtonChangePage>
+                      <ButtonChangePage
+                        sx={{ background: page === 0 && 'red' }}
+                        onClick={handlePrev}
+                      >
+                        {page === 0 ? (
+                          <Icon
+                            style={{ width: '25px', height: '25px', color: '#fff' }}
+                            icon="bx:x"
+                          />
+                        ) : (
+                          <Icon style={{ width: '25px', height: '25px' }} icon="bx:chevron-left" />
+                        )}
+                      </ButtonChangePage>
+                      <QuantityPage>{page + 1}</QuantityPage>
+                      <ButtonChangePage
+                        sx={{
+                          background:
+                            ((allTables.length - 1) / 5)
+                              .toString()
+                              .substring(
+                                0,
+                                ((allTables.length - 1) / 5).toFixed(1).toString().indexOf('.')
+                              ) === `${page}` && 'red'
+                        }}
+                        onClick={handleNext}
+                      >
+                        {((allTables.length - 1) / 5)
+                          .toString()
+                          .substring(
+                            0,
+                            ((allTables.length - 1) / 5).toFixed(1).toString().indexOf('.')
+                          ) === `${page}` ? (
+                          <Icon
+                            style={{ width: '25px', height: '25px', color: '#fff' }}
+                            icon="bx:x"
+                          />
+                        ) : (
+                          <Icon style={{ width: '25px', height: '25px' }} icon="bx:chevron-right" />
+                        )}
+                      </ButtonChangePage>
+                      <ButtonChangePage
+                        sx={{
+                          background:
+                            ((allTables.length - 1) / 5)
+                              .toString()
+                              .substring(
+                                0,
+                                ((allTables.length - 1) / 5).toFixed(1).toString().indexOf('.')
+                              ) === `${page}` && 'red',
+                          marginLeft: '10px'
+                        }}
                         onClick={goToEndTable}
                       >
-                        <Icon icon="bi:skip-end-fill" />
-                      </IconButton>
-                    </Tooltip>
+                        {((allTables.length - 1) / 5)
+                          .toString()
+                          .substring(
+                            0,
+                            ((allTables.length - 1) / 5).toFixed(1).toString().indexOf('.')
+                          ) === `${page}` ? (
+                          <Icon
+                            style={{ width: '25px', height: '25px', color: '#fff' }}
+                            icon="bx:x"
+                          />
+                        ) : (
+                          <Icon
+                            style={{ width: '25px', height: '25px' }}
+                            icon="bx:arrow-from-left"
+                          />
+                        )}
+                      </ButtonChangePage>
+                    </BoxPage>
                   </TableCell>
                 </TableRow>
-              </TableFooter> */}
+              </TableFooter>
             </Table>
           </TableContainer>
-          <TablePagination
+          {/* <TablePagination
             rowsPerPageOptions
             component="div"
             count={quantity}
             rowsPerPage={5}
             page={page}
             onPageChange={handleChangePage}
-          />
+          /> */}
         </Box>
       </Scrollbar>
       {modalAddTable && <ModalAddTable add={addTable} />}

@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Card,
+  Grid,
   IconButton,
   InputBase,
   styled,
@@ -38,6 +39,7 @@ import api from '../assets/api/api';
 import { actionUserSnackbar, actionUserBackdrop } from '../redux/actions/userAction';
 import { storage } from '../firebase-config';
 import ModalUserLove from '../components/food/ModalUserLove';
+import FoodItemGrid from '../components/food/FoodItemGrid';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -85,6 +87,69 @@ const ButtonAddFood = styled(Button)(({ theme }) => ({
     background: theme.palette.mainHover
   }
 }));
+const BoxPage = styled(Box)(({ theme }) => ({
+  width: '100%',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'end'
+}));
+const ButtonChangePage = styled(Box)(({ theme }) => ({
+  width: '35px',
+  height: '35px',
+  color: theme.palette.white,
+  background: theme.palette.main,
+  borderRadius: '35px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  cursor: 'pointer'
+}));
+const QuantityPage = styled(Typography)(({ theme }) => ({
+  fontWeight: 'bold',
+  fontSize: '16px',
+  color: theme.palette.main,
+  fontFamily: theme.typography.fontFamily.primary,
+  width: '50px',
+  textAlign: 'center'
+}));
+const CountPage = styled(Typography)(({ theme }) => ({
+  fontWeight: 'bold',
+  fontSize: '13px',
+  color: theme.palette.main,
+  fontFamily: theme.typography.fontFamily.primary,
+  width: '30px',
+  textAlign: 'center',
+  cursor: 'pointer'
+}));
+const ButtonOptionChosen = styled(Box)(({ theme }) => ({
+  width: '40px',
+  height: '40px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  borderRadius: '10px',
+  background: theme.palette.main,
+  color: theme.palette.white,
+  marginRight: '10px',
+  cursor: 'pointer'
+}));
+const ButtonOptionDontChoose = styled(Box)(({ theme }) => ({
+  width: '40px',
+  height: '40px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  borderRadius: '10px',
+  background: theme.palette.white,
+  color: theme.palette.main,
+  border: `1px solid ${theme.palette.main}`,
+  marginRight: '10px',
+  cursor: 'pointer'
+}));
+const IconOption = styled(Icon)(({ theme }) => ({
+  width: '30px',
+  height: '30px'
+}));
 function Food() {
   const dispatch = useDispatch();
   const [pageFood, setPageFood] = useState(0);
@@ -101,6 +166,7 @@ function Food() {
   const [quantity, setQuantity] = useState(0);
   const modalAddTypeFood = useSelector((state) => state.food.modalAddTypeFood);
   const modalUserLove = useSelector((state) => state.food.modalUserLove);
+  const [view, setView] = useState('grid');
   const getFoodByPage = (page) => {
     const notPages = [];
     foodsByName.forEach((food) => {
@@ -159,14 +225,14 @@ function Food() {
     getTypeByPage(newValue);
   };
   const headerFood = [
-    { name: 'STT', minWidth: '10%' },
+    { name: 'STT', minWidth: '5%' },
     { name: 'Hình ảnh', minWidth: '15%' },
     { name: 'Tên món ăn', minWidth: '20%' },
     { name: 'Yêu thích', minWidth: '10%' },
     { name: 'Giá', minWidth: '10%' },
     { name: 'Loại', minWidth: '10%' },
     { name: 'Trạng thái', minWidth: '10%' },
-    { name: 'Xem thông tin', minWidth: '10%' }
+    { name: 'Xem thông tin', minWidth: '15%' }
   ];
   const headerType = [
     { name: 'STT', minWidth: '10%' },
@@ -178,15 +244,15 @@ function Food() {
     navigate('/home/food-create');
   };
   const goToStartTable = () => {
-    setPageFood(0);
     getFoodByPage(0);
+    setPageFood(0);
   };
   const goToEndTable = () => {
     const page = ((foodsByName.length - 1) / 5)
       .toString()
       .substring(0, ((foodsByName.length - 1) / 5).toFixed(1).toString().indexOf('.'));
-    setPageFood(parseInt(page, 10));
     getFoodByPage(parseInt(page, 10));
+    setPageFood(parseInt(page, 10));
   };
   const addTypeFood = (name, image) => {
     dispatch(
@@ -287,6 +353,54 @@ function Food() {
       }
     );
   };
+  const handleNextFood = () => {
+    if (
+      ((foodsByName.length - 1) / 5)
+        .toString()
+        .substring(0, ((foodsByName.length - 1) / 5).toFixed(1).toString().indexOf('.')) !==
+      `${pageFood}`
+    ) {
+      getFoodByPage(pageFood + 1);
+      setPageFood(pageFood + 1);
+    }
+  };
+  const handlePrevFood = () => {
+    if (pageFood > 0) {
+      getFoodByPage(pageFood - 1);
+      setPageFood(pageFood - 1);
+    }
+  };
+  const handleNextType = () => {
+    if (
+      ((typefoods.length - 1) / 5)
+        .toString()
+        .substring(0, ((typefoods.length - 1) / 5).toFixed(1).toString().indexOf('.')) !==
+      `${pageType}`
+    ) {
+      getTypeByPage(pageType + 1);
+      setPageType(pageType + 1);
+    }
+  };
+  const handlePrevType = () => {
+    if (pageType > 0) {
+      getTypeByPage(pageType - 1);
+      setPageType(pageType - 1);
+    }
+  };
+  const goToStartTableType = () => {
+    getTypeByPage(0);
+    setPageType(0);
+  };
+  const goToEndTableType = () => {
+    const page = ((typefoods.length - 1) / 5)
+      .toString()
+      .substring(0, ((typefoods.length - 1) / 5).toFixed(1).toString().indexOf('.'));
+    getTypeByPage(parseInt(page, 10));
+    setPageType(parseInt(page, 10));
+  };
+  const handleChooseView = (view) => {
+    setView(view);
+  };
   return (
     <RootStyle>
       <Scrollbar style={{ padding: '10px' }} alwaysShowTracks>
@@ -308,67 +422,249 @@ function Food() {
         <Box sx={{ marginTop: '20px' }}>
           <BoxListFood>
             <Typography sx={{ fontWeight: 'bold', fontSize: '20px' }}>Danh sách món ăn</Typography>
-            <ButtonAddFood onClick={goToCreateFood}>Thêm món ăn</ButtonAddFood>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              {view === 'grid' ? (
+                <ButtonOptionChosen>
+                  <IconOption icon="fluent:grid-16-filled" />
+                </ButtonOptionChosen>
+              ) : (
+                <ButtonOptionDontChoose onClick={() => handleChooseView('grid')}>
+                  <IconOption icon="fluent:grid-16-regular" />
+                </ButtonOptionDontChoose>
+              )}
+              {view === 'table' ? (
+                <ButtonOptionChosen>
+                  <IconOption icon="fluent:table-freeze-row-16-filled" />
+                </ButtonOptionChosen>
+              ) : (
+                <ButtonOptionDontChoose onClick={() => handleChooseView('table')}>
+                  <IconOption icon="fluent:table-freeze-row-16-regular" />
+                </ButtonOptionDontChoose>
+              )}
+              <ButtonAddFood onClick={goToCreateFood}>Thêm món ăn</ButtonAddFood>
+            </Box>
           </BoxListFood>
-          <TableContainer>
-            <Table sx={{ background: '#fff', borderRadius: '10px' }}>
-              <TableHead>
-                <TableRow>
-                  {headerFood.map((item, index) => (
-                    <TableCell
-                      key={index}
-                      sx={{
-                        width: item.minWidth,
-                        fontWeight: 'bold',
-                        color: '#000'
-                      }}
-                    >
-                      {item.name}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
+          {view === 'grid' ? (
+            <>
+              <Grid sx={{ width: '100%' }} container>
                 {foodTable.map((item, index) => (
-                  <FoodTableRow key={index} food={item} index={index + pageFood * 5} />
+                  <FoodItemGrid index={index + pageFood * 5} key={item.id} food={item} />
                 ))}
-              </TableBody>
-              <TableFooter>
-                <TableRow>
-                  <TableCell colSpan={8}>
-                    <Tooltip title="Về đầu bảng">
-                      <IconButton onClick={goToStartTable} disabled={pageFood === 0}>
-                        <Icon icon="bi:skip-start-fill" />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Đến cuối bảng">
-                      <IconButton
-                        disabled={
-                          ((foodsByName.length - 1) / 5)
+              </Grid>
+              <BoxPage sx={{ marginTop: '10px' }}>
+                <CountPage>{pageFood * 5 + 1}</CountPage>
+                <Typography sx={{ fontWeight: 'bold', fontSize: '13px' }}>-</Typography>
+                <CountPage>
+                  {pageFood * 5 + 5 >= foodsByName.length ? foodsByName.length : pageFood * 5 + 5}
+                </CountPage>
+                <Typography sx={{ fontWeight: 'bold', fontSize: '13px' }}>/</Typography>
+                <CountPage>{foodsByName.length}</CountPage>
+                <ButtonChangePage
+                  sx={{ background: pageFood === 0 && 'red', marginRight: '10px' }}
+                  onClick={goToStartTable}
+                >
+                  {pageFood === 0 ? (
+                    <Icon style={{ width: '25px', height: '25px', color: '#fff' }} icon="bx:x" />
+                  ) : (
+                    <Icon style={{ width: '25px', height: '25px' }} icon="bx:arrow-to-left" />
+                  )}
+                </ButtonChangePage>
+                <ButtonChangePage
+                  sx={{ background: pageFood === 0 && 'red' }}
+                  onClick={handlePrevFood}
+                >
+                  {pageFood === 0 ? (
+                    <Icon style={{ width: '25px', height: '25px', color: '#fff' }} icon="bx:x" />
+                  ) : (
+                    <Icon style={{ width: '25px', height: '25px' }} icon="bx:chevron-left" />
+                  )}
+                </ButtonChangePage>
+                <QuantityPage>{pageFood + 1}</QuantityPage>
+                <ButtonChangePage
+                  sx={{
+                    background:
+                      ((foodsByName.length - 1) / 5)
+                        .toString()
+                        .substring(
+                          0,
+                          ((foodsByName.length - 1) / 5).toFixed(1).toString().indexOf('.')
+                        ) === `${pageFood}` && 'red'
+                  }}
+                  onClick={handleNextFood}
+                >
+                  {((foodsByName.length - 1) / 5)
+                    .toString()
+                    .substring(
+                      0,
+                      ((foodsByName.length - 1) / 5).toFixed(1).toString().indexOf('.')
+                    ) === `${pageFood}` ? (
+                    <Icon style={{ width: '25px', height: '25px', color: '#fff' }} icon="bx:x" />
+                  ) : (
+                    <Icon style={{ width: '25px', height: '25px' }} icon="bx:chevron-right" />
+                  )}
+                </ButtonChangePage>
+                <ButtonChangePage
+                  sx={{
+                    background:
+                      ((foodsByName.length - 1) / 5)
+                        .toString()
+                        .substring(
+                          0,
+                          ((foodsByName.length - 1) / 5).toFixed(1).toString().indexOf('.')
+                        ) === `${pageFood}` && 'red',
+                    marginLeft: '10px'
+                  }}
+                  onClick={goToEndTable}
+                >
+                  {((foodsByName.length - 1) / 5)
+                    .toString()
+                    .substring(
+                      0,
+                      ((foodsByName.length - 1) / 5).toFixed(1).toString().indexOf('.')
+                    ) === `${pageFood}` ? (
+                    <Icon style={{ width: '25px', height: '25px', color: '#fff' }} icon="bx:x" />
+                  ) : (
+                    <Icon style={{ width: '25px', height: '25px' }} icon="bx:arrow-from-left" />
+                  )}
+                </ButtonChangePage>
+              </BoxPage>
+            </>
+          ) : (
+            <TableContainer>
+              <Table sx={{ background: '#fff', borderRadius: '10px' }}>
+                <TableHead>
+                  <TableRow>
+                    {headerFood.map((item, index) => (
+                      <TableCell
+                        key={index}
+                        sx={{
+                          width: item.minWidth,
+                          fontWeight: 'bold',
+                          color: '#000'
+                        }}
+                      >
+                        {item.name}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {foodTable.map((item, index) => (
+                    <FoodTableRow key={index} food={item} index={index + pageFood * 5} />
+                  ))}
+                </TableBody>
+                <TableFooter>
+                  <TableRow>
+                    <TableCell colSpan={8}>
+                      <BoxPage>
+                        <CountPage>{pageFood * 5 + 1}</CountPage>
+                        <Typography sx={{ fontWeight: 'bold', fontSize: '13px' }}>-</Typography>
+                        <CountPage>
+                          {pageFood * 5 + 5 >= foodsByName.length
+                            ? foodsByName.length
+                            : pageFood * 5 + 5}
+                        </CountPage>
+                        <Typography sx={{ fontWeight: 'bold', fontSize: '13px' }}>/</Typography>
+                        <CountPage>{foodsByName.length}</CountPage>
+                        <ButtonChangePage
+                          sx={{ background: pageFood === 0 && 'red', marginRight: '10px' }}
+                          onClick={goToStartTable}
+                        >
+                          {pageFood === 0 ? (
+                            <Icon
+                              style={{ width: '25px', height: '25px', color: '#fff' }}
+                              icon="bx:x"
+                            />
+                          ) : (
+                            <Icon
+                              style={{ width: '25px', height: '25px' }}
+                              icon="bx:arrow-to-left"
+                            />
+                          )}
+                        </ButtonChangePage>
+                        <ButtonChangePage
+                          sx={{ background: pageFood === 0 && 'red' }}
+                          onClick={handlePrevFood}
+                        >
+                          {pageFood === 0 ? (
+                            <Icon
+                              style={{ width: '25px', height: '25px', color: '#fff' }}
+                              icon="bx:x"
+                            />
+                          ) : (
+                            <Icon
+                              style={{ width: '25px', height: '25px' }}
+                              icon="bx:chevron-left"
+                            />
+                          )}
+                        </ButtonChangePage>
+                        <QuantityPage>{pageFood + 1}</QuantityPage>
+                        <ButtonChangePage
+                          sx={{
+                            background:
+                              ((foodsByName.length - 1) / 5)
+                                .toString()
+                                .substring(
+                                  0,
+                                  ((foodsByName.length - 1) / 5).toFixed(1).toString().indexOf('.')
+                                ) === `${pageFood}` && 'red'
+                          }}
+                          onClick={handleNextFood}
+                        >
+                          {((foodsByName.length - 1) / 5)
                             .toString()
                             .substring(
                               0,
                               ((foodsByName.length - 1) / 5).toFixed(1).toString().indexOf('.')
-                            ) === `${pageFood}`
-                        }
-                        onClick={goToEndTable}
-                      >
-                        <Icon icon="bi:skip-end-fill" />
-                      </IconButton>
-                    </Tooltip>
-                  </TableCell>
-                </TableRow>
-              </TableFooter>
-            </Table>
-          </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={false}
-            component="div"
-            count={quantity}
-            rowsPerPage={5}
-            page={pageFood}
-            onPageChange={handleChangePage}
-          />
+                            ) === `${pageFood}` ? (
+                            <Icon
+                              style={{ width: '25px', height: '25px', color: '#fff' }}
+                              icon="bx:x"
+                            />
+                          ) : (
+                            <Icon
+                              style={{ width: '25px', height: '25px' }}
+                              icon="bx:chevron-right"
+                            />
+                          )}
+                        </ButtonChangePage>
+                        <ButtonChangePage
+                          sx={{
+                            background:
+                              ((foodsByName.length - 1) / 5)
+                                .toString()
+                                .substring(
+                                  0,
+                                  ((foodsByName.length - 1) / 5).toFixed(1).toString().indexOf('.')
+                                ) === `${pageFood}` && 'red',
+                            marginLeft: '10px'
+                          }}
+                          onClick={goToEndTable}
+                        >
+                          {((foodsByName.length - 1) / 5)
+                            .toString()
+                            .substring(
+                              0,
+                              ((foodsByName.length - 1) / 5).toFixed(1).toString().indexOf('.')
+                            ) === `${pageFood}` ? (
+                            <Icon
+                              style={{ width: '25px', height: '25px', color: '#fff' }}
+                              icon="bx:x"
+                            />
+                          ) : (
+                            <Icon
+                              style={{ width: '25px', height: '25px' }}
+                              icon="bx:arrow-from-left"
+                            />
+                          )}
+                        </ButtonChangePage>
+                      </BoxPage>
+                    </TableCell>
+                  </TableRow>
+                </TableFooter>
+              </Table>
+            </TableContainer>
+          )}
         </Box>
         <Box sx={{ margin: '20px 0px', width: '70%', marginLeft: '15%' }}>
           <BoxListFood>
@@ -414,16 +710,114 @@ function Food() {
                   </>
                 )}
               </TableBody>
+              <TableFooter>
+                <TableRow>
+                  <TableCell colSpan={4}>
+                    <BoxPage>
+                      <CountPage>{pageType * 5 + 1}</CountPage>
+                      <Typography sx={{ fontWeight: 'bold', fontSize: '13px' }}>-</Typography>
+                      <CountPage>
+                        {pageType * 5 + 5 >= typefoods.length ? typefoods.length : pageType * 5 + 5}
+                      </CountPage>
+                      <Typography sx={{ fontWeight: 'bold', fontSize: '13px' }}>/</Typography>
+                      <CountPage>{typefoods.length}</CountPage>
+                      <ButtonChangePage
+                        sx={{ background: pageType === 0 && 'red', marginRight: '10px' }}
+                        onClick={goToStartTableType}
+                      >
+                        {pageType === 0 ? (
+                          <Icon
+                            style={{ width: '25px', height: '25px', color: '#fff' }}
+                            icon="bx:x"
+                          />
+                        ) : (
+                          <Icon style={{ width: '25px', height: '25px' }} icon="bx:arrow-to-left" />
+                        )}
+                      </ButtonChangePage>
+                      <ButtonChangePage
+                        sx={{ background: pageType === 0 && 'red' }}
+                        onClick={handlePrevType}
+                      >
+                        {pageType === 0 ? (
+                          <Icon
+                            style={{ width: '25px', height: '25px', color: '#fff' }}
+                            icon="bx:x"
+                          />
+                        ) : (
+                          <Icon style={{ width: '25px', height: '25px' }} icon="bx:chevron-left" />
+                        )}
+                      </ButtonChangePage>
+                      <QuantityPage>{pageType + 1}</QuantityPage>
+                      <ButtonChangePage
+                        sx={{
+                          background:
+                            ((typefoods.length - 1) / 5)
+                              .toString()
+                              .substring(
+                                0,
+                                ((typefoods.length - 1) / 5).toFixed(1).toString().indexOf('.')
+                              ) === `${pageType}` && 'red'
+                        }}
+                        onClick={handleNextType}
+                      >
+                        {((typefoods.length - 1) / 5)
+                          .toString()
+                          .substring(
+                            0,
+                            ((typefoods.length - 1) / 5).toFixed(1).toString().indexOf('.')
+                          ) === `${pageType}` ? (
+                          <Icon
+                            style={{ width: '25px', height: '25px', color: '#fff' }}
+                            icon="bx:x"
+                          />
+                        ) : (
+                          <Icon style={{ width: '25px', height: '25px' }} icon="bx:chevron-right" />
+                        )}
+                      </ButtonChangePage>
+                      <ButtonChangePage
+                        sx={{
+                          background:
+                            ((typefoods.length - 1) / 5)
+                              .toString()
+                              .substring(
+                                0,
+                                ((typefoods.length - 1) / 5).toFixed(1).toString().indexOf('.')
+                              ) === `${pageType}` && 'red',
+                          marginLeft: '10px'
+                        }}
+                        onClick={goToEndTableType}
+                      >
+                        {((typefoods.length - 1) / 5)
+                          .toString()
+                          .substring(
+                            0,
+                            ((typefoods.length - 1) / 5).toFixed(1).toString().indexOf('.')
+                          ) === `${pageType}` ? (
+                          <Icon
+                            style={{ width: '25px', height: '25px', color: '#fff' }}
+                            icon="bx:x"
+                          />
+                        ) : (
+                          <Icon
+                            style={{ width: '25px', height: '25px' }}
+                            icon="bx:arrow-from-left"
+                          />
+                        )}
+                      </ButtonChangePage>
+                    </BoxPage>
+                  </TableCell>
+                </TableRow>
+              </TableFooter>
             </Table>
           </TableContainer>
-          <TablePagination
+          {/* <TablePagination
             rowsPerPageOptions={false}
             component="div"
             count={typefoods.length}
             rowsPerPage={5}
             page={pageType}
             onPageChange={handleChangePageType}
-          />
+          /> */}
         </Box>
       </Scrollbar>
       {modalAddTypeFood && <ModalAddTypeFood addTypeFood={addTypeFood} />}

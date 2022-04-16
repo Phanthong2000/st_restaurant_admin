@@ -33,10 +33,12 @@ import {
   actionBookDateNow,
   actionBookMonthNow,
   actionBookYearNow,
+  actionColumnAreaTable,
   actionColumnCustomersYear,
   actionColumnRevenueBook,
   actionColumnRevenueOrder,
   actionColumnRevenueRevenue,
+  actionColumnTop10Table,
   actionColumnTypefoodFood,
   actionGetAllOrders,
   actionGetBookWeek,
@@ -96,6 +98,8 @@ function UtilRedux() {
     dispatch(actionGetBookWeek());
     dispatch(actionGetOrderWeek());
     dispatch(actionGetTop10Customer());
+    dispatch(actionColumnAreaTable());
+    dispatch(actionColumnTop10Table());
     if (loggedIn) dispatch(actionGetUser(JSON.parse(localStorage.getItem('admin')).id));
     return function () {
       return null;

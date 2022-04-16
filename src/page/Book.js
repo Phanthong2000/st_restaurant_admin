@@ -73,6 +73,39 @@ const ButtonOrder = styled(Button)(({ theme }) => ({
     background: theme.palette.mainHover
   }
 }));
+const BoxPage = styled(Box)(({ theme }) => ({
+  width: '100%',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'end'
+}));
+const ButtonChangePage = styled(Box)(({ theme }) => ({
+  width: '35px',
+  height: '35px',
+  color: theme.palette.white,
+  background: theme.palette.main,
+  borderRadius: '35px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  cursor: 'pointer'
+}));
+const QuantityPage = styled(Typography)(({ theme }) => ({
+  fontWeight: 'bold',
+  fontSize: '16px',
+  color: theme.palette.main,
+  fontFamily: theme.typography.fontFamily.primary,
+  width: '50px',
+  textAlign: 'center'
+}));
+const CountPage = styled(Typography)(({ theme }) => ({
+  fontWeight: 'bold',
+  fontSize: '13px',
+  color: theme.palette.main,
+  fontFamily: theme.typography.fontFamily.primary,
+  width: '30px',
+  textAlign: 'center'
+}));
 function Book() {
   const booksByKeyword = useSelector((state) => state.order.booksByKeyword);
   const modalEditBook = useSelector((state) => state.order.modalEditBook);
@@ -238,6 +271,23 @@ function Book() {
     setPage(parseInt(page, 10));
     getBooksByPage(parseInt(page, 10));
   };
+  const handleNext = () => {
+    if (
+      ((booksByKeyword.length - 1) / 5)
+        .toString()
+        .substring(0, ((booksByKeyword.length - 1) / 5).toFixed(1).toString().indexOf('.')) !==
+      `${page}`
+    ) {
+      getBooksByPage(page + 1);
+      setPage(page + 1);
+    }
+  };
+  const handlePrev = () => {
+    if (page > 0) {
+      getBooksByPage(page - 1);
+      setPage(page - 1);
+    }
+  };
   return (
     <RootStyle>
       <Scrollbar alwaysShowTracks>
@@ -286,40 +336,114 @@ function Book() {
               </TableBody>
               <TableFooter>
                 <TableRow>
-                  <TableCell colSpan={12}>
-                    <Tooltip title="Về đầu bảng">
-                      <IconButton onClick={goToStartTable} disabled={page === 0}>
-                        <Icon icon="bi:skip-start-fill" />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Đến cuối bảng">
-                      <IconButton
-                        disabled={
-                          ((booksByKeyword.length - 1) / 5)
-                            .toString()
-                            .substring(
-                              0,
-                              ((booksByKeyword.length - 1) / 5).toFixed(1).toString().indexOf('.')
-                            ) === `${page}`
-                        }
+                  <TableCell colSpan={13}>
+                    <BoxPage>
+                      <CountPage>{page * 5 + 1}</CountPage>
+                      <Typography sx={{ fontWeight: 'bold', fontSize: '13px' }}>-</Typography>
+                      <CountPage>
+                        {page * 5 + 5 >= booksByKeyword.length
+                          ? booksByKeyword.length
+                          : page * 5 + 5}
+                      </CountPage>
+                      <Typography sx={{ fontWeight: 'bold', fontSize: '13px' }}>/</Typography>
+                      <CountPage>{booksByKeyword.length}</CountPage>
+                      <ButtonChangePage
+                        sx={{ background: page === 0 && 'red', marginRight: '10px' }}
+                        onClick={goToStartTable}
+                      >
+                        {page === 0 ? (
+                          <Icon
+                            style={{ width: '25px', height: '25px', color: '#fff' }}
+                            icon="bx:x"
+                          />
+                        ) : (
+                          <Icon style={{ width: '25px', height: '25px' }} icon="bx:arrow-to-left" />
+                        )}
+                      </ButtonChangePage>
+                      <ButtonChangePage
+                        sx={{ background: page === 0 && 'red' }}
+                        onClick={handlePrev}
+                      >
+                        {page === 0 ? (
+                          <Icon
+                            style={{ width: '25px', height: '25px', color: '#fff' }}
+                            icon="bx:x"
+                          />
+                        ) : (
+                          <Icon style={{ width: '25px', height: '25px' }} icon="bx:chevron-left" />
+                        )}
+                      </ButtonChangePage>
+                      <QuantityPage>{page + 1}</QuantityPage>
+                      <ButtonChangePage
+                        sx={{
+                          background:
+                            ((booksByKeyword.length - 1) / 5)
+                              .toString()
+                              .substring(
+                                0,
+                                ((booksByKeyword.length - 1) / 5).toFixed(1).toString().indexOf('.')
+                              ) === `${page}` && 'red'
+                        }}
+                        onClick={handleNext}
+                      >
+                        {((booksByKeyword.length - 1) / 5)
+                          .toString()
+                          .substring(
+                            0,
+                            ((booksByKeyword.length - 1) / 5).toFixed(1).toString().indexOf('.')
+                          ) === `${page}` ? (
+                          <Icon
+                            style={{ width: '25px', height: '25px', color: '#fff' }}
+                            icon="bx:x"
+                          />
+                        ) : (
+                          <Icon style={{ width: '25px', height: '25px' }} icon="bx:chevron-right" />
+                        )}
+                      </ButtonChangePage>
+                      <ButtonChangePage
+                        sx={{
+                          background:
+                            ((booksByKeyword.length - 1) / 5)
+                              .toString()
+                              .substring(
+                                0,
+                                ((booksByKeyword.length - 1) / 5).toFixed(1).toString().indexOf('.')
+                              ) === `${page}` && 'red',
+                          marginLeft: '10px'
+                        }}
                         onClick={goToEndTable}
                       >
-                        <Icon icon="bi:skip-end-fill" />
-                      </IconButton>
-                    </Tooltip>
+                        {((booksByKeyword.length - 1) / 5)
+                          .toString()
+                          .substring(
+                            0,
+                            ((booksByKeyword.length - 1) / 5).toFixed(1).toString().indexOf('.')
+                          ) === `${page}` ? (
+                          <Icon
+                            style={{ width: '25px', height: '25px', color: '#fff' }}
+                            icon="bx:x"
+                          />
+                        ) : (
+                          <Icon
+                            style={{ width: '25px', height: '25px' }}
+                            icon="bx:arrow-from-left"
+                          />
+                        )}
+                      </ButtonChangePage>
+                    </BoxPage>
                   </TableCell>
                 </TableRow>
               </TableFooter>
             </Table>
           </TableContainer>
-          <TablePagination
+          {/* <TablePagination
             rowsPerPageOptions
             component="div"
             count={quantity}
             rowsPerPage={5}
             page={page}
             onPageChange={handleChangePage}
-          />
+          /> */}
         </Box>
       </Scrollbar>
       {modalEditBook.status && <ModalEditBook />}

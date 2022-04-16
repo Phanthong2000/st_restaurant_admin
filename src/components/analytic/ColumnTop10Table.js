@@ -1,7 +1,7 @@
-import { Box, styled } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import ReactApexChart from 'react-apexcharts';
+import { styled, Box } from '@mui/material';
 import { useSelector } from 'react-redux';
+import ReactApexChart from 'react-apexcharts';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -9,14 +9,14 @@ const RootStyle = styled(Box)(({ theme }) => ({
   borderRadius: '2px',
   background: theme.palette.white
 }));
-function ColumnTop10FoodsLove() {
-  const top10FoodsLove = useSelector((state) => state.analytic.top10FoodsLove);
+function ColumnTop10Table() {
   const [state, setState] = useState({});
+  const top10Table = useSelector((state) => state.analytic.top10Table);
   useEffect(() => {
     setState({
       series: [
         {
-          data: top10FoodsLove.value,
+          data: top10Table.columnData,
           type: 'column',
           name: 'Lượt thích'
         }
@@ -42,8 +42,8 @@ function ColumnTop10FoodsLove() {
             colors: {
               ranges: [
                 {
-                  from: top10FoodsLove.value.at(0),
-                  to: top10FoodsLove.value.at(0),
+                  from: top10Table.columnData.at(0),
+                  to: top10Table.columnData.at(0),
                   color: '#6df792'
                 }
               ]
@@ -66,7 +66,7 @@ function ColumnTop10FoodsLove() {
           }
         },
         xaxis: {
-          categories: top10FoodsLove.name,
+          categories: top10Table.columnName,
           title: {
             text: '',
             style: {
@@ -89,7 +89,7 @@ function ColumnTop10FoodsLove() {
         },
         yaxis: {
           min: 0,
-          max: top10FoodsLove.value.at(0) + 5,
+          max: top10Table.columnData.at(0) + 5,
           labels: {
             style: {
               fontSize: '8px',
@@ -115,7 +115,7 @@ function ColumnTop10FoodsLove() {
     return function () {
       return null;
     };
-  }, [top10FoodsLove]);
+  }, [top10Table]);
   if (state.series === undefined) return null;
   return (
     <Box sx={{ width: '40%', padding: '10px' }}>
@@ -132,4 +132,4 @@ function ColumnTop10FoodsLove() {
   );
 }
 
-export default ColumnTop10FoodsLove;
+export default ColumnTop10Table;
