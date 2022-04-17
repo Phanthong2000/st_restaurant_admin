@@ -248,9 +248,9 @@ function Food() {
     setPageFood(0);
   };
   const goToEndTable = () => {
-    const page = ((foodsByName.length - 1) / 5)
+    const page = ((quantity - 1) / 5)
       .toString()
-      .substring(0, ((foodsByName.length - 1) / 5).toFixed(1).toString().indexOf('.'));
+      .substring(0, ((quantity - 1) / 5).toFixed(1).toString().indexOf('.'));
     getFoodByPage(parseInt(page, 10));
     setPageFood(parseInt(page, 10));
   };
@@ -355,10 +355,9 @@ function Food() {
   };
   const handleNextFood = () => {
     if (
-      ((foodsByName.length - 1) / 5)
+      ((quantity - 1) / 5)
         .toString()
-        .substring(0, ((foodsByName.length - 1) / 5).toFixed(1).toString().indexOf('.')) !==
-      `${pageFood}`
+        .substring(0, ((quantity - 1) / 5).toFixed(1).toString().indexOf('.')) !== `${pageFood}`
     ) {
       getFoodByPage(pageFood + 1);
       setPageFood(pageFood + 1);
@@ -454,11 +453,9 @@ function Food() {
               <BoxPage sx={{ marginTop: '10px' }}>
                 <CountPage>{pageFood * 5 + 1}</CountPage>
                 <Typography sx={{ fontWeight: 'bold', fontSize: '13px' }}>-</Typography>
-                <CountPage>
-                  {pageFood * 5 + 5 >= foodsByName.length ? foodsByName.length : pageFood * 5 + 5}
-                </CountPage>
+                <CountPage>{pageFood * 5 + 5 >= quantity ? quantity : pageFood * 5 + 5}</CountPage>
                 <Typography sx={{ fontWeight: 'bold', fontSize: '13px' }}>/</Typography>
-                <CountPage>{foodsByName.length}</CountPage>
+                <CountPage>{quantity}</CountPage>
                 <ButtonChangePage
                   sx={{ background: pageFood === 0 && 'red', marginRight: '10px' }}
                   onClick={goToStartTable}
@@ -483,21 +480,17 @@ function Food() {
                 <ButtonChangePage
                   sx={{
                     background:
-                      ((foodsByName.length - 1) / 5)
+                      ((quantity - 1) / 5)
                         .toString()
-                        .substring(
-                          0,
-                          ((foodsByName.length - 1) / 5).toFixed(1).toString().indexOf('.')
-                        ) === `${pageFood}` && 'red'
+                        .substring(0, ((quantity - 1) / 5).toFixed(1).toString().indexOf('.')) ===
+                        `${pageFood}` && 'red'
                   }}
                   onClick={handleNextFood}
                 >
-                  {((foodsByName.length - 1) / 5)
+                  {((quantity - 1) / 5)
                     .toString()
-                    .substring(
-                      0,
-                      ((foodsByName.length - 1) / 5).toFixed(1).toString().indexOf('.')
-                    ) === `${pageFood}` ? (
+                    .substring(0, ((quantity - 1) / 5).toFixed(1).toString().indexOf('.')) ===
+                  `${pageFood}` ? (
                     <Icon style={{ width: '25px', height: '25px', color: '#fff' }} icon="bx:x" />
                   ) : (
                     <Icon style={{ width: '25px', height: '25px' }} icon="bx:chevron-right" />
@@ -506,22 +499,18 @@ function Food() {
                 <ButtonChangePage
                   sx={{
                     background:
-                      ((foodsByName.length - 1) / 5)
+                      ((quantity - 1) / 5)
                         .toString()
-                        .substring(
-                          0,
-                          ((foodsByName.length - 1) / 5).toFixed(1).toString().indexOf('.')
-                        ) === `${pageFood}` && 'red',
+                        .substring(0, ((quantity - 1) / 5).toFixed(1).toString().indexOf('.')) ===
+                        `${pageFood}` && 'red',
                     marginLeft: '10px'
                   }}
                   onClick={goToEndTable}
                 >
-                  {((foodsByName.length - 1) / 5)
+                  {((quantity - 1) / 5)
                     .toString()
-                    .substring(
-                      0,
-                      ((foodsByName.length - 1) / 5).toFixed(1).toString().indexOf('.')
-                    ) === `${pageFood}` ? (
+                    .substring(0, ((quantity - 1) / 5).toFixed(1).toString().indexOf('.')) ===
+                  `${pageFood}` ? (
                     <Icon style={{ width: '25px', height: '25px', color: '#fff' }} icon="bx:x" />
                   ) : (
                     <Icon style={{ width: '25px', height: '25px' }} icon="bx:arrow-from-left" />
@@ -560,12 +549,10 @@ function Food() {
                         <CountPage>{pageFood * 5 + 1}</CountPage>
                         <Typography sx={{ fontWeight: 'bold', fontSize: '13px' }}>-</Typography>
                         <CountPage>
-                          {pageFood * 5 + 5 >= foodsByName.length
-                            ? foodsByName.length
-                            : pageFood * 5 + 5}
+                          {pageFood * 5 + 5 >= quantity ? quantity : pageFood * 5 + 5}
                         </CountPage>
                         <Typography sx={{ fontWeight: 'bold', fontSize: '13px' }}>/</Typography>
-                        <CountPage>{foodsByName.length}</CountPage>
+                        <CountPage>{quantity}</CountPage>
                         <ButtonChangePage
                           sx={{ background: pageFood === 0 && 'red', marginRight: '10px' }}
                           onClick={goToStartTable}
@@ -602,20 +589,20 @@ function Food() {
                         <ButtonChangePage
                           sx={{
                             background:
-                              ((foodsByName.length - 1) / 5)
+                              ((quantity - 1) / 5)
                                 .toString()
                                 .substring(
                                   0,
-                                  ((foodsByName.length - 1) / 5).toFixed(1).toString().indexOf('.')
+                                  ((quantity - 1) / 5).toFixed(1).toString().indexOf('.')
                                 ) === `${pageFood}` && 'red'
                           }}
                           onClick={handleNextFood}
                         >
-                          {((foodsByName.length - 1) / 5)
+                          {((quantity - 1) / 5)
                             .toString()
                             .substring(
                               0,
-                              ((foodsByName.length - 1) / 5).toFixed(1).toString().indexOf('.')
+                              ((quantity - 1) / 5).toFixed(1).toString().indexOf('.')
                             ) === `${pageFood}` ? (
                             <Icon
                               style={{ width: '25px', height: '25px', color: '#fff' }}
@@ -631,21 +618,21 @@ function Food() {
                         <ButtonChangePage
                           sx={{
                             background:
-                              ((foodsByName.length - 1) / 5)
+                              ((quantity - 1) / 5)
                                 .toString()
                                 .substring(
                                   0,
-                                  ((foodsByName.length - 1) / 5).toFixed(1).toString().indexOf('.')
+                                  ((quantity - 1) / 5).toFixed(1).toString().indexOf('.')
                                 ) === `${pageFood}` && 'red',
                             marginLeft: '10px'
                           }}
                           onClick={goToEndTable}
                         >
-                          {((foodsByName.length - 1) / 5)
+                          {((quantity - 1) / 5)
                             .toString()
                             .substring(
                               0,
-                              ((foodsByName.length - 1) / 5).toFixed(1).toString().indexOf('.')
+                              ((quantity - 1) / 5).toFixed(1).toString().indexOf('.')
                             ) === `${pageFood}` ? (
                             <Icon
                               style={{ width: '25px', height: '25px', color: '#fff' }}

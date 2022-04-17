@@ -2,9 +2,11 @@ import React from 'react';
 import { Avatar, Box, Card, Grid, IconButton, styled, Tooltip, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
-import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { actionFoodModalEditFood } from '../../redux/actions/foodAction';
+import {
+  actionTableModalChangeArea,
+  actionTableModalEditTable
+} from '../../redux/actions/tableActions';
 
 const RootStyle = styled(Grid)(({ theme }) => ({
   width: '100%',
@@ -18,12 +20,17 @@ const IconWrapper = styled(IconButton)(({ theme }) => ({
   width: '100%',
   cursor: 'default'
 }));
-const AvatarFood = styled(Avatar)(({ theme }) => ({
+const AvatarFood = styled(Box)(({ theme }) => ({
   width: '120px',
   height: '120px',
   position: 'absolute',
   zIndex: 2,
-  top: -40
+  top: -40,
+  background: theme.palette.white,
+  borderRadius: '120px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center'
 }));
 const WrapperInfo = styled(Card)(({ theme }) => ({
   width: '100%',
@@ -65,16 +72,17 @@ const BoxButton = styled(Box)(({ theme }) => ({
   borderRadius: '5px',
   cursor: 'pointer'
 }));
-FoodItemGrid.prototype = {
+TableItemGrid.prototype = {
   food: PropTypes.object
 };
-function FoodItemGrid({ food, index }) {
+function TableItemGrid({ table, index }) {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   return (
     <RootStyle item xs={6} sm={6} md={4} lg={3} xl={2.4}>
       <IconWrapper disableFocusRipple disableRipple disableTouchRipple>
-        <AvatarFood sx={{ boxShadow: 10 }} src={food.hinhAnh.at(0)} />
+        <AvatarFood sx={{ boxShadow: 10 }}>
+          <Icon style={{ width: '100px', height: '100px' }} icon="ic:outline-table-bar" />
+        </AvatarFood>
         <WrapperInfo>
           <Box> </Box>
           <Box
@@ -86,21 +94,21 @@ function FoodItemGrid({ food, index }) {
             }}
           >
             <FoodName>
-              {index + 1}. {food.tenMonAn}
+              {index + 1}. {table.tenBan}
             </FoodName>
-            <Price>{food.donGia.toLocaleString(`es-US`)} vnđ</Price>
-            <Price sx={{ fontWeight: 'normal', fontSize: '14px' }}>
-              {food.loaiMonAn.tenLoaiMonAn}
-            </Price>
-            <BoxLove>
-              <Icon style={{ color: 'red', width: '20px', height: '20px' }} icon="bytesize:heart" />
-              <Status sx={{ marginLeft: '5px' }}>
-                {food.listKhachHangThichMonAn ? food.listKhachHangThichMonAn.length : `0`} yêu thích
-              </Status>
-            </BoxLove>
-            <Status>{food.trangThai}</Status>
+            <Price>Số người tối đa: {table.soNguoiToiDa}</Price>
+            <Status>Khu vực {table.khuVuc.tenKhuVuc}</Status>
             <Box sx={{ marginTop: '5px', display: 'flex', alignItems: 'center' }}>
-              <BoxButton onClick={() => navigate(`/home/food-detail/${food.id}`)}>
+              <BoxButton
+                onClick={() =>
+                  dispatch(
+                    actionTableModalEditTable({
+                      status: true,
+                      table
+                    })
+                  )
+                }
+              >
                 <Tooltip title="Xem thông tin">
                   <Icon icon="clarity:eye-line" />
                 </Tooltip>
@@ -108,15 +116,15 @@ function FoodItemGrid({ food, index }) {
               <BoxButton
                 onClick={() =>
                   dispatch(
-                    actionFoodModalEditFood({
+                    actionTableModalChangeArea({
                       status: true,
-                      food
+                      table
                     })
                   )
                 }
                 sx={{ marginLeft: '10px', background: '#dcfadc', color: '#05b505' }}
               >
-                <Tooltip title="Sửa thông tin">
+                <Tooltip title="Cập nhật khu vực">
                   <Icon icon="la:edit" />
                 </Tooltip>
               </BoxButton>
@@ -128,4 +136,4 @@ function FoodItemGrid({ food, index }) {
   );
 }
 
-export default FoodItemGrid;
+export default TableItemGrid;

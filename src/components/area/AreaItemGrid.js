@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Avatar, Box, Card, Grid, IconButton, styled, Tooltip, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
-import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { useDispatch } from 'react-redux';
-import { actionFoodModalEditFood } from '../../redux/actions/foodAction';
+import api from '../../assets/api/api';
+import { actionAreaModalEditArea } from '../../redux/actions/areaAction';
 
 const RootStyle = styled(Grid)(({ theme }) => ({
   width: '100%',
@@ -65,16 +66,39 @@ const BoxButton = styled(Box)(({ theme }) => ({
   borderRadius: '5px',
   cursor: 'pointer'
 }));
-FoodItemGrid.prototype = {
+AreaItemGrid.prototype = {
   food: PropTypes.object
 };
-function FoodItemGrid({ food, index }) {
+function AreaItemGrid({ area, index }) {
+  const [quantity, setQuantity] = useState(-1);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const getQuantityTableInArea = async () => {
+    const res = await axios.get(`${api}ban/list/khuVuc/${area.id}`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+      }
+    });
+    setQuantity(res.data);
+  };
+  useEffect(() => {
+    getQuantityTableInArea();
+    return function () {
+      return null;
+    };
+  }, []);
+  const chooseArea = () => {
+    dispatch(
+      actionAreaModalEditArea({
+        status: true,
+        area
+      })
+    );
+  };
+  if (quantity === -1) return null;
   return (
     <RootStyle item xs={6} sm={6} md={4} lg={3} xl={2.4}>
       <IconWrapper disableFocusRipple disableRipple disableTouchRipple>
-        <AvatarFood sx={{ boxShadow: 10 }} src={food.hinhAnh.at(0)} />
+        <AvatarFood sx={{ boxShadow: 10 }} src={area.hinhAnh} />
         <WrapperInfo>
           <Box> </Box>
           <Box
@@ -86,38 +110,13 @@ function FoodItemGrid({ food, index }) {
             }}
           >
             <FoodName>
-              {index + 1}. {food.tenMonAn}
+              {index + 1}. {area.tenKhuVuc}
             </FoodName>
-            <Price>{food.donGia.toLocaleString(`es-US`)} vnđ</Price>
-            <Price sx={{ fontWeight: 'normal', fontSize: '14px' }}>
-              {food.loaiMonAn.tenLoaiMonAn}
-            </Price>
-            <BoxLove>
-              <Icon style={{ color: 'red', width: '20px', height: '20px' }} icon="bytesize:heart" />
-              <Status sx={{ marginLeft: '5px' }}>
-                {food.listKhachHangThichMonAn ? food.listKhachHangThichMonAn.length : `0`} yêu thích
-              </Status>
-            </BoxLove>
-            <Status>{food.trangThai}</Status>
-            <Box sx={{ marginTop: '5px', display: 'flex', alignItems: 'center' }}>
-              <BoxButton onClick={() => navigate(`/home/food-detail/${food.id}`)}>
+            <Price sx={{ fontWeight: 'normal', fontSize: '14px' }}>Số lượng bàn: {}</Price>
+            <Box sx={{ marginTop: '5px' }}>
+              <BoxButton onClick={chooseArea}>
                 <Tooltip title="Xem thông tin">
                   <Icon icon="clarity:eye-line" />
-                </Tooltip>
-              </BoxButton>
-              <BoxButton
-                onClick={() =>
-                  dispatch(
-                    actionFoodModalEditFood({
-                      status: true,
-                      food
-                    })
-                  )
-                }
-                sx={{ marginLeft: '10px', background: '#dcfadc', color: '#05b505' }}
-              >
-                <Tooltip title="Sửa thông tin">
-                  <Icon icon="la:edit" />
                 </Tooltip>
               </BoxButton>
             </Box>
@@ -128,4 +127,4 @@ function FoodItemGrid({ food, index }) {
   );
 }
 
-export default FoodItemGrid;
+export default AreaItemGrid;

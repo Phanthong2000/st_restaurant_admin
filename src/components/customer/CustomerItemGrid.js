@@ -2,9 +2,8 @@ import React from 'react';
 import { Avatar, Box, Card, Grid, IconButton, styled, Tooltip, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { actionFoodModalEditFood } from '../../redux/actions/foodAction';
 
 const RootStyle = styled(Grid)(({ theme }) => ({
   width: '100%',
@@ -65,16 +64,19 @@ const BoxButton = styled(Box)(({ theme }) => ({
   borderRadius: '5px',
   cursor: 'pointer'
 }));
-FoodItemGrid.prototype = {
+CustomerItemGrid.prototype = {
   food: PropTypes.object
 };
-function FoodItemGrid({ food, index }) {
-  const dispatch = useDispatch();
+function CustomerItemGrid({ customer, index }) {
+  const broadcast = useSelector((state) => state.socket.broadcast);
   const navigate = useNavigate();
+  const goToCustomerDetail = () => {
+    navigate(`/home/customer-detail/${customer.id}`);
+  };
   return (
     <RootStyle item xs={6} sm={6} md={4} lg={3} xl={2.4}>
       <IconWrapper disableFocusRipple disableRipple disableTouchRipple>
-        <AvatarFood sx={{ boxShadow: 10 }} src={food.hinhAnh.at(0)} />
+        <AvatarFood sx={{ boxShadow: 10 }} src={customer.anhDaiDien} />
         <WrapperInfo>
           <Box> </Box>
           <Box
@@ -86,38 +88,32 @@ function FoodItemGrid({ food, index }) {
             }}
           >
             <FoodName>
-              {index + 1}. {food.tenMonAn}
+              {index + 1}. {customer.hoTen}
             </FoodName>
-            <Price>{food.donGia.toLocaleString(`es-US`)} vnđ</Price>
-            <Price sx={{ fontWeight: 'normal', fontSize: '14px' }}>
-              {food.loaiMonAn.tenLoaiMonAn}
-            </Price>
-            <BoxLove>
-              <Icon style={{ color: 'red', width: '20px', height: '20px' }} icon="bytesize:heart" />
-              <Status sx={{ marginLeft: '5px' }}>
-                {food.listKhachHangThichMonAn ? food.listKhachHangThichMonAn.length : `0`} yêu thích
-              </Status>
-            </BoxLove>
-            <Status>{food.trangThai}</Status>
-            <Box sx={{ marginTop: '5px', display: 'flex', alignItems: 'center' }}>
-              <BoxButton onClick={() => navigate(`/home/food-detail/${food.id}`)}>
+            <Price>SĐT: {customer.soDienThoai}</Price>
+            <Status>{customer.taiKhoan.trangThai}</Status>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Icon
+                style={{
+                  width: '30px',
+                  height: '30px',
+                  color:
+                    broadcast.find((br) => br.userId === customer.id) !== undefined
+                      ? 'green'
+                      : 'gray'
+                }}
+                icon="ci:dot-05-xl"
+              />
+              <Typography sx={{ fontSize: '14px' }}>
+                {broadcast.find((br) => br.userId === customer.id) !== undefined
+                  ? `Online`
+                  : 'Offline'}
+              </Typography>
+            </Box>
+            <Box sx={{ marginTop: '5px' }}>
+              <BoxButton onClick={goToCustomerDetail}>
                 <Tooltip title="Xem thông tin">
                   <Icon icon="clarity:eye-line" />
-                </Tooltip>
-              </BoxButton>
-              <BoxButton
-                onClick={() =>
-                  dispatch(
-                    actionFoodModalEditFood({
-                      status: true,
-                      food
-                    })
-                  )
-                }
-                sx={{ marginLeft: '10px', background: '#dcfadc', color: '#05b505' }}
-              >
-                <Tooltip title="Sửa thông tin">
-                  <Icon icon="la:edit" />
                 </Tooltip>
               </BoxButton>
             </Box>
@@ -128,4 +124,4 @@ function FoodItemGrid({ food, index }) {
   );
 }
 
-export default FoodItemGrid;
+export default CustomerItemGrid;

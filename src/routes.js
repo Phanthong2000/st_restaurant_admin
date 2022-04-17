@@ -22,6 +22,7 @@ import Table from './page/Table';
 import OrderChooseManyFood from './page/OrderChooseManyFood';
 import Employee2 from './page/Employee2';
 import CustomerDetail from './page/CustomerDetail';
+import FoodDetail from './page/FoodDetail';
 
 export default function Router() {
   return useRoutes([
@@ -59,6 +60,7 @@ export default function Router() {
           path: 'food-create',
           element: <CreateFoods />
         },
+        { path: 'food-detail/:id', element: <FoodDetail /> },
         { path: 'order-choose-food', element: <OrderChooseFood /> },
         { path: 'order-choose-many-food', element: <OrderChooseManyFood /> },
         { path: 'profile', element: <Profile /> },
