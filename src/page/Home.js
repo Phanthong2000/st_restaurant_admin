@@ -18,6 +18,8 @@ import BoxQuickStat from '../components/home/BoxQuickStat';
 import AreaChartBookWeek from '../components/home/AreaChartBookWeek';
 import AreaChartOrderWeek from '../components/home/AreaChartOrderWeek';
 import SliderTop10Customer from '../components/home/SliderTop10Customer';
+import BoxQuickEmail from '../components/home/BoxQuickEmail';
+import BoxTop10Food from '../components/home/BoxTop10Food';
 
 const heightScreen = window.innerHeight - 1;
 const RootStyle = styled(Box)(({ theme }) => ({
@@ -53,12 +55,12 @@ function Home() {
         </Box>
         <Box sx={{ width: '100%' }}>
           <Grid container>
-            <Grid item xs={12} sm={12} md={12} lg={5} xl={5}>
+            <Grid sx={{ padding: '0px 10px' }} item xs={12} sm={12} md={12} lg={5} xl={5}>
               <BoxTotalUser />
               <BoxStatusUser />
               <LineTotalNewCustomerInWeek />
             </Grid>
-            <Grid sx={{ padding: '0px 10px' }} item xs={12} sm={12} md={12} lg={7} xl={7}>
+            <Grid sx={{ padding: '0px 20px' }} item xs={12} sm={12} md={12} lg={7} xl={7}>
               {/* <PolarAreaGenderCustomer /> */}
               <BoxCustomerDetail />
             </Grid>
@@ -78,7 +80,7 @@ function Home() {
         <Box sx={{ width: '100%' }}>
           <Grid sx={{ width: '100%' }} container>
             <Grid
-              sx={{ padding: '10px', width: '100%' }}
+              sx={{ padding: '10px 20px', width: '100%' }}
               item
               xs={12}
               sm={12}
@@ -98,6 +100,16 @@ function Home() {
               xl={8}
             >
               <SliderTop10Customer />
+            </Grid>
+          </Grid>
+        </Box>
+        <Box sx={{ width: '100%' }}>
+          <Grid container sx={{ width: '100%' }}>
+            <Grid item sx={{ padding: '10px 20px' }} xs={12} sm={12} md={12} lg={7} xl={7}>
+              {/* <BoxQuickEmail /> */}
+            </Grid>
+            <Grid item sx={{ padding: '10px 20px' }} xs={12} sm={12} md={12} lg={5} xl={5}>
+              <BoxTop10Food />
             </Grid>
           </Grid>
         </Box>

@@ -35,7 +35,9 @@ import {
   ACTION_ANALYTIC_GET_TOP10_CUSTOMER,
   ACTION_ANALYTIC_GET_TOTAL_REVENUE_REVENUE,
   ACTION_ANALYTIC_COLUMN_AREA_TABLE,
-  ACTION_ANALYTIC_COLUMN_TOP10_TABLE
+  ACTION_ANALYTIC_COLUMN_TOP10_TABLE,
+  ACTION_ANALYTIC_GET_TOP10_FOOD,
+  ACTION_ANALYTIC_COLUMN_REVENUE_MONTH
 } from './types';
 
 export const actionAnalyticRevenueDateNow = (data) => ({
@@ -174,6 +176,14 @@ export const actionAnalyticColumnAreaTable = (data) => ({
 });
 export const actionAnalyticColumnTop10Table = (data) => ({
   type: ACTION_ANALYTIC_COLUMN_TOP10_TABLE,
+  payload: data
+});
+export const actionAnalyticGetTop10Food = (data) => ({
+  type: ACTION_ANALYTIC_GET_TOP10_FOOD,
+  payload: data
+});
+export const actionAnalyticColumnRevenueMonth = (data) => ({
+  type: ACTION_ANALYTIC_COLUMN_REVENUE_MONTH,
   payload: data
 });
 export const actionRevenueDateNow = () => (dispatch) => {
@@ -1121,6 +1131,210 @@ export const actionGetRevenueWeek = () => async (dispatch) => {
     })
   );
 };
+export const actionColumnRevenueMonth = (year) => async (dispatch) => {
+  const monthNow = moment(new Date().getTime()).format(`MM`);
+  const m1 = `${year}-${monthNow}-01`;
+  const m2 = `${year}-${monthNow}-02`;
+  const m3 = `${year}-${monthNow}-03`;
+  const m4 = `${year}-${monthNow}-04`;
+  const m5 = `${year}-${monthNow}-05`;
+  const m6 = `${year}-${monthNow}-06`;
+  const m7 = `${year}-${monthNow}-07`;
+  const m8 = `${year}-${monthNow}-08`;
+  const m9 = `${year}-${monthNow}-09`;
+  const m10 = `${year}-${monthNow}-10`;
+  const m11 = `${year}-${monthNow}-11`;
+  const m12 = `${year}-${monthNow}-12`;
+  const m13 = `${year}-${monthNow}-13`;
+  const m14 = `${year}-${monthNow}-14`;
+  const m15 = `${year}-${monthNow}-15`;
+  const m16 = `${year}-${monthNow}-16`;
+  const m17 = `${year}-${monthNow}-17`;
+  const m18 = `${year}-${monthNow}-18`;
+  const m19 = `${year}-${monthNow}-19`;
+  const m20 = `${year}-${monthNow}-20`;
+  const m21 = `${year}-${monthNow}-21`;
+  const m22 = `${year}-${monthNow}-22`;
+  const m23 = `${year}-${monthNow}-23`;
+  const m24 = `${year}-${monthNow}-24`;
+  const m25 = `${year}-${monthNow}-25`;
+  const m26 = `${year}-${monthNow}-26`;
+  const m27 = `${year}-${monthNow}-27`;
+  const m28 = `${year}-${monthNow}-28`;
+  const m29 = `${year}-${monthNow}-29`;
+  const m30 = `${year}-${monthNow}-30`;
+  const m31 = `${year}-${monthNow}-31`;
+  let m1T = 0;
+  let m2T = 0;
+  let m3T = 0;
+  let m4T = 0;
+  let m5T = 0;
+  let m6T = 0;
+  let m7T = 0;
+  let m8T = 0;
+  let m9T = 0;
+  let m10T = 0;
+  let m11T = 0;
+  let m12T = 0;
+  let m13T = 0;
+  let m14T = 0;
+  let m15T = 0;
+  let m16T = 0;
+  let m17T = 0;
+  let m18T = 0;
+  let m19T = 0;
+  let m20T = 0;
+  let m21T = 0;
+  let m22T = 0;
+  let m23T = 0;
+  let m24T = 0;
+  let m25T = 0;
+  let m26T = 0;
+  let m27T = 0;
+  let m28T = 0;
+  let m29T = 0;
+  let m30T = 0;
+  let m31T = 0;
+  const data = await axios.get(`${api}hoaDon/list`, {
+    headers: {
+      Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+    }
+  });
+  data.data.forEach((order) => {
+    if (order.createAt.substring(0, 7) === m1) {
+      m1T += getTotalRevenue(order);
+    } else if (order.createAt.substring(0, 10) === m2) {
+      m2T += getTotalRevenue(order);
+    } else if (order.createAt.substring(0, 10) === m3) {
+      m3T += getTotalRevenue(order);
+    } else if (order.createAt.substring(0, 10) === m4) {
+      m4T += getTotalRevenue(order);
+    } else if (order.createAt.substring(0, 10) === m5) {
+      m5T += getTotalRevenue(order);
+    } else if (order.createAt.substring(0, 10) === m6) {
+      m6T += getTotalRevenue(order);
+    } else if (order.createAt.substring(0, 10) === m7) {
+      m7T += getTotalRevenue(order);
+    } else if (order.createAt.substring(0, 10) === m8) {
+      m8T += getTotalRevenue(order);
+    } else if (order.createAt.substring(0, 10) === m9) {
+      m9T += getTotalRevenue(order);
+    } else if (order.createAt.substring(0, 10) === m10) {
+      m10T += getTotalRevenue(order);
+    } else if (order.createAt.substring(0, 10) === m11) {
+      m11T += getTotalRevenue(order);
+    } else if (order.createAt.substring(0, 10) === m12) {
+      m12T += getTotalRevenue(order);
+    } else if (order.createAt.substring(0, 10) === m13) {
+      m13T += getTotalRevenue(order);
+    } else if (order.createAt.substring(0, 10) === m14) {
+      m14T += getTotalRevenue(order);
+    } else if (order.createAt.substring(0, 10) === m15) {
+      m15T += getTotalRevenue(order);
+    } else if (order.createAt.substring(0, 10) === m16) {
+      m16T += getTotalRevenue(order);
+    } else if (order.createAt.substring(0, 10) === m17) {
+      m17T += getTotalRevenue(order);
+    } else if (order.createAt.substring(0, 10) === m18) {
+      m18T += getTotalRevenue(order);
+    } else if (order.createAt.substring(0, 10) === m19) {
+      m19T += getTotalRevenue(order);
+    } else if (order.createAt.substring(0, 10) === m20) {
+      m20T += getTotalRevenue(order);
+    } else if (order.createAt.substring(0, 10) === m21) {
+      m21T += getTotalRevenue(order);
+    } else if (order.createAt.substring(0, 10) === m22) {
+      m22T += getTotalRevenue(order);
+    } else if (order.createAt.substring(0, 10) === m23) {
+      m23T += getTotalRevenue(order);
+    } else if (order.createAt.substring(0, 10) === m24) {
+      m24T += getTotalRevenue(order);
+    } else if (order.createAt.substring(0, 10) === m25) {
+      m25T += getTotalRevenue(order);
+    } else if (order.createAt.substring(0, 10) === m26) {
+      m26T += getTotalRevenue(order);
+    } else if (order.createAt.substring(0, 10) === m27) {
+      m27T += getTotalRevenue(order);
+    } else if (order.createAt.substring(0, 10) === m28) {
+      m28T += getTotalRevenue(order);
+    } else if (order.createAt.substring(0, 10) === m29) {
+      m29T += getTotalRevenue(order);
+    } else if (order.createAt.substring(0, 10) === m30) {
+      m30T += getTotalRevenue(order);
+    } else if (order.createAt.substring(0, 10) === m31) {
+      m31T += getTotalRevenue(order);
+    }
+  });
+  dispatch(
+    actionAnalyticColumnRevenueMonth({
+      columnData: [
+        m1T,
+        m2T,
+        m3T,
+        m4T,
+        m5T,
+        m6T,
+        m7T,
+        m8T,
+        m9T,
+        m10T,
+        m11T,
+        m12T,
+        m13T,
+        m14T,
+        m15T,
+        m16T,
+        m17T,
+        m18T,
+        m19T,
+        m20T,
+        m21T,
+        m22T,
+        m23T,
+        m24T,
+        m25T,
+        m26T,
+        m27T,
+        m28T,
+        m29T,
+        m30T,
+        m31T
+      ],
+      total:
+        m1T +
+        m2T +
+        m3T +
+        m4T +
+        m5T +
+        m6T +
+        m7T +
+        m8T +
+        m9T +
+        m10T +
+        m11T +
+        m12T +
+        m13T +
+        m14T +
+        m15T +
+        m16T +
+        m17T +
+        m18T +
+        m19T +
+        m20T +
+        m21T +
+        m22T +
+        m23T +
+        m24T +
+        m25T +
+        m26T +
+        m27T +
+        m28T +
+        m29T +
+        m30T +
+        m31T
+    })
+  );
+};
 const getTotalRevenue = (order) => {
   let total = 0;
   order.donDatBan.listChiTietDonDatBan.forEach((ct) => {
@@ -1293,4 +1507,9 @@ export const actionColumnTop10Table = () => async (dispatch) => {
       columnData
     })
   );
+};
+
+export const actionGetTop10Food = () => async (dispatch) => {
+  const data = await axios.get(`${api}monAn/list/datNhieuNhat/10`);
+  dispatch(actionAnalyticGetTop10Food(data.data));
 };

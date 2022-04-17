@@ -45,13 +45,15 @@ import {
   actionGetOrderWeek,
   actionGetRevenueWeek,
   actionGetTop10Customer,
+  actionGetTop10Food,
   actionGetTop10FoodsLove,
   actionOrderDateNow,
   actionOrderMonthNow,
   actionOrderYearNow,
   actionRevenueDateNow,
   actionRevenueMonthNow,
-  actionRevenueYearNow
+  actionRevenueYearNow,
+  actionColumnRevenueMonth
 } from '../redux/actions/analyticAction';
 import { actionGetAllTables } from '../redux/actions/tableActions';
 
@@ -100,6 +102,8 @@ function UtilRedux() {
     dispatch(actionGetTop10Customer());
     dispatch(actionColumnAreaTable());
     dispatch(actionColumnTop10Table());
+    dispatch(actionGetTop10Food());
+    dispatch(actionColumnRevenueMonth(new Date().getFullYear()));
     if (loggedIn) dispatch(actionGetUser(JSON.parse(localStorage.getItem('admin')).id));
     return function () {
       return null;

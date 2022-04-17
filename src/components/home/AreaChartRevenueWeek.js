@@ -6,7 +6,7 @@ import { fShortenNumber } from '../../utils/formatNumber';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
-  padding: '10px'
+  padding: '10px 20px'
 }));
 const Wrapper = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -47,6 +47,7 @@ function AreaChartRevenueWeek() {
   const revenueWeek = useSelector((state) => state.analytic.revenueWeek);
   const columnRevenueRevenue = useSelector((state) => state.analytic.columnRevenueRevenue);
   const totalRevenueRevenue = useSelector((state) => state.analytic.totalRevenueRevenue);
+  const columnRevenueMonth = useSelector((state) => state.analytic.columnRevenueMonth);
   useEffect(() => {
     setState({
       series: [
@@ -163,7 +164,62 @@ function AreaChartRevenueWeek() {
         }
       });
     } else if (value === 'month') {
-      console.log('month');
+      setState({
+        series: [
+          {
+            name: 'Doanh thu',
+            data: columnRevenueMonth.columnData
+          }
+        ],
+        options: {
+          chart: {
+            height: 350,
+            type: 'area'
+          },
+          markers: {
+            size: 5,
+            strokeWidth: 2,
+            fillOpacity: 0,
+            strokeOpacity: 0,
+            hover: {
+              size: 7
+            }
+          },
+          dataLabels: {
+            enabled: false
+          },
+          stroke: {
+            curve: 'smooth',
+            width: 3
+          },
+          xaxis: {
+            categories: [
+              1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 18, 20, 21, 22, 23, 24,
+              25, 26, 27, 28, 29, 30, 31
+            ],
+            labels: {
+              style: {
+                fontSize: '8px',
+                fontWeight: 'bold'
+              }
+            }
+          },
+          yaxis: {
+            labels: {
+              style: {
+                fontSize: '12px',
+                fontWeight: 'bold'
+              },
+              formatter: (val) => `${fShortenNumber(val)}`
+            }
+          },
+          tooltip: {
+            y: {
+              formatter: (val) => `${val.toLocaleString(`es-US`)} vnđ`
+            }
+          }
+        }
+      });
     } else {
       setState({
         series: [
@@ -240,7 +296,7 @@ function AreaChartRevenueWeek() {
   };
   const handleTotal = () => {
     if (time === 'week') return `${revenueWeek.total.toLocaleString(`es-US`)}`;
-    if (time === 'month') return `tháng`;
+    if (time === 'month') return `${columnRevenueMonth.total.toLocaleString(`es-US`)}`;
     return `${totalRevenueRevenue.toLocaleString(`es-US`)}`;
   };
   return (

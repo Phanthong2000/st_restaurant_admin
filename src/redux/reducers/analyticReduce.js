@@ -32,7 +32,9 @@ import {
   ACTION_ANALYTIC_GET_TOP10_CUSTOMER,
   ACTION_ANALYTIC_GET_TOTAL_REVENUE_REVENUE,
   ACTION_ANALYTIC_COLUMN_AREA_TABLE,
-  ACTION_ANALYTIC_COLUMN_TOP10_TABLE
+  ACTION_ANALYTIC_COLUMN_TOP10_TABLE,
+  ACTION_ANALYTIC_GET_TOP10_FOOD,
+  ACTION_ANALYTIC_COLUMN_REVENUE_MONTH
 } from '../actions/types';
 
 const defaultState = {
@@ -101,6 +103,11 @@ const defaultState = {
   top10Table: {
     columnName: [],
     columnData: []
+  },
+  top10Food: [],
+  columnRevenueMonth: {
+    columnData: [],
+    total: 0
   }
 };
 
@@ -276,6 +283,17 @@ const analyticReduce = (state = defaultState, action) => {
       return {
         ...state,
         top10Table: action.payload
+      };
+    case ACTION_ANALYTIC_GET_TOP10_FOOD:
+      return {
+        ...state,
+        top10Food: action.payload
+      };
+    case ACTION_ANALYTIC_COLUMN_REVENUE_MONTH:
+      console.log(action.payload);
+      return {
+        ...state,
+        columnRevenueMonth: action.payload
       };
     default:
       return state;

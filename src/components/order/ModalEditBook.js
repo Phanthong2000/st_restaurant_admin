@@ -131,6 +131,7 @@ function TableRowFood({ food, index }) {
       <Cell>{index + 1}</Cell>
       <Cell>{food.monAn.tenMonAn}</Cell>
       <Cell>{`${food.monAn.donGia.toLocaleString('es-US')} vnđ`}</Cell>
+      <Cell>{food.soLuong}</Cell>
       <Cell>{food.ghiChu}</Cell>
       <Cell>{`${(food.monAn.donGia * food.soLuong).toLocaleString('es-US')} vnđ`}</Cell>
     </RootStyle>
@@ -138,10 +139,11 @@ function TableRowFood({ food, index }) {
 }
 function TableFood({ tab, listChiTietDonDatBan }) {
   const headerFood = [
-    { name: 'STT', minWidth: '10%' },
-    { name: 'Tên món ăn', minWidth: '25%' },
+    { name: 'STT', minWidth: '5%' },
+    { name: 'Tên món ăn', minWidth: '20%' },
     { name: 'Giá', minWidth: '20%' },
-    { name: 'Ghi chú', minWidth: '20%' },
+    { name: 'Số lượng', minWidth: '20px' },
+    { name: 'Ghi chú', minWidth: '15%' },
     { name: 'Thành tiền', minWidth: '20%' }
   ];
   // const getTotalTab = () => {

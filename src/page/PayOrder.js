@@ -48,7 +48,8 @@ import {
   actionColumnRevenueOrder,
   actionColumnRevenueRevenue,
   actionGetRevenueWeek,
-  actionGetOrderWeek
+  actionGetOrderWeek,
+  actionColumnRevenueMonth
 } from '../redux/actions/analyticAction';
 import ModalPayOrder from '../components/order/ModalPayOrder';
 
@@ -350,6 +351,7 @@ function PayOrder() {
             dispatch(actionGetOrderWeek());
             dispatch(actionColumnRevenueOrder(new Date().getFullYear()));
             dispatch(actionColumnRevenueRevenue(new Date().getFullYear()));
+            dispatch(actionColumnRevenueMonth(new Date().getFullYear()));
             dispatch(
               actionUserBackdrop({
                 status: false,
