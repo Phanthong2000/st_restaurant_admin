@@ -290,7 +290,6 @@ const analyticReduce = (state = defaultState, action) => {
         top10Food: action.payload
       };
     case ACTION_ANALYTIC_COLUMN_REVENUE_MONTH:
-      console.log(action.payload);
       return {
         ...state,
         columnRevenueMonth: action.payload

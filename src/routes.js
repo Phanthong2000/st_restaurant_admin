@@ -23,6 +23,7 @@ import OrderChooseManyFood from './page/OrderChooseManyFood';
 import Employee2 from './page/Employee2';
 import CustomerDetail from './page/CustomerDetail';
 import FoodDetail from './page/FoodDetail';
+import Chat from './page/Chat';
 
 export default function Router() {
   return useRoutes([
@@ -52,6 +53,7 @@ export default function Router() {
         { path: 'customer-detail/:id', element: <CustomerDetail /> },
         // { path: 'employee', element: <Employee /> },
         { path: 'employee', element: <Employee2 /> },
+        { path: 'chat', element: <Chat /> },
         { path: 'analytic', element: <Analytic /> },
         { path: 'report', element: <Report /> },
         { path: 'update-foods-book', element: <UpdateFoodsForBook /> },

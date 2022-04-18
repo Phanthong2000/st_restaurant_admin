@@ -12,7 +12,7 @@ const RootStyle = styled(Box)(({ theme }) => ({
   position: 'absolute',
   padding: theme.spacing(2),
   borderRadius: '10px',
-  zIndex: 2,
+  zIndex: 999,
   top: 60,
   right: 240,
   [theme.breakpoints.down('md')]: {

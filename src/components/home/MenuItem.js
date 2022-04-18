@@ -3,6 +3,9 @@ import { Box, styled, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import axios from 'axios';
+import api from '../../assets/api/api';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -27,7 +30,29 @@ MenuItem.prototype = {
 function MenuItem({ menu }) {
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  const user = useSelector((state) => state.user.user);
+  const allMessages = useSelector((state) => state.chat.allMessages);
   const goToPath = () => {
+    if (menu.path === '/home/chat') {
+      const message = allMessages.at(0);
+      if (
+        message.nguoiQuanLy.id !== user.id &&
+        message.listNguoiQuanLyDaDoc.filter((item) => item.id === user.id).length === 0
+      ) {
+        axios.put(
+          `${api}tinNhan/edit`,
+          {
+            ...message,
+            listNguoiQuanLyDaDoc: [...message.listNguoiQuanLyDaDoc, user]
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+            }
+          }
+        );
+      }
+    }
     navigate(`${menu.path}`);
   };
   return (

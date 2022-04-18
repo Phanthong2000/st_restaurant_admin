@@ -25,6 +25,11 @@ const sidebarHomeConfig = [
     icon: 'clarity:employee-line'
   },
   {
+    name: 'Nhắn tin',
+    path: '/home/chat',
+    icon: 'carbon:chat'
+  },
+  {
     name: 'Khu vực',
     path: '/home/area',
     icon: 'tabler:chart-area-line'
