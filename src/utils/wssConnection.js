@@ -17,6 +17,11 @@ import {
   actionNewBooks,
   actionOrderUnshiftAllBooks
 } from '../redux/actions/orderAction';
+import {
+  actionChatAddMessage,
+  actionChatDeleteMessage,
+  actionChatUpdateMessage
+} from '../redux/actions/chatAction';
 
 let socket;
 export const connectWithSocket = () => {
@@ -43,9 +48,37 @@ export const connectWithSocket = () => {
     store.dispatch(actionUserAddNotification(data.notification));
     store.dispatch(actionUserAddBadgeNotification());
   });
+  socket.on('send-message', (data) => {
+    store.dispatch(actionChatAddMessage(data.message));
+  });
+  socket.on('read-message', (data) => {
+    console.log(data);
+    store.dispatch(
+      actionChatUpdateMessage({
+        message: data.message
+      })
+    );
+  });
+  socket.on('delete-message', (data) => {
+    store.dispatch(
+      actionChatDeleteMessage({
+        index: data.index,
+        message: data.message
+      })
+    );
+  });
 };
 export const registerUser = (data) => {
   socket.emit('register-new-user', data);
+};
+export const readMessageSocket = ({ socketIds, message }) => {
+  socket.emit('read-message', { socketIds, message });
+};
+export const sendMessageSocket = ({ socketIds, message }) => {
+  socket.emit('send-message', { socketIds, message });
+};
+export const deleteMessageSocket = ({ socketIds, message, index }) => {
+  socket.emit('delete-message', { socketIds, message, index });
 };
 export const logoutSocket = () => {
   socket.disconnect();

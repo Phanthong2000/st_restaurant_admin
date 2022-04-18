@@ -23,6 +23,7 @@ const chatReducer = (state = defaultState, action) => {
         allMessages: [action.payload].concat(state.allMessages)
       };
     case ACTION_CHAT_UPDATE_MESSAGE:
+      console.log(action.payload);
       return {
         ...state,
         allMessages: [

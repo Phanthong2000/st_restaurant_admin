@@ -5,9 +5,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import axios from 'axios';
 import { Icon } from '@iconify/react';
+import { useNavigate } from 'react-router-dom';
 import { actionChatDeleteMessage } from '../../redux/actions/chatAction';
 import api from '../../assets/api/api';
 import BoxUserRead from './BoxUserRead';
+import { deleteMessageSocket } from '../../utils/wssConnection';
+import { actionEmployeeChooseEmployee } from '../../redux/actions/employeeAction';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -77,11 +80,19 @@ function Message({ message, index }) {
   const user = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const broadcast = useSelector((state) => state.socket.broadcast);
+  const navigate = useNavigate();
   const handleClick = (event) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
   const open = Boolean(anchorEl);
   const handleDeleteMessage = () => {
+    const socketIds = [];
+    broadcast.forEach((br) => {
+      if (br.type === 'admin' && br.userId !== user.id) {
+        socketIds.push(br.socketId);
+      }
+    });
     axios
       .put(
         `${api}tinNhan/edit`,
@@ -102,9 +113,14 @@ function Message({ message, index }) {
             message: res.data
           })
         );
+        deleteMessageSocket({ socketIds, message: res.data, index });
       });
 
     handleClick();
+  };
+  const goToEmployeeDetail = () => {
+    dispatch(actionEmployeeChooseEmployee(message.nhanVien));
+    navigate('/home/employee');
   };
   if (message.nguoiQuanLy && message.nguoiQuanLy.id === user.id)
     return (
@@ -193,7 +209,31 @@ function Message({ message, index }) {
       <BoxMessageOther>
         {message.nguoiQuanLy ? (
           <>
-            <AvatarSender src={message.nguoiQuanLy.anhDaiDien} />
+            <IconButton
+              sx={{
+                cursor: 'default',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'start'
+              }}
+              disableFocusRipple
+              disableRipple
+              disableTouchRipple
+            >
+              <AvatarSender src={message.nguoiQuanLy.anhDaiDien} />
+              <Icon
+                icon="ci:dot-05-xl"
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  right: 0,
+                  color:
+                    broadcast.filter((br) => br.userId === message.nguoiQuanLy.id).length > 0
+                      ? '#3fcc35'
+                      : 'gray'
+                }}
+              />
+            </IconButton>
             <Box sx={{ marginLeft: '20px' }}>
               <Box sx={{ display: 'flex' }}>
                 <Username>{message.nguoiQuanLy.hoTen}</Username>
@@ -222,7 +262,31 @@ function Message({ message, index }) {
           </>
         ) : (
           <>
-            <AvatarSender src={message.nhanVien.anhDaiDien} />
+            <IconButton
+              onClick={goToEmployeeDetail}
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'start'
+              }}
+              disableFocusRipple
+              disableRipple
+              disableTouchRipple
+            >
+              <AvatarSender src={message.nhanVien.anhDaiDien} />
+              <Icon
+                icon="ci:dot-05-xl"
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  right: 0,
+                  color:
+                    broadcast.filter((br) => br.userId === message.nhanVien.id).length > 0
+                      ? '#3fcc35'
+                      : 'gray'
+                }}
+              />
+            </IconButton>
             <Box sx={{ marginLeft: '20px' }}>
               <Box sx={{ display: 'flex' }}>
                 <Username>{message.nhanVien.hoTen}</Username>

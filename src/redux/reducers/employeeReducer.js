@@ -3,7 +3,8 @@ import {
   ACTION_EMPLOYEE_MODAL_ADD_EMPLOYEE,
   ACTION_EMPLOYEE_MODAL_EDIT_EMPLOYEE,
   ACTION_EMPLOYEE_GET_EMPLOYEES_BY_KEYWORDS,
-  ACTION_EMPLOYEE_SORT_EMPLOYEE
+  ACTION_EMPLOYEE_SORT_EMPLOYEE,
+  ACTION_EMPLOYEE_CHOOSE_EMPLOYEE
 } from '../actions/types';
 
 const defaultState = {
@@ -14,7 +15,8 @@ const defaultState = {
     employee: {}
   },
   employeesKeyword: [],
-  sortEmployee: 'all'
+  sortEmployee: 'all',
+  employeeChosen: null
 };
 
 // eslint-disable-next-line default-param-last
@@ -44,6 +46,11 @@ const employeeReducer = (state = defaultState, action) => {
       return {
         ...state,
         sortEmployee: action.payload
+      };
+    case ACTION_EMPLOYEE_CHOOSE_EMPLOYEE:
+      return {
+        ...state,
+        employeeChosen: action.payload
       };
     default:
       return state;

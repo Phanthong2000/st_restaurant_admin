@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, IconButton, styled, Typography } from '@mui/material';
 import { Icon } from '@iconify/react';
 import { keyframes } from '@emotion/react';
@@ -66,7 +66,37 @@ const BoxButton = styled(Box)(({ theme }) => ({
   },
   marginRight: '10px'
 }));
+const ButtonIcon = styled(Icon)(({ theme }) => ({
+  width: '20px',
+  height: '20px'
+}));
+const BoxButtonHidden = styled(Box)(({ theme }) => ({
+  width: '40px',
+  height: '40px',
+  borderRadius: '10px',
+  background: theme.palette.white,
+  position: 'absolute',
+  zIndex: 10,
+  top: 20,
+  left: `calc(50% - 25px)`,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  cursor: 'pointer',
+  color: theme.palette.main,
+  animation: `${fadeDown} 1s ease`
+}));
 function BoxInfoChat() {
+  const [show, setShow] = useState(true);
+  const handleShow = (show) => {
+    setShow(show);
+  };
+  if (!show)
+    return (
+      <BoxButtonHidden onClick={() => handleShow(true)} sx={{ boxShadow: 1 }}>
+        <Icon icon="ant-design:fullscreen-outlined" />
+      </BoxButtonHidden>
+    );
   return (
     <RootStyle sx={{ boxShadow: 1 }}>
       <Box sx={{ display: 'flex', alginItems: 'center' }}>
@@ -93,13 +123,16 @@ function BoxInfoChat() {
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
         <BoxButton>
-          <Icon style={{ width: '20px', height: '20px' }} icon="jam:search" />
+          <ButtonIcon icon="jam:search" />
         </BoxButton>
         <BoxButton>
-          <Icon style={{ width: '20px', height: '20px' }} icon="fluent:meet-now-48-filled" />
+          <ButtonIcon icon="fluent:meet-now-48-filled" />
         </BoxButton>
         <BoxButton>
-          <Icon style={{ width: '20px', height: '20px' }} icon="clarity:help-info-solid" />
+          <ButtonIcon icon="clarity:help-info-solid" />
+        </BoxButton>
+        <BoxButton onClick={() => handleShow(false)}>
+          <ButtonIcon icon="ant-design:fullscreen-exit-outlined" />
         </BoxButton>
       </Box>
     </RootStyle>

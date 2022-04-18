@@ -22,6 +22,7 @@ import AddEmployee from '../components/employee/AddEmployee';
 import { actionUserBackdrop, actionUserSnackbar } from '../redux/actions/userAction';
 import api from '../assets/api/api';
 import {
+  actionEmployeeChooseEmployee,
   actionEmployeeModalAddEmployee,
   actionEmployeeModalEditEmployee,
   actionGetAllEmployees,
@@ -219,7 +220,7 @@ function ButtonSort({ sort, value, label, handleSort }) {
 function Employee2() {
   const [sort, setSort] = useState('all');
   const [employeesSort, setEmployeesSort] = useState([]);
-  const [employeeChosen, setEmployeeChosen] = useState();
+  const employeeChosen = useSelector((state) => state.employee.employeeChosen);
   const modalEditEmployee = useSelector((state) => state.employee.modalEditEmployee);
   const dispatch = useDispatch();
   const [search, setSearch] = useState('');
@@ -244,7 +245,7 @@ function Employee2() {
     sortEmployee(value);
   };
   const handleChooseEmployee = (employee) => {
-    setEmployeeChosen(employee);
+    dispatch(actionEmployeeChooseEmployee(employee));
   };
   const addEmployee = (employee, image) => {
     dispatch(

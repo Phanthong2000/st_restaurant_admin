@@ -1,16 +1,18 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Box, Card, InputBase, Popper, styled } from '@mui/material';
 import { Icon } from '@iconify/react';
 import { keyframes } from '@emotion/react';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import api from '../../assets/api/api';
 import { actionChatAddMessage, actionChatUpdateMessage } from '../../redux/actions/chatAction';
 import BoxEmoji from './BoxEmoji';
 import { actionUserSnackbar } from '../../redux/actions/userAction';
 import { storage } from '../../firebase-config';
+import { readMessageSocket, sendMessageSocket } from '../../utils/wssConnection';
 
 const fadeUp = keyframes`
     from {
@@ -90,15 +92,20 @@ BoxSendMessage.prototype = {
   index: PropTypes.number
 };
 function BoxSendMessage({ index }) {
+  const { pathname } = useLocation();
   const imageRef = useRef();
   const [contentText, setContentText] = useState('');
   const user = useSelector((state) => state.user.user);
   const [showImage, setShowImage] = useState(false);
   const dispatch = useDispatch();
   const [image, setImage] = useState();
+  const broadcast = useSelector((state) => state.socket.broadcast);
   const [anchorElEmoji, setAnchorElEmoji] = React.useState(null);
   const handleClickEmoji = (event) => {
     setAnchorElEmoji(anchorElEmoji ? null : event.currentTarget);
+  };
+  const handleCloseEmoji = () => {
+    setAnchorElEmoji(null);
   };
   const open = Boolean(anchorElEmoji);
   const [anchorElImage, setAnchorElImage] = React.useState(null);
@@ -110,6 +117,13 @@ function BoxSendMessage({ index }) {
   };
   const openImage = Boolean(anchorElImage);
   const handleSend = () => {
+    handleCloseEmoji();
+    const socketIds = [];
+    broadcast.forEach((br) => {
+      if (br.type === 'admin' && br.userId !== user.id) {
+        socketIds.push(br.socketId);
+      }
+    });
     if (!image && contentText !== '') {
       const message = {
         noiDungText: contentText,
@@ -118,7 +132,7 @@ function BoxSendMessage({ index }) {
         listNguoiQuanLyDaDoc: [],
         listNhanVienDaDoc: [],
         nguoiQuanLy: {
-          id: user.id
+          ...user
         },
         daXoa: false
       };
@@ -136,6 +150,7 @@ function BoxSendMessage({ index }) {
         )
         .then((res) => {
           dispatch(actionChatAddMessage(res.data));
+          sendMessageSocket({ socketIds, message: res.data });
           setContentText('');
         })
         .catch((err) => console.log(err));
@@ -187,6 +202,7 @@ function BoxSendMessage({ index }) {
                     message: res.data
                   })
                 );
+                sendMessageSocket({ socketIds, message: res.data });
               });
           });
         }

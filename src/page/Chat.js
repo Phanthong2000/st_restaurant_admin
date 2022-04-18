@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Box, IconButton, styled } from '@mui/material';
+import { useSelector } from 'react-redux';
 import BoxMessage from '../components/chat/BoxMessage';
 import BoxSendMessage from '../components/chat/BoxSendMessage';
 import BoxInfoChat from '../components/chat/BoxInfoChat';
