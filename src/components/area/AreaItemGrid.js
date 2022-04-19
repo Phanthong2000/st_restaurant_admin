@@ -112,7 +112,9 @@ function AreaItemGrid({ area, index }) {
             <FoodName>
               {index + 1}. {area.tenKhuVuc}
             </FoodName>
-            <Price sx={{ fontWeight: 'normal', fontSize: '14px' }}>Số lượng bàn: {}</Price>
+            <Price sx={{ fontWeight: 'normal', fontSize: '14px' }}>
+              Số lượng bàn: {quantity.length}
+            </Price>
             <Box sx={{ marginTop: '5px' }}>
               <BoxButton onClick={chooseArea}>
                 <Tooltip title="Xem thông tin">

@@ -1,7 +1,18 @@
 import React, { useState } from 'react';
-import { Box, IconButton, styled, Typography } from '@mui/material';
+import { Box, IconButton, styled, Tooltip, Typography } from '@mui/material';
 import { Icon } from '@iconify/react';
 import { keyframes } from '@emotion/react';
+import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import api from '../../assets/api/api';
+import {
+  actionChatAddMessage,
+  actionChatMessageHost,
+  actionChatUserHost
+} from '../../redux/actions/chatAction';
+import { sendMessageSocket } from '../../utils/wssConnection';
 
 const fadeDown = keyframes`
 from {
@@ -86,15 +97,64 @@ const BoxButtonHidden = styled(Box)(({ theme }) => ({
   color: theme.palette.main,
   animation: `${fadeDown} 1s ease`
 }));
-function BoxInfoChat() {
+BoxInfoChat.prototype = {
+  handleShowGhim: PropTypes.func
+};
+function BoxInfoChat({ handleShowGhim }) {
+  const user = useSelector((state) => state.user.user);
+  const broadcast = useSelector((state) => state.socket.broadcast);
+  const dispatch = useDispatch();
   const [show, setShow] = useState(true);
+  const navigate = useNavigate();
   const handleShow = (show) => {
     setShow(show);
+  };
+  const handleCreateMeeting = () => {
+    const socketIds = [];
+    broadcast.forEach((br) => {
+      if (br.type === 'admin' && br.userId !== user.id) {
+        socketIds.push(br.socketId);
+      }
+    });
+    const message = {
+      noiDungText: 'Đã tạo phòng họp',
+      noiDungFile: '',
+      loaiTinNhan: 'meeting',
+      listNguoiQuanLyDaDoc: [],
+      listNhanVienDaDoc: [],
+      ghim: false,
+      nguoiQuanLy: {
+        ...user
+      },
+      daXoa: false
+    };
+    axios
+      .post(
+        `${api}tinNhan/create`,
+        {
+          ...message
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+          }
+        }
+      )
+      .then((res) => {
+        dispatch(actionChatAddMessage(res.data));
+        sendMessageSocket({ socketIds, message: res.data });
+        dispatch(actionChatUserHost({ ...user }));
+        dispatch(actionChatMessageHost(res.data));
+        navigate(`/home/chat/meeting/${res.data.id}`);
+      })
+      .catch((err) => console.log(err));
   };
   if (!show)
     return (
       <BoxButtonHidden onClick={() => handleShow(true)} sx={{ boxShadow: 1 }}>
-        <Icon icon="ant-design:fullscreen-outlined" />
+        <Tooltip title="Mở rộng">
+          <Icon icon="ant-design:fullscreen-outlined" />
+        </Tooltip>
       </BoxButtonHidden>
     );
   return (
@@ -125,14 +185,25 @@ function BoxInfoChat() {
         <BoxButton>
           <ButtonIcon icon="jam:search" />
         </BoxButton>
-        <BoxButton>
-          <ButtonIcon icon="fluent:meet-now-48-filled" />
+        <BoxButton onClick={handleCreateMeeting}>
+          <Tooltip title="Tạo phòng họp">
+            <ButtonIcon icon="fluent:meet-now-48-filled" />
+          </Tooltip>
         </BoxButton>
-        <BoxButton>
-          <ButtonIcon icon="clarity:help-info-solid" />
+        <BoxButton
+          onClick={() => {
+            setShow(false);
+            handleShowGhim(true);
+          }}
+        >
+          <Tooltip title="Xem tin nhắn ghim">
+            <ButtonIcon icon="entypo:pin" />
+          </Tooltip>
         </BoxButton>
         <BoxButton onClick={() => handleShow(false)}>
-          <ButtonIcon icon="ant-design:fullscreen-exit-outlined" />
+          <Tooltip title="Thu nhỏ">
+            <ButtonIcon icon="ant-design:fullscreen-exit-outlined" />
+          </Tooltip>
         </BoxButton>
       </Box>
     </RootStyle>

@@ -131,6 +131,7 @@ function BoxSendMessage({ index }) {
         loaiTinNhan: 'text',
         listNguoiQuanLyDaDoc: [],
         listNhanVienDaDoc: [],
+        ghim: false,
         nguoiQuanLy: {
           ...user
         },

@@ -67,6 +67,22 @@ export const connectWithSocket = () => {
       })
     );
   });
+  socket.on('update-message-stop-meeting', (data) => {
+    const messages = store.getState().chat.allMessages;
+    let index = -1;
+    for (let i = 0; i < messages.length; i += 1) {
+      if (messages.at(i).id === data.message.id) {
+        index = i;
+      }
+    }
+    if (index !== -1)
+      store.dispatch(
+        actionChatDeleteMessage({
+          index,
+          message: data.message
+        })
+      );
+  });
 };
 export const registerUser = (data) => {
   socket.emit('register-new-user', data);
@@ -79,6 +95,12 @@ export const sendMessageSocket = ({ socketIds, message }) => {
 };
 export const deleteMessageSocket = ({ socketIds, message, index }) => {
   socket.emit('delete-message', { socketIds, message, index });
+};
+export const stopMeetingSocket = (roomId) => {
+  socket.emit('stop-meeting', roomId);
+};
+export const updateMessageStopMeetingSocket = ({ socketIds, message }) => {
+  socket.emit('update-message-stop-meeting', { socketIds, message });
 };
 export const logoutSocket = () => {
   socket.disconnect();

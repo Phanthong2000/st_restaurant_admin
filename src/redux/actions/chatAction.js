@@ -4,7 +4,12 @@ import {
   ACTION_CHAT_GET_ALL_MESSAGES,
   ACTION_CHAT_ADD_MESSAGE,
   ACTION_CHAT_UPDATE_MESSAGE,
-  ACTION_CHAT_DELETE_MESSAGE
+  ACTION_CHAT_DELETE_MESSAGE,
+  ACTION_CHAT_GET_ALL_GHIM_MESSAGE,
+  ACTION_CHAT_ADD_GHIM_MESSAGE,
+  ACTION_CHAT_DELETE_GHIM_MESSAGE,
+  ACTION_CHAT_USER_HOST,
+  ACTION_CHAT_MESSAGE_HOST
 } from './types';
 
 export const actionChatGetAllMessages = (data) => ({
@@ -23,6 +28,26 @@ export const actionChatDeleteMessage = (data) => ({
   type: ACTION_CHAT_DELETE_MESSAGE,
   payload: data
 });
+export const actionChatGetAllGhimMessage = (data) => ({
+  type: ACTION_CHAT_GET_ALL_GHIM_MESSAGE,
+  payload: data
+});
+export const actionChatAddGhimMessage = (data) => ({
+  type: ACTION_CHAT_ADD_GHIM_MESSAGE,
+  payload: data
+});
+export const actionChatDeleteGhimMessage = (data) => ({
+  type: ACTION_CHAT_DELETE_GHIM_MESSAGE,
+  payload: data
+});
+export const actionChatUserHost = (data) => ({
+  type: ACTION_CHAT_USER_HOST,
+  payload: data
+});
+export const actionChatMessageHost = (data) => ({
+  type: ACTION_CHAT_MESSAGE_HOST,
+  payload: data
+});
 export const actionGetAllMessages = () => async (dispatch) => {
   const data = await axios.get(`${api}tinNhan/list`, {
     headers: {
@@ -31,6 +56,19 @@ export const actionGetAllMessages = () => async (dispatch) => {
   });
   dispatch(
     actionChatGetAllMessages(
+      data.data.sort((a, b) => Date.parse(b.createAt) - Date.parse(a.createAt))
+    )
+  );
+};
+
+export const actionGetAllGhimMessage = () => async (dispatch) => {
+  const data = await axios.get(`${api}tinNhan/list/byGhim`, {
+    headers: {
+      Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+    }
+  });
+  dispatch(
+    actionChatGetAllGhimMessage(
       data.data.sort((a, b) => Date.parse(b.createAt) - Date.parse(a.createAt))
     )
   );

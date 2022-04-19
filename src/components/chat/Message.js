@@ -1,16 +1,30 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Box, IconButton, ListItemButton, Popper, styled, Typography } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Button,
+  IconButton,
+  ListItemButton,
+  Popper,
+  styled,
+  Typography
+} from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import axios from 'axios';
 import { Icon } from '@iconify/react';
 import { useNavigate } from 'react-router-dom';
-import { actionChatDeleteMessage } from '../../redux/actions/chatAction';
+import {
+  actionChatAddGhimMessage,
+  actionChatDeleteMessage,
+  actionChatUserHost
+} from '../../redux/actions/chatAction';
 import api from '../../assets/api/api';
 import BoxUserRead from './BoxUserRead';
-import { deleteMessageSocket } from '../../utils/wssConnection';
+import { deleteMessageSocket, updateMessageStopMeetingSocket } from '../../utils/wssConnection';
 import { actionEmployeeChooseEmployee } from '../../redux/actions/employeeAction';
+import { actionUserSnackbar } from '../../redux/actions/userAction';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -71,12 +85,26 @@ const MessageImage = styled('img')(({ theme }) => ({
   height: '200px',
   borderRadius: '25px'
 }));
+const ButtonJoin = styled(Button)(({ theme }) => ({
+  width: '100%',
+  textTransform: 'none',
+  background: theme.palette.main,
+  color: theme.palette.white,
+  fontWeight: 'bold',
+  fontFamily: theme.typography.fontFamily.primary,
+  display: 'flex',
+  marginTop: '10px',
+  alignItems: 'center',
+  ':hover': {
+    background: theme.palette.mainHover
+  }
+}));
 Message.prototype = {
   message: PropTypes.object,
   index: PropTypes.number
 };
 function Message({ message, index }) {
-  const allMessages = useSelector((state) => state.chat.allMessages);
+  const allGhimMessage = useSelector((state) => state.chat.allGhimMessage);
   const user = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -98,7 +126,8 @@ function Message({ message, index }) {
         `${api}tinNhan/edit`,
         {
           ...message,
-          daXoa: true
+          daXoa: true,
+          ghim: false
         },
         {
           headers: {
@@ -122,6 +151,84 @@ function Message({ message, index }) {
     dispatch(actionEmployeeChooseEmployee(message.nhanVien));
     navigate('/home/employee');
   };
+  const handleGhimMessage = () => {
+    if (allGhimMessage.length === 3) {
+      dispatch(
+        actionUserSnackbar({
+          status: true,
+          content: 'Đã có 3 tin nhắn đươc ghim',
+          type: 'error'
+        })
+      );
+    } else {
+      axios
+        .put(
+          `${api}tinNhan/edit`,
+          {
+            ...message,
+            ghim: true
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+            }
+          }
+        )
+        .then((res) => {
+          dispatch(actionChatAddGhimMessage(res.data));
+        });
+    }
+    handleClick();
+  };
+  const joinMeeting = () => {
+    dispatch(
+      actionChatUserHost({
+        ...message.nguoiQuanLy
+      })
+    );
+    navigate(`/home/chat/meeting/${message.id}`);
+  };
+  if (message.loaiTinNhan === 'meeting')
+    return (
+      <RootStyle>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              boxShadow: 3,
+              background: '#fff',
+              padding: '10px',
+              borderRadius: '5px'
+            }}
+          >
+            <Box sx={{ display: 'flex' }}>
+              <Avatar src={message.nguoiQuanLy.anhDaiDien} />
+              <Box sx={{ marginLeft: '10px' }}>
+                <Username>{message.nguoiQuanLy.hoTen}</Username>
+                <ContentText sx={{ color: 'gray' }}>{message.noiDungText}</ContentText>
+                {message.daXoa ? (
+                  <Typography sx={{ fontWeight: 'bold', fontSize: '12px', color: 'red' }}>
+                    Đã kết thúc
+                  </Typography>
+                ) : (
+                  <Typography sx={{ fontWeight: 'bold', fontSize: '12px', color: '#3fcc35' }}>
+                    Đang diễn ra
+                  </Typography>
+                )}
+                <Time>Bắt đầu lúc: {moment(message.createAt).format(`hh:mm A DD/MM/YYYY`)}</Time>
+                {!message.daXoa && <ButtonJoin onClick={joinMeeting}>Tham gia</ButtonJoin>}
+              </Box>
+            </Box>
+            <Icon
+              style={{ marginLeft: '10px', width: '50px', height: '50px', color: '#000' }}
+              icon="uil:meeting-board"
+            />
+          </Box>
+        </Box>
+      </RootStyle>
+    );
   if (message.nguoiQuanLy && message.nguoiQuanLy.id === user.id)
     return (
       <RootStyle>
@@ -139,15 +246,71 @@ function Message({ message, index }) {
               )}
               <Popper open={open} placement="top-end" anchorEl={anchorEl}>
                 <Box sx={{ background: '#fff', width: '200px' }}>
+                  {allGhimMessage.filter((ghim) => ghim.id === message.id).length > 0 ? (
+                    <Box
+                      sx={{
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-evenly',
+                        padding: '10px 0px',
+                        cursor: 'not-allowed'
+                      }}
+                    >
+                      <Icon style={{ color: '#3fcc35' }} icon="bi:pin-angle" />
+                      <Typography
+                        sx={{
+                          marginLeft: '10px',
+                          color: '#3fcc35',
+                          fontFamily: 'sans-serif',
+                          fontSize: '14px',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        Đã Ghim tin nhắn
+                      </Typography>
+                    </Box>
+                  ) : (
+                    <Box
+                      onClick={handleGhimMessage}
+                      sx={{
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-evenly',
+                        padding: '10px 0px',
+                        cursor: 'pointer',
+                        '&:hover': {
+                          background: 'lightgrey'
+                        }
+                      }}
+                    >
+                      <Icon style={{ color: '#3fcc35' }} icon="bi:pin-angle" />
+                      <Typography
+                        sx={{
+                          marginLeft: '10px',
+                          color: '#3fcc35',
+                          fontFamily: 'sans-serif',
+                          fontSize: '14px',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        Ghim tin nhắn
+                      </Typography>
+                    </Box>
+                  )}
                   <Box
                     onClick={handleDeleteMessage}
                     sx={{
                       width: '100%',
                       display: 'flex',
                       alignItems: 'center',
-                      justifyContent: 'center',
+                      justifyContent: 'space-evenly',
                       padding: '10px 0px',
-                      cursor: 'pointer'
+                      cursor: 'pointer',
+                      '&:hover': {
+                        background: 'lightgrey'
+                      }
                     }}
                   >
                     <Icon style={{ color: 'red' }} icon="ion:trash-outline" />

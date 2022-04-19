@@ -56,7 +56,7 @@ import {
   actionColumnRevenueMonth
 } from '../redux/actions/analyticAction';
 import { actionGetAllTables } from '../redux/actions/tableActions';
-import { actionGetAllMessages } from '../redux/actions/chatAction';
+import { actionGetAllGhimMessage, actionGetAllMessages } from '../redux/actions/chatAction';
 
 function UtilRedux() {
   const dispatch = useDispatch();
@@ -106,6 +106,7 @@ function UtilRedux() {
     dispatch(actionGetTop10Food());
     dispatch(actionColumnRevenueMonth(new Date().getFullYear()));
     dispatch(actionGetAllMessages());
+    dispatch(actionGetAllGhimMessage());
     if (loggedIn) dispatch(actionGetUser(JSON.parse(localStorage.getItem('admin')).id));
     return function () {
       return null;
