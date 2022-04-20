@@ -25,6 +25,7 @@ import CustomerDetail from './page/CustomerDetail';
 import FoodDetail from './page/FoodDetail';
 import Chat from './page/Chat';
 import Meeting from './page/Meeting';
+import Meeting2 from './page/Meeting2';
 
 export default function Router() {
   return useRoutes([
@@ -55,7 +56,7 @@ export default function Router() {
         // { path: 'employee', element: <Employee /> },
         { path: 'employee', element: <Employee2 /> },
         { path: 'chat', element: <Chat /> },
-        { path: 'chat/meeting/:roomId', element: <Meeting /> },
+        { path: 'chat/meeting/:roomId', element: <Meeting2 /> },
         { path: 'analytic', element: <Analytic /> },
         { path: 'report', element: <Report /> },
         { path: 'update-foods-book', element: <UpdateFoodsForBook /> },

@@ -39,12 +39,8 @@ function MenuItem({ menu }) {
   const socketRef = useRef();
   const socket = useSelector((state) => state.socket.socket);
   const goToPath = () => {
-    if (menu.path === '/home/chat') {
+    if (menu.path === '/home/chat' && allMessages.length > 0) {
       const message = allMessages.at(0);
-      console.log(
-        message.nguoiQuanLy.id !== user.id,
-        message.listNguoiQuanLyDaDoc.filter((item) => item.id === user.id).length === 0
-      );
       if (
         message.nguoiQuanLy.id !== user.id &&
         message.listNguoiQuanLyDaDoc.filter((item) => item.id === user.id).length === 0

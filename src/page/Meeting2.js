@@ -1,19 +1,38 @@
+/* eslint-disable jsx-a11y/media-has-caption */
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Box, Grid, styled, Typography, Divider, Card, IconButton, Popper } from '@mui/material';
-import { Scrollbar } from 'smooth-scrollbar-react';
 import { Icon } from '@iconify/react';
-import { Toaster } from 'react-hot-toast';
-import { useDispatch, useSelector } from 'react-redux';
 import Peer from 'simple-peer';
+import Timer from 'react-timer-wrapper';
+import Timecode from 'react-timecode';
+import {
+  Box,
+  Button,
+  Card,
+  Divider,
+  Grid,
+  IconButton,
+  Popper,
+  styled,
+  Typography
+} from '@mui/material';
+import moment from 'moment';
 import axios from 'axios';
-import { actionSocketAddPeer, actionSocketSetPeers } from '../redux/actions/socketAction';
+import { Scrollbar } from 'smooth-scrollbar-react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  actionSocketAddPeer,
+  actionSocketSetPeers,
+  actionSocketTurnOffAudioRoom,
+  actionSocketTurnOffVideoRoom,
+  actionSocketTurnOnAudioRoom,
+  actionSocketTurnOnVideoRoom
+} from '../redux/actions/socketAction';
 import { stopMeetingSocket, updateMessageStopMeetingSocket } from '../utils/wssConnection';
-import api from '../assets/api/api';
-import { actionUserSnackbar } from '../redux/actions/userAction';
+import { actionChatAddMessageMeeting, actionChatBoxChatMeeting } from '../redux/actions/chatAction';
 import BoxChat from '../components/chat/meeting/BoxChat';
-import { actionChatBoxChatMeeting } from '../redux/actions/chatAction';
-import Message from '../components/chat/meeting/Message';
+import { actionUserSnackbar } from '../redux/actions/userAction';
+import api from '../assets/api/api';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -88,58 +107,56 @@ const VideoUserSmall = styled('video')(() => ({
   width: '100%',
   height: '190px'
 }));
-function Video({ peer, userJoin, handleVideoHost }) {
-  const userHost = useSelector((state) => state.chat.userHost);
-  const VideoMember = styled('video')(({ theme }) => ({
-    width: '100%',
-    height: '190px'
-  }));
+function Video(props) {
+  const turnOffVideoRoom = useSelector((state) => state.socket.turnOffVideoRoom);
+  const turnOffAudioRoom = useSelector((state) => state.socket.turnOffAudioRoom);
   const ref = useRef();
+
   useEffect(() => {
-    peer.on('stream', (stream) => {
+    props.peer.on('stream', (stream) => {
       console.log('stream');
       ref.current.srcObject = stream;
-      // if (userHost.id === userJoin.id) {
-      //   handleVideoHost(stream);
-      // }
+      if (props.userHost.id === props.userJoin.id) {
+        props.handleVideoHost(stream);
+      }
     });
-    peer.on('connect', () => {
-      console.log('connect');
-    });
-    peer.on('close', () => {
-      console.log('close');
-    });
-    peer.on('data', () => {
-      console.log('daa');
-    });
-    peer.on('end', () => {
-      console.log('end');
-    });
-    peer.on('error', () => {
-      console.log('error');
-      //   const allPeersNew = allPeers.filter((peer) => peer.userJoin !== props.userJoin);
-      //   console.log('new peers', allPeersNew);
-      //   dispatch(actionSetPeers(allPeersNew));
-      //   dispatch(
-      //     actionOpenSnackbar({
-      //       status: true,
-      //       content: `${props.userJoin.username} out room`,
-      //       type: 'success'
-      //     })
-      //   );
-    });
-    peer.on('pause', () => {
-      console.log('pause');
-    });
-    peer.on('readable', () => {
-      console.log('readable');
-    });
-    peer.on('resume', () => {
-      console.log('resume');
-    });
-    peer.on('track', () => {
-      console.log('track');
-    });
+    // props.peer.on('connect', () => {
+    //   console.log('connect');
+    // });
+    // props.peer.on('close', (close) => {
+    //   console.log('close', close);
+    // });
+    // props.peer.on('data', () => {
+    //   console.log('daa');
+    // });
+    // props.peer.on('end', () => {
+    //   console.log('end');
+    // });
+    // props.peer.on('error', (error) => {
+    //   console.log('error', error);
+    //   const allPeersNew = allPeers.filter((peer) => peer.userJoin !== props.userJoin);
+    //   console.log('new peers', allPeersNew);
+    //   dispatch(actionSetPeers(allPeersNew));
+    //   dispatch(
+    //     actionOpenSnackbar({
+    //       status: true,
+    //       content: `${props.userJoin.username} out room`,
+    //       type: 'success'
+    //     })
+    //   );
+    // });
+    // props.peer.on('pause', () => {
+    //   console.log('pause');
+    // });
+    // props.peer.on('readable', () => {
+    //   console.log('readable');
+    // });
+    // props.peer.on('resume', () => {
+    //   console.log('resume');
+    // });
+    // props.peer.on('track', () => {
+    //   console.log('track');
+    // });
     return function () {
       return null;
     };
@@ -153,39 +170,70 @@ function Video({ peer, userJoin, handleVideoHost }) {
         padding: '5px'
       }}
     >
-      <Typography
-        sx={{ fontWeight: 'bold', color: 'gray', fontSize: '12px', fontFamily: 'sans-serif' }}
+      <Box
+        sx={{
+          width: '100%',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          display: 'flex'
+        }}
       >
-        {userJoin.hoTen}
-      </Typography>
-      <VideoMember playsInline autoPlay ref={ref} />
+        <Typography
+          sx={{ fontWeight: 'bold', color: 'gray', fontSize: '12px', fontFamily: 'sans-serif' }}
+        >
+          {props.userJoin.hoTen}
+        </Typography>
+        <Box sx={{ display: 'flex' }}>
+          {turnOffVideoRoom.includes(props.userJoin.id) ? (
+            <Icon icon="bi:camera-video-off-fill" />
+          ) : (
+            <Icon icon="bi:camera-video-fill" />
+          )}
+          {turnOffAudioRoom.includes(props.userJoin.id) ? (
+            <Icon icon="eva:mic-off-fill" />
+          ) : (
+            <Icon icon="eva:mic-fill" />
+          )}
+        </Box>
+      </Box>
+
+      <video
+        hidden={turnOffVideoRoom.includes(props.userJoin.id)}
+        muted={turnOffAudioRoom.includes(props.userJoin.id)}
+        style={{ width: '100%', height: '190px' }}
+        playsInline
+        autoPlay
+        ref={ref}
+      />
     </Box>
   );
 }
-function Meeting() {
-  const dispatch = useDispatch();
+function Meeting2() {
+  const user = useSelector((state) => state.user.user);
+  const navigate = useNavigate();
+  const socket = useSelector((state) => state.socket.socket);
   const { roomId } = useParams();
-  const [camera, setCamera] = useState(true);
+  const [peers, setPeers] = useState([]);
   const userVideo = useRef();
+  const peersRef = useRef([]);
+  const dispatch = useDispatch();
+  const allPeers = useSelector((state) => state.socket.allPeers);
+  const socketRef = useRef();
+  const allPeersRef = useRef();
+  const [camera, setCamera] = useState(true);
   const hostVideo = useRef();
   const [mic, setMic] = useState(true);
-  const socketRef = useRef();
-  const socket = useSelector((state) => state.socket.socket);
-  const user = useSelector((state) => state.user.user);
-  const allPeers = useSelector((state) => state.socket.allPeers);
-  const [localStream, setLocalStream] = useState({});
-  const userHost = useSelector((state) => state.chat.userHost);
-  const peersRef = useRef([]);
-  const allPeersRef = useRef();
-  const navigate = useNavigate();
   const messageHost = useSelector((state) => state.chat.messageHost);
+  const userHost = useSelector((state) => state.chat.userHost);
   const broadcast = useSelector((state) => state.socket.broadcast);
   const me = useSelector((state) => state.socket.me);
-  const boxChat = useSelector((state) => state.chat.boxChat);
+  const turnOffVideoRoom = useSelector((state) => state.socket.turnOffVideoRoom);
+  const turnOffAudioRoom = useSelector((state) => state.socket.turnOffAudioRoom);
+  const [anchorEl, setAnchorEl] = React.useState(null);
   const handleClick = (event) => {
-    dispatch(actionChatBoxChatMeeting(event.target));
+    setAnchorEl(anchorEl ? null : event.currentTarget);
   };
-  const open = Boolean(boxChat);
+  const open = Boolean(anchorEl);
   useEffect(() => {
     socketRef.current = socket;
     navigator.mediaDevices
@@ -194,10 +242,8 @@ function Meeting() {
         audio: true
       })
       .then((stream) => {
-        console.log(userHost, user);
-        setLocalStream(stream);
         userVideo.current.srcObject = stream;
-        // if (userHost.id === user.id) hostVideo.current.srcObject = stream;
+        if (userHost.id === user.id) hostVideo.current.srcObject = stream;
         socketRef.current.emit('join room', { roomId, userJoin: user });
         socketRef.current.on('all users', (data) => {
           console.log('all user', data);
@@ -213,45 +259,33 @@ function Meeting() {
               userJoin: userID.userJoin
             });
           });
-          console.log('peers', peers);
+          setPeers(peers);
           dispatch(actionSocketSetPeers(peers));
           allPeersRef.current = peers;
-          console.log('all user  all peer allPeers', allPeers);
+          console.log('all user  all peer ref', allPeersRef.current);
           console.log('all user peer ref', peersRef.current);
           console.log('all user me', socketRef.current.id);
         });
         socketRef.current.on('user joined', (payload) => {
-          console.log('user joined', payload);
           const peer = addPeer(payload.signal, payload.callerID, stream, payload.userJoin);
           peersRef.current.push({
             peerID: payload.callerID,
             peer
           });
-          //   setPeers((users) => [...users, peer]);
+          setPeers((users) => [...users, peer]);
           dispatch(actionSocketAddPeer(peer));
           allPeersRef.current.push(peer);
-          //   dispatch(actionUserHotToast(`${payload.userJoin.username} join room`));
           console.log('user join  all peer ref', allPeersRef.current);
           console.log('user join peer ref', peersRef.current);
           console.log('user join me', socketRef.current.id);
         });
 
         socketRef.current.on('receiving returned signal', (payload) => {
-          console.log('receiving returned signal');
           const item = peersRef.current.find((p) => p.peerID === payload.id);
           console.log('receiving returned peer ref', peersRef.current);
           console.log('receiving returned payload', payload);
           console.log('receiving returned peer', item.peer);
           item.peer.signal(payload.signal);
-          socketRef.current.emit('notification-user-join', {
-            roomId,
-            socketId: me,
-            userJoin: user
-          });
-        });
-        socketRef.current.on('stop-meeting', (data) => {
-          navigate('/home/app');
-          window.location.reload();
         });
         socketRef.current.on('out-room-other', (data) => {
           const allPeersNew = allPeersRef.current.filter(
@@ -264,19 +298,29 @@ function Meeting() {
           dispatch(
             actionUserSnackbar({
               status: true,
-              content: `${data.userJoin.username} out room`,
+              content: `${data.userJoin.hoTen} out room`,
               type: 'success'
             })
           );
         });
-        socketRef.current.on('notification-user-join', (data) => {
-          dispatch(
-            actionUserSnackbar({
-              status: true,
-              content: `${data.userJoin.hoTen} đã tham gia`,
-              type: 'success'
-            })
-          );
+        socketRef.current.on('stop-meeting', (data) => {
+          navigate('/home/app');
+          window.location.reload();
+        });
+        socketRef.current.on('send-message-meeting', (data) => {
+          dispatch(actionChatAddMessageMeeting(data.message));
+        });
+        socketRef.current.on('turn off video room', (data) => {
+          dispatch(actionSocketTurnOffVideoRoom(data));
+        });
+        socketRef.current.on('turn on video room', (data) => {
+          dispatch(actionSocketTurnOnVideoRoom(data));
+        });
+        socketRef.current.on('turn off audio room', (data) => {
+          dispatch(actionSocketTurnOffAudioRoom(data));
+        });
+        socketRef.current.on('turn on audio room', (data) => {
+          dispatch(actionSocketTurnOnAudioRoom(data));
         });
       });
     return function () {
@@ -326,6 +370,7 @@ function Meeting() {
 
     return peer;
   }
+
   function addPeer(incomingSignal, callerID, stream, userJoin) {
     console.log('add peers', userVideo.current.srcObject);
     const peer = new Peer({
@@ -356,36 +401,71 @@ function Meeting() {
     navigate('/home/app');
     window.location.reload();
   };
+  const turnOnAudio = () => {
+    socketRef.current.emit('turn on audio room', { roomId, userTurnOn: user.id });
+    setMic(true);
+  };
+  const turnOffAudio = () => {
+    socketRef.current.emit('turn off audio room', { roomId, userTurnOff: user.id });
+    setMic(false);
+  };
+  const turnOnVideo = () => {
+    socketRef.current.emit('turn on video room', { roomId, userTurnOn: user.id });
+    setCamera(true);
+  };
+  const turnOffVideo = () => {
+    socketRef.current.emit('turn off video room', { roomId, userTurnOff: user.id });
+    setCamera(false);
+  };
   return (
     <RootStyle>
       <Grid container sx={{ width: '100%' }}>
         <Grid item sx={{ padding: '10px' }} xs={12} sm={12} md={12} lg={9} xl={9}>
           <BoxVideoGhim>
-            <Username>Trưởng phòng - {userHost.hoTen}</Username>
-            {/* {hostVideo && (
-              <VideoGhim muted={!camera} hidden={!mic} ref={hostVideo} autoPlay playsInline />
-            )} */}
+            <Box
+              sx={{
+                display: 'flex',
+                width: '100%',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+              }}
+            >
+              <Username>Trưởng phòng - {userHost.hoTen}</Username>
+              <Timer active duration={null}>
+                <Timecode />
+              </Timer>
+            </Box>
+
+            {hostVideo && (
+              <VideoGhim
+                hidden={turnOffVideoRoom.includes(userHost.id)}
+                muted={turnOffAudioRoom.includes(userHost.id)}
+                ref={hostVideo}
+                autoPlay
+                playsInline
+              />
+            )}
           </BoxVideoGhim>
           <BoxOption>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               {camera ? (
-                <BoxButtonOption>
+                <BoxButtonOption onClick={turnOffVideo}>
                   <IconOption icon="bi:camera-video-fill" />
                   <NameOption>Đang bật</NameOption>
                 </BoxButtonOption>
               ) : (
-                <BoxButtonOption>
+                <BoxButtonOption onClick={turnOnVideo}>
                   <IconOption icon="bi:camera-video-off-fill" />
                   <NameOption>Đang tắt</NameOption>
                 </BoxButtonOption>
               )}
               {mic ? (
-                <BoxButtonOption>
+                <BoxButtonOption onClick={turnOffAudio}>
                   <IconOption icon="eva:mic-fill" />
                   <NameOption>Đang bật</NameOption>
                 </BoxButtonOption>
               ) : (
-                <BoxButtonOption>
+                <BoxButtonOption onClick={turnOnAudio}>
                   <IconOption icon="eva:mic-off-fill" />
                   <NameOption>Đang tắt</NameOption>
                 </BoxButtonOption>
@@ -394,10 +474,9 @@ function Meeting() {
                 <IconOption icon="bi:chat-left-fill" />
                 <NameOption>Nhắn tin</NameOption>
               </BoxButtonOption>
-              {/* <Popper placement="top-start" open={open} anchorEl={boxChat}>
+              <Popper placement="top-start" open={open} anchorEl={anchorEl}>
                 <BoxChat />
-              </Popper> */}
-              <Message />
+              </Popper>
             </Box>
             {userHost.id === user.id ? (
               <BoxButtonOption onClick={handleStopMetting}>
@@ -445,7 +524,13 @@ function Meeting() {
                   >
                     {user.hoTen}
                   </Typography>
-                  <VideoUserSmall playsInline autoPlay ref={userVideo} />
+                  <VideoUserSmall
+                    muted={!mic}
+                    hidden={!camera}
+                    playsInline
+                    autoPlay
+                    ref={userVideo}
+                  />
                 </Box>
                 {allPeers.map((peer, index) => (
                   <Video
@@ -453,6 +538,7 @@ function Meeting() {
                     index={index}
                     peer={peer.peer}
                     userJoin={peer.userJoin}
+                    userHost={userHost}
                     handleVideoHost={handleVideoHost}
                   />
                 ))}
@@ -461,9 +547,8 @@ function Meeting() {
           </BoxPartition>
         </Grid>
       </Grid>
-      <Toaster />
     </RootStyle>
   );
 }
 
-export default Meeting;
+export default Meeting2;

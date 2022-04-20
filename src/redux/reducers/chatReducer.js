@@ -7,14 +7,18 @@ import {
   ACTION_CHAT_DELETE_GHIM_MESSAGE,
   ACTION_CHAT_ADD_GHIM_MESSAGE,
   ACTION_CHAT_USER_HOST,
-  ACTION_CHAT_MESSAGE_HOST
+  ACTION_CHAT_MESSAGE_HOST,
+  ACTION_CHAT_ADD_MESSAGE_MEETING,
+  ACTION_CHAT_BOX_CHAT_MEETING
 } from '../actions/types';
 
 const defaultState = {
   allMessages: [],
   allGhimMessage: [],
   userHost: {},
-  messageHost: {}
+  messageHost: {},
+  allMessagesMeeting: [],
+  boxChat: null
 };
 
 // eslint-disable-next-line default-param-last
@@ -82,6 +86,16 @@ const chatReducer = (state = defaultState, action) => {
       return {
         ...state,
         messageHost: action.payload
+      };
+    case ACTION_CHAT_ADD_MESSAGE_MEETING:
+      return {
+        ...state,
+        allMessagesMeeting: [action.payload].concat(state.allMessagesMeeting)
+      };
+    case ACTION_CHAT_BOX_CHAT_MEETING:
+      return {
+        ...state,
+        boxChat: action.payload
       };
     default:
       return state;

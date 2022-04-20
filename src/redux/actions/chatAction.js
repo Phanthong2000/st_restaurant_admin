@@ -9,7 +9,9 @@ import {
   ACTION_CHAT_ADD_GHIM_MESSAGE,
   ACTION_CHAT_DELETE_GHIM_MESSAGE,
   ACTION_CHAT_USER_HOST,
-  ACTION_CHAT_MESSAGE_HOST
+  ACTION_CHAT_MESSAGE_HOST,
+  ACTION_CHAT_ADD_MESSAGE_MEETING,
+  ACTION_CHAT_BOX_CHAT_MEETING
 } from './types';
 
 export const actionChatGetAllMessages = (data) => ({
@@ -46,6 +48,14 @@ export const actionChatUserHost = (data) => ({
 });
 export const actionChatMessageHost = (data) => ({
   type: ACTION_CHAT_MESSAGE_HOST,
+  payload: data
+});
+export const actionChatAddMessageMeeting = (data) => ({
+  type: ACTION_CHAT_ADD_MESSAGE_MEETING,
+  payload: data
+});
+export const actionChatBoxChatMeeting = (data) => ({
+  type: ACTION_CHAT_BOX_CHAT_MEETING,
   payload: data
 });
 export const actionGetAllMessages = () => async (dispatch) => {
