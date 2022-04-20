@@ -1,3 +1,3 @@
-const api = 'https://816f-222-253-52-189.ngrok.io/api/v1/';
+const api = 'https://239e-14-186-173-204.ngrok.io/api/v1/';
 
 export default api;
