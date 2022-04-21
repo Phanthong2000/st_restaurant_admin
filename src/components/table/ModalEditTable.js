@@ -5,6 +5,7 @@ import {
   Divider,
   IconButton,
   Modal,
+  Radio,
   styled,
   TextField,
   Typography
@@ -64,6 +65,7 @@ function ModalEditTable({ edit }) {
   const [max, setMax] = useState('');
   const [min, setMin] = useState('');
   const [quantity, setQuantity] = useState(-1);
+  const [type, setType] = useState('');
   const getQuantityTableInArea = async () => {
     const res = await axios.get(`${api}ban/list/khuVuc/${modalEditTable.table.khuVuc.id}`, {
       headers: {
@@ -75,6 +77,7 @@ function ModalEditTable({ edit }) {
   useEffect(() => {
     setMax(modalEditTable.table.soNguoiToiDa);
     setMin(modalEditTable.table.soNguoiToiThieu);
+    setType(modalEditTable.table.loaiBan);
     getQuantityTableInArea();
     return function () {
       return null;
@@ -97,8 +100,11 @@ function ModalEditTable({ edit }) {
   };
   const handleEdit = () => {
     console.log(max);
-    edit(parseInt(max, 10), parseInt(min, 10));
+    edit(parseInt(max, 10), parseInt(min, 10), type);
     handleClose();
+  };
+  const handleChooseType = (type) => {
+    setType(type);
   };
   return (
     <Modal open={modalEditTable.status} onClose={handleClose}>
@@ -127,10 +133,27 @@ function ModalEditTable({ edit }) {
           onChange={(e) => handleChange(e.target.value)}
           label="Số người tối đa"
         />
+        <Typography sx={{ width: '100%', textAlign: 'left', margin: '10px 0px 0px 10px' }}>
+          Loại bạn
+        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Radio onChange={() => handleChooseType('Thường')} checked={type === 'Thường'} />
+            <Typography>Thường</Typography>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Radio onChange={() => handleChooseType('Vip')} checked={type === 'Vip'} />
+            <Typography>Vip</Typography>
+          </Box>
+        </Box>
+
         {/* <Input fullWidth disabled value={min} label="Số người tối thiểu" /> */}
         <ButtonAdd
           onClick={handleEdit}
-          disabled={Boolean(parseInt(modalEditTable.table.soNguoiToiDa, 10) === parseInt(max, 10))}
+          disabled={
+            Boolean(parseInt(modalEditTable.table.soNguoiToiDa, 10) === parseInt(max, 10)) &&
+            type === modalEditTable.table.loaiBan
+          }
         >
           Sửa thông tin bàn
         </ButtonAdd>

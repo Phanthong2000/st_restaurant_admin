@@ -25,7 +25,7 @@ const sidebarHomeConfig = [
     icon: 'clarity:employee-line'
   },
   {
-    name: 'Nhắn tin',
+    name: 'Tin nhắn',
     path: '/home/chat',
     icon: 'carbon:chat'
   },

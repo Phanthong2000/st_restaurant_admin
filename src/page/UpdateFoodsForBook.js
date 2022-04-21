@@ -1288,7 +1288,7 @@ const ButtonSortPrice = styled(Button)(({ theme }) => ({
 function TableItem({ table }) {
   const BoxTable = styled(Grid)(({ theme }) => ({
     width: '100%',
-    height: '100px',
+    height: '120px',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -1310,6 +1310,7 @@ function TableItem({ table }) {
       <BoxTable>
         <Title>{table.tenBan}</Title>
         <IconTable icon="ic:round-table-restaurant" />
+        <Title>{table.loaiBan}</Title>
         <Title>Số người: {table.soNguoiToiDa}</Title>
       </BoxTable>
     </Grid>

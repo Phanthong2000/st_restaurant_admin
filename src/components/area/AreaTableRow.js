@@ -75,6 +75,10 @@ function AreaTableRow({ area, index }) {
       width: '20%'
     },
     {
+      name: 'Loại bàn',
+      width: '20%'
+    },
+    {
       name: 'Số lượng tối đa',
       width: '20%'
     }
@@ -120,6 +124,7 @@ function AreaTableRow({ area, index }) {
                     <TableRow key={index}>
                       <CellTable>{index + 1}</CellTable>
                       <CellTable>{item.tenBan}</CellTable>
+                      <CellTable>{item.loaiBan}</CellTable>
                       <CellTable>{item.soNguoiToiDa}</CellTable>
                     </TableRow>
                   ))}

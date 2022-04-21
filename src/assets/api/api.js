@@ -1,3 +1,3 @@
-const api = 'https://7882-27-74-254-111.ngrok.io/api/v1/';
+const api = 'http://localhost:9000/api/v1/';
 
 export default api;

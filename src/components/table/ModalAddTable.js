@@ -174,6 +174,7 @@ function ModalAddTable({ add }) {
   const [max, setMax] = useState('');
   const [min, setMin] = useState('');
   const [tables, setTables] = useState([]);
+  const [type, setType] = useState('Thường');
   const dispatch = useDispatch();
   const getTablesByArea = (area) => {
     setTables(allTables.filter((table) => table.khuVuc.id === area.id));
@@ -183,7 +184,11 @@ function ModalAddTable({ add }) {
   };
   const chooseArea = (area, quantity) => {
     setArea(area);
-    setName(area.tenKhuVuc.concat(`${quantity + 1}`));
+    setName(
+      area.tenKhuVuc
+        .substring(area.tenKhuVuc.lastIndexOf(' '), area.tenKhuVuc.length)
+        .concat(`${quantity + 1}`)
+    );
     getTablesByArea(area);
   };
   const handleChange = (text) => {
@@ -206,10 +211,14 @@ function ModalAddTable({ add }) {
       },
       tenBan: name,
       soNguoiToiDa: parseInt(max, 10),
-      trangThai: 'Đang sử dụng'
+      trangThai: 'Đang sử dụng',
+      loaiBan: type
     };
     add(table);
     handleClose();
+  };
+  const handleChooseType = (type) => {
+    setType(type);
   };
   return (
     <Modal open={modalAddTable} onClose={handleClose}>
@@ -282,6 +291,17 @@ function ModalAddTable({ add }) {
                 onChange={(e) => handleChange(e.target.value)}
                 label="Số người tối đa"
               />
+              <Typography sx={{ width: '50%', margin: '10px 0px 0px 10px' }}>Loại bạn</Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', width: '50%' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Radio onChange={() => handleChooseType('Thường')} checked={type === 'Thường'} />
+                  <Typography>Thường</Typography>
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Radio onChange={() => handleChooseType('Vip')} checked={type === 'Vip'} />
+                  <Typography>Vip</Typography>
+                </Box>
+              </Box>
               {/* <Input
                 value={min}
                 helperText={

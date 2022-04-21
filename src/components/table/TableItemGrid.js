@@ -96,6 +96,7 @@ function TableItemGrid({ table, index }) {
             <FoodName>
               {index + 1}. {table.tenBan}
             </FoodName>
+            <Price>{table.loaiBan}</Price>
             <Price>Số người tối đa: {table.soNguoiToiDa}</Price>
             <Status>Khu vực {table.khuVuc.tenKhuVuc}</Status>
             <Box sx={{ marginTop: '5px', display: 'flex', alignItems: 'center' }}>

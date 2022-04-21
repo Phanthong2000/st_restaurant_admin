@@ -82,11 +82,15 @@ function TableTable({ listBan }) {
     },
     {
       name: 'Tên bàn',
-      width: '40%'
+      width: '25%'
+    },
+    {
+      name: 'Loại bàn',
+      width: '25%'
     },
     {
       name: 'Số người',
-      width: '30%'
+      width: '20%'
     },
     {
       name: 'Khu vực',
@@ -110,6 +114,7 @@ function TableTable({ listBan }) {
             <TableRow sx={{ background: index % 2 !== 0 && '#f0fafc' }} key={index}>
               <Cell>{index + 1}</Cell>
               <Cell>{item.tenBan}</Cell>
+              <Cell>{item.loaiBan}</Cell>
               <Cell>{item.soNguoiToiDa}</Cell>
               <Cell>{item.khuVuc.tenKhuVuc}</Cell>
             </TableRow>

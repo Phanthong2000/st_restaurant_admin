@@ -191,6 +191,10 @@ function TablePage() {
       width: '15%'
     },
     {
+      name: 'Loại bàn',
+      width: '10%'
+    },
+    {
       name: 'Số người tối đa',
       width: '15%'
     },
@@ -235,7 +239,7 @@ function TablePage() {
         );
       });
   };
-  const handleEdit = (max, min) => {
+  const handleEdit = (max, min, type) => {
     dispatch(
       actionUserBackdrop({
         status: true,
@@ -248,7 +252,8 @@ function TablePage() {
         {
           ...modalEditTable.table,
           soNguoiToiDa: max,
-          soNguoiToiThieu: min
+          soNguoiToiThieu: min,
+          loaiBan: type
         },
         {
           headers: {
