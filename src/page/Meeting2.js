@@ -120,43 +120,46 @@ function Video(props) {
         props.handleVideoHost(stream);
       }
     });
-    // props.peer.on('connect', () => {
-    //   console.log('connect');
-    // });
-    // props.peer.on('close', (close) => {
-    //   console.log('close', close);
-    // });
+    props.peer.on('connect', () => {
+      console.log('connect');
+    });
+    props.peer.on('close', () => {
+      console.log('close');
+    });
     // props.peer.on('data', () => {
     //   console.log('daa');
     // });
-    // props.peer.on('end', () => {
-    //   console.log('end');
-    // });
-    // props.peer.on('error', (error) => {
-    //   console.log('error', error);
-    //   const allPeersNew = allPeers.filter((peer) => peer.userJoin !== props.userJoin);
-    //   console.log('new peers', allPeersNew);
-    //   dispatch(actionSetPeers(allPeersNew));
-    //   dispatch(
-    //     actionOpenSnackbar({
-    //       status: true,
-    //       content: `${props.userJoin.username} out room`,
-    //       type: 'success'
-    //     })
-    //   );
-    // });
-    // props.peer.on('pause', () => {
-    //   console.log('pause');
-    // });
+    props.peer.on('end', () => {
+      console.log('end');
+    });
+    props.peer.on('error', (error) => {
+      console.log('error', error);
+      //   const allPeersNew = allPeers.filter((peer) => peer.userJoin !== props.userJoin);
+      //   console.log('new peers', allPeersNew);
+      //   dispatch(actionSetPeers(allPeersNew));
+      //   dispatch(
+      //     actionOpenSnackbar({
+      //       status: true,
+      //       content: `${props.userJoin.username} out room`,
+      //       type: 'success'
+      //     })
+      //   );
+    });
+    props.peer.on('pause', () => {
+      console.log('pause');
+    });
     // props.peer.on('readable', () => {
     //   console.log('readable');
     // });
-    // props.peer.on('resume', () => {
-    //   console.log('resume');
-    // });
-    // props.peer.on('track', () => {
-    //   console.log('track');
-    // });
+    props.peer.on('resume', () => {
+      console.log('resume');
+    });
+    props.peer.on('track', () => {
+      console.log('track');
+    });
+    props.peer.on('signal', (signal) => {
+      console.log('signal', signal, props.index);
+    });
     return function () {
       return null;
     };
@@ -229,7 +232,9 @@ function Meeting2() {
   const me = useSelector((state) => state.socket.me);
   const turnOffVideoRoom = useSelector((state) => state.socket.turnOffVideoRoom);
   const turnOffAudioRoom = useSelector((state) => state.socket.turnOffAudioRoom);
+  const [localStream, setLocalStream] = useState();
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const broadcastRoomRef = useRef([]);
   const handleClick = (event) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
@@ -242,6 +247,7 @@ function Meeting2() {
         audio: true
       })
       .then((stream) => {
+        setLocalStream(stream);
         userVideo.current.srcObject = stream;
         if (userHost.id === user.id) hostVideo.current.srcObject = stream;
         socketRef.current.emit('join room', { roomId, userJoin: user });
@@ -258,6 +264,10 @@ function Meeting2() {
               peer,
               userJoin: userID.userJoin
             });
+            broadcastRoomRef.current.push({
+              socketId: userID.socketId,
+              userJoin: userID.userJoin
+            });
           });
           setPeers(peers);
           dispatch(actionSocketSetPeers(peers));
@@ -272,6 +282,10 @@ function Meeting2() {
             peerID: payload.callerID,
             peer
           });
+          broadcastRoomRef.current.push({
+            socketId: payload.callerID,
+            userJoin: payload.userJoin
+          });
           setPeers((users) => [...users, peer]);
           dispatch(actionSocketAddPeer(peer));
           allPeersRef.current.push(peer);
@@ -281,7 +295,10 @@ function Meeting2() {
         });
 
         socketRef.current.on('receiving returned signal', (payload) => {
-          const item = peersRef.current.find((p) => p.peerID === payload.id);
+          // const item = peersRef.current.find((p) => p.peerID === payload.id);
+          const item = peersRef.current
+            .filter((p) => p.peerID === payload.id)
+            .at(peersRef.current.filter((p) => p.peerID === payload.id).length - 1);
           console.log('receiving returned peer ref', peersRef.current);
           console.log('receiving returned payload', payload);
           console.log('receiving returned peer', item.peer);
@@ -321,6 +338,32 @@ function Meeting2() {
         });
         socketRef.current.on('turn on audio room', (data) => {
           dispatch(actionSocketTurnOnAudioRoom(data));
+        });
+        socketRef.current.on('share-screen', (data) => {
+          console.log('share-screen', peersRef.current, data);
+          const peer = new Peer({
+            initiator: false,
+            trickle: false,
+            stream: userVideo.current.srcObject
+          });
+          // peersRef.current.push({
+          //   peerID: data.socketId,
+          //   peer
+          // });
+          // dispatch(actionSocketAddPeer({ peer, userJoin: data.userJoin }));
+          allPeersRef.current.push(peer);
+          peer.on('signal', (signal) => {
+            socketRef.current.emit('returning share-screen', { signal, callerID: data.socketId });
+          });
+
+          peer.signal(data.signal);
+        });
+        socketRef.current.on('receiving returned share-screen', (payload) => {
+          const item = peersRef.current.find((p) => p.peerID === payload.id);
+          console.log('receiving returned share-screen peer ref', peersRef.current);
+          console.log('receiving returned share-screen payload', payload);
+          console.log('receiving returned share-screen peer', item.peer.peer);
+          item.peer.peer.signal(payload.signal);
         });
       });
     return function () {
@@ -417,6 +460,49 @@ function Meeting2() {
     socketRef.current.emit('turn off video room', { roomId, userTurnOff: user.id });
     setCamera(false);
   };
+  const handleShareScreen = () => {
+    console.log(peersRef.current.at(0).peer.peer);
+    navigator.mediaDevices
+      .getDisplayMedia({
+        video: 'true',
+        audio: true
+      })
+      .then((stream) => {
+        console.log('new', stream);
+        // localStream.removeTrack(localStream.getVideoTracks().at(0));
+        // localStream.addTrack(stream.getVideoTracks().at(0));
+        localStream.getTracks().forEach((track) => {
+          track.stop();
+        });
+        userVideo.current.srcObject = stream;
+        hostVideo.current.srcObject = stream;
+        const peers = [];
+        broadcastRoomRef.current.forEach((br) => {
+          const peer = createPeer(br.socketId, me, stream, user);
+          peers.push({
+            peer,
+            userJoin: br.userJoin
+          });
+        });
+        allPeersRef.current = peers;
+        dispatch(actionSocketSetPeers(peers));
+        // const peer = new Peer({
+        //   initiator: true,
+        //   trickle: false,
+        //   stream: localStream
+        // });
+        // peer.on('signal', (signal) => {
+        //   socketRef.current.emit('share-screen', {
+        //     roomId,
+        //     socketId: me,
+        //     signal,
+        //     userJoin: user
+        //   });
+        // });
+
+        // peersRef.current.at(0).peer.peer;
+      });
+  };
   return (
     <RootStyle>
       <Grid container sx={{ width: '100%' }}>
@@ -477,6 +563,12 @@ function Meeting2() {
               <Popper placement="top-start" open={open} anchorEl={anchorEl}>
                 <BoxChat />
               </Popper>
+              {userHost.id === user.id && (
+                <BoxButtonOption onClick={handleShareScreen}>
+                  <IconOption icon="fluent:projection-screen-28-filled" />
+                  <NameOption>Màn hình</NameOption>
+                </BoxButtonOption>
+              )}
             </Box>
             {userHost.id === user.id ? (
               <BoxButtonOption onClick={handleStopMetting}>
