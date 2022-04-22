@@ -166,6 +166,7 @@ function TableRowCustomer({ customer, index }) {
 function TableCustomer() {
   const customers = useSelector((state) => state.customer.customers);
   const [from, setFrom] = useState();
+  const user = useSelector((state) => state.user.user);
   const [customerTable, setCustomerTable] = useState([]);
   const [to, setTo] = useState();
   const [status, setStatus] = useState('all');
@@ -356,6 +357,60 @@ function TableCustomer() {
         >
           <TableContainer sx={{ maxHeight: '400px' }}>
             <Table id="tb" stickyHeader>
+              <TableRow sx={{ display: 'none' }}>
+                <TableCell rowSpan={6} colSpan={3} sx={{ height: '120px', fontWeight: 'bold' }}>
+                  <img
+                    style={{ width: '100px', height: '100px' }}
+                    src="https://cdn2.iconfinder.com/data/icons/building-vol-2/512/restaurant-120.png"
+                    alt="imagerestaurant"
+                  />
+                </TableCell>
+              </TableRow>
+              <TableRow sx={{ display: 'none' }}>
+                <TableCell colSpan={8} sx={{ height: '120px', fontWeight: 'bold' }}>
+                  <Typography>Nhà hàng ST Restaurant</Typography>
+                </TableCell>
+              </TableRow>
+              <TableRow sx={{ display: 'none' }}>
+                <TableCell colSpan={8} sx={{ height: '120px', fontWeight: 'bold' }}>
+                  <Typography>
+                    Địa chỉ: 1/11/46 Đặng Thuỳ Trâm, phường 13, quận Bình Thạnh, Thành phố Hồ Chí
+                    Minh
+                  </Typography>
+                </TableCell>
+              </TableRow>
+              <TableRow sx={{ display: 'none' }}>
+                <TableCell colSpan={8} sx={{ height: '120px', fontWeight: 'bold' }}>
+                  <Typography>
+                    Danh sách khách hàng
+                    {status === 'all'
+                      ? ` từ đầu đến nay (${moment(new Date().getTime()).format(`DD/MM/YYYY`)})`
+                      : ` từ ${moment(from).format('DD/MM/YYYY')} đến ${moment(to).format(
+                          'DD/MM/YYYY'
+                        )}`}
+                  </Typography>
+                </TableCell>
+              </TableRow>
+              <TableRow sx={{ display: 'none' }}>
+                <TableCell colSpan={8} sx={{ height: '120px', fontWeight: 'bold' }}>
+                  <Typography>
+                    Người xuất file:
+                    {`             Họ và tên: ${user.hoTen} - Số điện thoại: ${
+                      user.soDienThoai
+                    } - Chức vụ: ${
+                      user.taiKhoan.vaiTro.tenVaiTro === 'EMPLOYEE' ? 'Nhân viên' : 'Quản lý'
+                    }`}
+                  </Typography>
+                </TableCell>
+              </TableRow>
+              <TableRow sx={{ display: 'none' }}>
+                <TableCell colSpan={8} sx={{ height: '120px', fontWeight: 'bold' }}>
+                  <Typography>
+                    Xuất file vào lúc:
+                    {moment(new Date().getTime()).format(` hh:mm a DD/MM/YYYY`)}
+                  </Typography>
+                </TableCell>
+              </TableRow>
               <TableHead>
                 <TableRow>
                   {header.map((item, index) => (

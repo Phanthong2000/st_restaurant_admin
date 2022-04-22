@@ -22,7 +22,9 @@ import {
   ACTION_ORDER_UNSHIFT_ALL_BOOKS,
   ACTION_ORDER_MODAL_CHOOSE_AREA,
   ACTION_ORDER_GET_AREAS_FOR_ORDER,
-  ACTION_ODER_MODAL_PAY_ORDER
+  ACTION_ODER_MODAL_PAY_ORDER,
+  ACTION_ORDER_MODAL_MAP_RESTAURANT,
+  ACTION_ORDER_MODAL_ORDER_TO_PRINT
 } from '../actions/types';
 
 const defaultState = {
@@ -79,7 +81,9 @@ const defaultState = {
     using: [],
     dontUse: []
   },
-  modalPayOrder: false
+  modalPayOrder: false,
+  modalMapRestaurant: false,
+  modalOrderToPrint: true
 };
 
 // eslint-disable-next-line default-param-last
@@ -216,6 +220,16 @@ const orderReducer = (state = defaultState, action) => {
       return {
         ...state,
         modalPayOrder: action.payload
+      };
+    case ACTION_ORDER_MODAL_MAP_RESTAURANT:
+      return {
+        ...state,
+        modalMapRestaurant: action.payload
+      };
+    case ACTION_ORDER_MODAL_ORDER_TO_PRINT:
+      return {
+        ...state,
+        modalOrderToPrint: action.payload
       };
     default:
       return state;

@@ -25,7 +25,9 @@ import {
   ACTION_ORDER_UNSHIFT_ALL_BOOKS,
   ACTION_ORDER_GET_AREAS_FOR_ORDER,
   ACTION_ORDER_MODAL_CHOOSE_AREA,
-  ACTION_ODER_MODAL_PAY_ORDER
+  ACTION_ODER_MODAL_PAY_ORDER,
+  ACTION_ORDER_MODAL_MAP_RESTAURANT,
+  ACTION_ORDER_MODAL_ORDER_TO_PRINT
 } from './types';
 
 export const actionOrderGetOrder = (data) => ({
@@ -126,6 +128,14 @@ export const actionOrderModalChooseArea = (data) => ({
 });
 export const actionOrderModalPayOrder = (data) => ({
   type: ACTION_ODER_MODAL_PAY_ORDER,
+  payload: data
+});
+export const actionOrderModalMapRestaurant = (data) => ({
+  type: ACTION_ORDER_MODAL_MAP_RESTAURANT,
+  payload: data
+});
+export const actionOrderModalOrderToPrint = (data) => ({
+  type: ACTION_ORDER_MODAL_ORDER_TO_PRINT,
   payload: data
 });
 export const actionGetBooksByKeyword = (keyword) => (dispatch) => {
@@ -243,6 +253,7 @@ export const actionGetTotalNow = () => (dispatch) => {
         order.donDatBan.listChiTietDonDatBan.forEach((item) => {
           total += item.monAn.donGia * item.soLuong;
         });
+        total += order.donDatBan.listBan.filter((table) => table.loaiBan === 'Vip').length * 100000;
       });
       dispatch(actionOrderGetTotalNow(total));
     });

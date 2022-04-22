@@ -697,6 +697,7 @@ function TableItem({ table }) {
       <BoxTable>
         <Title>{table.tenBan}</Title>
         <IconTable icon="ic:round-table-restaurant" />
+        <Title>{table.loaiBan}</Title>
         <Title>Số người: {table.soNguoiToiDa}</Title>
       </BoxTable>
     </Grid>

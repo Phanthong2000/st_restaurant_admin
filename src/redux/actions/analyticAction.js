@@ -209,11 +209,14 @@ export const actionRevenueDateNow = () => (dispatch) => {
         order.donDatBan.listChiTietDonDatBan.forEach((item) => {
           total += item.monAn.donGia * item.soLuong;
         });
+        total += order.donDatBan.listBan.filter((table) => table.loaiBan === 'Vip').length * 100000;
       });
       allOrdersLast.forEach((order) => {
         order.donDatBan.listChiTietDonDatBan.forEach((item) => {
           totalLast += item.monAn.donGia * item.soLuong;
         });
+        totalLast +=
+          order.donDatBan.listBan.filter((table) => table.loaiBan === 'Vip').length * 100000;
       });
       dispatch(actionAnalyticRevenueDateNow(total));
       dispatch(actionAnalyticRevenueDateLast(totalLast));
@@ -240,11 +243,14 @@ export const actionRevenueMonthNow = () => (dispatch) => {
         order.donDatBan.listChiTietDonDatBan.forEach((item) => {
           total += item.monAn.donGia * item.soLuong;
         });
+        total += order.donDatBan.listBan.filter((table) => table.loaiBan === 'Vip').length * 100000;
       });
       allOrdersLast.forEach((order) => {
         order.donDatBan.listChiTietDonDatBan.forEach((item) => {
           totalLast += item.monAn.donGia * item.soLuong;
         });
+        totalLast +=
+          order.donDatBan.listBan.filter((table) => table.loaiBan === 'Vip').length * 100000;
       });
       dispatch(actionAnalyticRevenueMonthNow(total));
       dispatch(actionAnalyticRevenueMonthLast(totalLast));
@@ -268,11 +274,14 @@ export const actionRevenueYearNow = () => (dispatch) => {
         order.donDatBan.listChiTietDonDatBan.forEach((item) => {
           total += item.monAn.donGia * item.soLuong;
         });
+        total += order.donDatBan.listBan.filter((table) => table.loaiBan === 'Vip').length * 100000;
       });
       allOrdersLast.forEach((order) => {
         order.donDatBan.listChiTietDonDatBan.forEach((item) => {
           totalLast += item.monAn.donGia * item.soLuong;
         });
+        totalLast +=
+          order.donDatBan.listBan.filter((table) => table.loaiBan === 'Vip').length * 100000;
       });
       dispatch(actionAnalyticRevenueYearNow(total));
       dispatch(actionAnalyticRevenueYearLast(totalLast));
@@ -978,7 +987,7 @@ const getTotalItem = (field) => {
   field.donDatBan.listChiTietDonDatBan.forEach((item) => {
     total += item.monAn.donGia * item.soLuong;
   });
-  return total;
+  return total + field.donDatBan.listBan.filter((table) => table.loaiBan === 'Vip').length * 100000;
 };
 
 export const actionColumnRevenueRevenue = (year) => async (dispatch) => {
@@ -1340,7 +1349,7 @@ const getTotalRevenue = (order) => {
   order.donDatBan.listChiTietDonDatBan.forEach((ct) => {
     total += ct.monAn.donGia * ct.soLuong;
   });
-  return total;
+  return total + order.donDatBan.listBan.filter((table) => table.loaiBan === 'Vip').length * 100000;
 };
 
 export const actionGetBookWeek = () => async (dispatch) => {

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Box, Card, InputBase, Popper, styled } from '@mui/material';
+import { Box, Card, InputBase, Popper, styled, Typography } from '@mui/material';
 import { Icon } from '@iconify/react';
 import { keyframes } from '@emotion/react';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
@@ -94,10 +94,13 @@ BoxSendMessage.prototype = {
 function BoxSendMessage({ index }) {
   const { pathname } = useLocation();
   const imageRef = useRef();
+  const fileRef = useRef();
   const [contentText, setContentText] = useState('');
   const user = useSelector((state) => state.user.user);
   const [showImage, setShowImage] = useState(false);
   const dispatch = useDispatch();
+  const [file, setFile] = useState();
+  const [showFile, setShowFile] = useState(false);
   const [image, setImage] = useState();
   const broadcast = useSelector((state) => state.socket.broadcast);
   const [anchorElEmoji, setAnchorElEmoji] = React.useState(null);
@@ -116,6 +119,14 @@ function BoxSendMessage({ index }) {
     setAnchorElImage(null);
   };
   const openImage = Boolean(anchorElImage);
+  const [anchorElFile, setAnchorElFile] = React.useState(null);
+  const handleClickFile = (event) => {
+    setAnchorElFile(event.currentTarget);
+  };
+  const handleCloseFile = () => {
+    setAnchorElFile(null);
+  };
+  const openFile = Boolean(anchorElFile);
   const handleSend = () => {
     handleCloseEmoji();
     const socketIds = [];
@@ -124,7 +135,7 @@ function BoxSendMessage({ index }) {
         socketIds.push(br.socketId);
       }
     });
-    if (!image && contentText !== '') {
+    if (!image && !file && contentText !== '') {
       const message = {
         noiDungText: contentText,
         noiDungFile: '',
@@ -208,6 +219,59 @@ function BoxSendMessage({ index }) {
           });
         }
       );
+    } else if (file) {
+      const message = {
+        noiDungText: contentText,
+        noiDungFile: '',
+        loaiTinNhan: 'file',
+        listNguoiQuanLyDaDoc: [],
+        listNhanVienDaDoc: [],
+        nguoiQuanLy: {
+          ...user
+        },
+        daXoa: false
+      };
+      dispatch(
+        actionChatAddMessage({
+          ...message
+        })
+      );
+      handleCloseFile();
+      setShowFile(false);
+      setFile();
+      setContentText('');
+      const storageRef = ref(storage, `message/${new Date().getTime()}${file.name}`);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+      uploadTask.on(
+        'state_changed',
+        (snapshot) => {},
+        (error) => {},
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            axios
+              .post(
+                `${api}tinNhan/create`,
+                {
+                  ...message,
+                  noiDungFile: downloadURL
+                },
+                {
+                  headers: {
+                    Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+                  }
+                }
+              )
+              .then((res) => {
+                dispatch(
+                  actionChatUpdateMessage({
+                    message: res.data
+                  })
+                );
+                sendMessageSocket({ socketIds, message: res.data });
+              });
+          });
+        }
+      );
     }
   };
   const handleChooseEmoji = (emoji) => {
@@ -222,29 +286,104 @@ function BoxSendMessage({ index }) {
         dispatch(
           actionUserSnackbar({
             status: true,
-            content: 'Hình món ăn phải nhỏ hơn 2MB',
+            content: 'Hình ảnh phải nhỏ hơn 2MB',
             type: 'error'
           })
         );
       }
     }
   };
-  const handleDeleteFile = () => {
+  const onChangeFile = (files) => {
+    if (files && files[0]) {
+      if (files[0].size < 2097152) {
+        setFile(files[0]);
+        setShowFile(true);
+      } else {
+        dispatch(
+          actionUserSnackbar({
+            status: true,
+            content: 'Tệp phải nhỏ hơn 2MB',
+            type: 'error'
+          })
+        );
+      }
+    }
+  };
+  const handleDeleteImage = () => {
     handleCloseImage();
     setShowImage(false);
     setImage();
   };
+  const handleDeleteFile = () => {
+    handleCloseFile();
+    setShowFile(false);
+    setFile();
+  };
   return (
     <RootStyle>
-      <ButtonOption>
+      <ButtonOption
+        onClick={(e) => {
+          if (!file) {
+            fileRef.current.click();
+            handleClickFile(e);
+            setShowImage(false);
+            setImage();
+          }
+        }}
+      >
         <IconOption icon="ic:baseline-attach-file" />
       </ButtonOption>
+      {showFile && (
+        <Popper open={openFile} placement="top-start" anchorEl={anchorElFile}>
+          <Card
+            sx={{
+              marginBottom: '20px',
+              borderRadius: '5px',
+              minWidth: '400px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: '#fff',
+              padding: '10px 0px'
+            }}
+          >
+            <Box
+              sx={{
+                width: '40px',
+                height: '40px',
+                border: `1px solid lightgrey`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: '35px'
+              }}
+            >
+              <Icon style={{ width: '30px', height: '30px' }} icon="ic:baseline-attach-file" />
+            </Box>
+            <Typography
+              sx={{
+                fontSize: '12px',
+                fontWeight: 'bold',
+                fontFamily: 'sans-serif',
+                marginLeft: '10px'
+              }}
+            >
+              {file.name}
+            </Typography>
+            <ButtonDeleteFile sx={{ width: '25px', height: '25px' }} onClick={handleDeleteFile}>
+              <Icon style={{ width: '20px', height: '20px' }} icon="eva:close-outline" />
+            </ButtonDeleteFile>
+          </Card>
+        </Popper>
+      )}
       <ButtonOption
         sx={{ background: image && '#1c9dea' }}
         onClick={(e) => {
           if (!image) {
             imageRef.current.click();
             handleClickImage(e);
+            setShowFile(false);
+            setFile();
           }
         }}
       >
@@ -254,7 +393,7 @@ function BoxSendMessage({ index }) {
         <Popper open={openImage} placement="top-start" anchorEl={anchorElImage}>
           <BoxImageFile>
             <ImageFile src={URL.createObjectURL(image)} />
-            <ButtonDeleteFile onClick={handleDeleteFile}>
+            <ButtonDeleteFile onClick={handleDeleteImage}>
               <Icon style={{ width: '25px', height: '25px' }} icon="eva:close-outline" />
             </ButtonDeleteFile>
           </BoxImageFile>
@@ -274,7 +413,7 @@ function BoxSendMessage({ index }) {
       </Popper>
       <ButtonOption
         onClick={handleSend}
-        sx={{ cursor: contentText === '' && !image && 'not-allowed' }}
+        sx={{ cursor: contentText === '' && !image && !file && 'not-allowed' }}
       >
         <IconOption icon="fluent:send-28-filled" />
       </ButtonOption>
@@ -285,6 +424,15 @@ function BoxSendMessage({ index }) {
         accept=".png, .jpg, .jpeg"
         onChange={(e) => onChangeImage(e.target.files)}
         ref={imageRef}
+        style={{ display: 'none' }}
+        type="file"
+      />
+      <input
+        onClick={(e) => {
+          e.target.value = null;
+        }}
+        onChange={(e) => onChangeFile(e.target.files)}
+        ref={fileRef}
         style={{ display: 'none' }}
         type="file"
       />

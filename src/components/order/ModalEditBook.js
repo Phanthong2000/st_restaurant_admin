@@ -356,11 +356,31 @@ function ModalEditBook() {
                 ))}
               </Tabs> */}
               <TableFood listChiTietDonDatBan={modalEditBook.book.listChiTietDonDatBan} />
-              <Typography
-                sx={{ color: 'gray', fontWeight: 'bold', fontSize: '14px', marginTop: '20px' }}
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  width: '100%'
+                }}
               >
-                Danh sách bàn:
-              </Typography>
+                <Typography
+                  sx={{ color: 'gray', fontWeight: 'bold', fontSize: '14px', marginTop: '20px' }}
+                >
+                  Danh sách bàn:
+                </Typography>
+                <Typography
+                  sx={{ color: 'gray', fontWeight: 'bold', fontSize: '14px', marginTop: '20px' }}
+                >
+                  Tổng tiền phụ thu:{' '}
+                  {(
+                    modalEditBook.book.listBan.filter((table) => table.loaiBan === 'Vip').length *
+                    100000
+                  ).toLocaleString(`es-US`)}{' '}
+                  vnđ
+                </Typography>
+              </Box>
+
               <TableTable listBan={modalEditBook.book.listBan} />
             </Box>
             <Box sx={{ marginTop: '10px' }}>

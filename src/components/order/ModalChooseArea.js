@@ -13,11 +13,16 @@ import {
   Typography
 } from '@mui/material';
 import moment from 'moment';
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Scrollbar } from 'smooth-scrollbar-react';
 import PropTypes from 'prop-types';
-import { actionOrderModalChooseArea } from '../../redux/actions/orderAction';
+import {
+  actionOrderModalChooseArea,
+  actionOrderModalMapRestaurant
+} from '../../redux/actions/orderAction';
+import api from '../../assets/api/api';
 
 const BoxModal = styled(Card)(({ theme }) => ({
   position: 'absolute',
@@ -73,7 +78,26 @@ const BoxArea = styled(Grid)(({ theme }) => ({
   borderRadius: '5px',
   border: `1px solid lightgrey`
 }));
-function Area({ area, handleChooseArea, chosen, tablesChosen }) {
+const ButtonMap = styled(Button)(({ theme }) => ({
+  textTransform: 'none',
+  background: theme.palette.main,
+  color: theme.palette.white,
+  padding: '3px 5px',
+  fontWeight: 'bold',
+  fontSize: '16px',
+  fontFamily: theme.typography.fontFamily.primary,
+  ':hover': {
+    background: theme.palette.mainHover
+  }
+}));
+const Note = styled(Typography)(({ theme }) => ({
+  fontWeight: 'bold',
+  fontSize: '14px',
+  fontFamily: theme.typography.fontFamily.primary,
+  textAlign: 'center',
+  color: 'red'
+}));
+function Area({ area, handleChooseArea, chosen, tablesChosen, quantityCustomer }) {
   const BoxArea = styled(Grid)(({ theme }) => ({
     width: '100%',
     padding: '5px'
@@ -107,19 +131,55 @@ function Area({ area, handleChooseArea, chosen, tablesChosen }) {
     background: '#fff',
     borderRadius: '30px'
   }));
+  const NotAllow = styled(Typography)(({ theme }) => ({
+    fontWeight: 'bold',
+    fontSize: '14px',
+    background: 'red',
+    padding: '1px 10px',
+    color: theme.palette.white,
+    borderRadius: '5px',
+    border: `1px solid #fff`,
+    marginTop: '5px'
+  }));
+  const areaForOrder = useSelector((state) => state.order.areaForOrder);
+  const [status, setStatus] = useState(-1);
+  const getTablesByArea = async () => {
+    const data = await axios.get(`${api}ban/list/khuVuc/${area.id}`);
+    let total = 0;
+    data.data.forEach((table) => {
+      console.log(table);
+      if (
+        areaForOrder.using.filter((item) => item.id === table.id).length === 0 &&
+        areaForOrder.dontUse.filter((item) => item.id === table.id).length === 0
+      )
+        total += table.soNguoiToiDa;
+    });
+    setStatus(total);
+  };
+  useEffect(() => {
+    getTablesByArea();
+    return function () {
+      return null;
+    };
+  }, []);
   return (
     <BoxArea item xs={3} sm={3} md={3} lg={3} xl={3}>
       <Wrapper
         sx={{
           border:
-            tablesChosen.filter((item) => item.khuVuc.id === area.id).length > 0 && `1px solid blue`
+            tablesChosen.filter((item) => item.khuVuc.id === area.id).length > 0 &&
+            `1px solid blue`,
+          cursor: status < quantityCustomer && 'not-allowed'
         }}
         onClick={() => handleChooseArea(area)}
       >
         {tablesChosen.filter((item) => item.khuVuc.id === area.id).length > 0 ? (
           <IconCheck icon="bi:check-circle-fill" />
         ) : (
-          <AreaName>{area.tenKhuVuc}</AreaName>
+          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            <AreaName>{area.tenKhuVuc}</AreaName>
+            {status < quantityCustomer && status > -1 && <NotAllow>Không đủ chỗ</NotAllow>}
+          </Box>
         )}
       </Wrapper>
     </BoxArea>
@@ -206,6 +266,7 @@ function Table({ table, tablesChosen, handleChoseTable, quantityRest }) {
             style={(status === '1' && { color: 'red' }) || (status === '0' && { color: 'orange' })}
             icon="ic:round-table-restaurant"
           />
+          <Title sx={{ fontSize: '12px' }}>{table.loaiBan}</Title>
           <Title sx={{ fontSize: '12px' }}>Số người: {table.soNguoiToiDa}</Title>
         </Wrapper>
         {tablesChosen.filter((item) => item.id === table.id).length > 0 && (
@@ -317,10 +378,32 @@ function ModalChooseArea({ chooseArea, use, checkin, quantityCustomer, hour }) {
                 </Typography>
               </BoxCheckin>
             </Box>
-            <Title>Danh sách khu vực</Title>
+            <Box
+              sx={{
+                display: 'flex',
+                width: '100%',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: '10px'
+              }}
+            >
+              <Title>Danh sách khu vực</Title>
+              <Box sx={{ display: 'flex' }}>
+                <ButtonMap onClick={() => dispatch(actionOrderModalMapRestaurant(true))}>
+                  <Icon
+                    style={{ width: '25px', height: '25px' }}
+                    icon="majesticons:map-marker-area"
+                  />
+                  <Typography sx={{ fontSize: '14px', marginLeft: '5px', fontWeight: 'bold' }}>
+                    Bản đồ nhà hàng
+                  </Typography>
+                </ButtonMap>
+              </Box>
+            </Box>
             <BoxArea container>
               {allAreas.map((item, index) => (
                 <Area
+                  quantityCustomer={quantityCustomer}
                   tablesChosen={tablesChosen}
                   chosen={area}
                   handleChooseArea={handleChooseArea}
@@ -361,6 +444,7 @@ function ModalChooseArea({ chooseArea, use, checkin, quantityCustomer, hour }) {
               )}
             </BoxTable>
             <Divider sx={{ margin: '10px 0px' }} />
+            <Note>Lưu ý: Bàn vip phụ thu 100.000 vnđ mỗi bàn</Note>
             <ButtonChoose disabled={quantityRest !== 0} onClick={handleConfirm}>
               Đồng ý
             </ButtonChoose>

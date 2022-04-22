@@ -15,6 +15,7 @@ import moment from 'moment';
 import axios from 'axios';
 import { Icon } from '@iconify/react';
 import { useNavigate } from 'react-router-dom';
+import { ref } from 'firebase/storage';
 import {
   actionChatAddGhimMessage,
   actionChatDeleteMessage,
@@ -25,6 +26,7 @@ import BoxUserRead from './BoxUserRead';
 import { deleteMessageSocket, updateMessageStopMeetingSocket } from '../../utils/wssConnection';
 import { actionEmployeeChooseEmployee } from '../../redux/actions/employeeAction';
 import { actionUserSnackbar } from '../../redux/actions/userAction';
+import { storage } from '../../firebase-config';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -98,6 +100,10 @@ const ButtonJoin = styled(Button)(({ theme }) => ({
   ':hover': {
     background: theme.palette.mainHover
   }
+}));
+const MessageFile = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center'
 }));
 Message.prototype = {
   message: PropTypes.object,
@@ -352,7 +358,42 @@ function Message({ message, index }) {
                     <Box sx={{ display: 'flex', justifyContent: 'end' }}>
                       <ContentText>{message.noiDungText}</ContentText>
                     </Box>
-                    {message.noiDungFile !== '' && <MessageImage src={message.noiDungFile} />}
+                    {message.noiDungFile !== '' && message.loaiTinNhan === 'image' && (
+                      <MessageImage src={message.noiDungFile} />
+                    )}
+                    {message.noiDungFile !== '' && message.loaiTinNhan === 'file' && (
+                      <MessageFile>
+                        <Box
+                          sx={{
+                            width: '35px',
+                            height: '35px',
+                            border: `1px solid #000`,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            borderRadius: '35px'
+                          }}
+                        >
+                          <Icon
+                            style={{ width: '30px', height: '30px' }}
+                            icon="ic:baseline-attach-file"
+                          />
+                        </Box>
+                        <Typography
+                          sx={{
+                            fontWeight: 'bold',
+                            fontSize: '12px',
+                            fontFamily: 'sans-serif',
+                            marginLeft: '5px'
+                          }}
+                        >
+                          {ref(storage, message.noiDungFile).name.substring(
+                            13,
+                            ref(storage, message.noiDungFile).name.length
+                          )}
+                        </Typography>
+                      </MessageFile>
+                    )}
                   </>
                 )}
               </MessageUser>

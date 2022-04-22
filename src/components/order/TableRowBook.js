@@ -48,7 +48,7 @@ function TableRowBook({ book, index }) {
     book.listChiTietDonDatBan.forEach((item) => {
       total += item.monAn.donGia * item.soLuong;
     });
-    return total;
+    return total + book.listBan.filter((table) => table.loaiBan === 'Vip').length * 100000;
   };
   const checkStatus = () => {
     if (

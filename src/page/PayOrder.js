@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   Box,
   Button,
@@ -28,6 +28,7 @@ import { Scrollbar } from 'smooth-scrollbar-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useReactToPrint } from 'react-to-print';
 import { actionUserBackdrop, actionUserSnackbar } from '../redux/actions/userAction';
 import api from '../assets/api/api';
 import {
@@ -52,6 +53,7 @@ import {
   actionColumnRevenueMonth
 } from '../redux/actions/analyticAction';
 import ModalPayOrder from '../components/order/ModalPayOrder';
+import ModalOrderToPrint from '../components/order/ModalOrderToPrint';
 
 const heightScreen = window.innerHeight - 1;
 const RootStyle = styled(Box)(({ theme }) => ({
@@ -239,6 +241,7 @@ function TableFood({ tab, listChiTietDonDatBan }) {
   );
 }
 function PayOrder() {
+  const printRef = useRef();
   const user = useSelector((state) => state.user.user);
   const bookPayOrder = useSelector((state) => state.order.bookPayOrder);
   const allWayPay = useSelector((state) => state.order.allWayPay);
@@ -290,6 +293,9 @@ function PayOrder() {
   const openModalConfirm = () => {
     dispatch(actionOrderModalPayOrder(true));
   };
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current
+  });
   const confirm = () => {
     dispatch(
       actionUserBackdrop({
@@ -353,20 +359,23 @@ function PayOrder() {
             dispatch(actionColumnRevenueOrder(new Date().getFullYear()));
             dispatch(actionColumnRevenueRevenue(new Date().getFullYear()));
             dispatch(actionColumnRevenueMonth(new Date().getFullYear()));
-            dispatch(
-              actionUserBackdrop({
-                status: false,
-                content: 'Đang xử lý thanh toán'
-              })
-            );
-            dispatch(
-              actionUserSnackbar({
-                status: true,
-                content: `Thanh toán cho khách hàng ${bookPayOrder.khachHang.hoTen} thành công`,
-                type: 'success'
-              })
-            );
-            navigate('/home');
+            handlePrint();
+            setTimeout(() => {
+              dispatch(
+                actionUserBackdrop({
+                  status: false,
+                  content: 'Đang xử lý thanh toán'
+                })
+              );
+              dispatch(
+                actionUserSnackbar({
+                  status: true,
+                  content: `Thanh toán cho khách hàng ${bookPayOrder.khachHang.hoTen} thành công`,
+                  type: 'success'
+                })
+              );
+              navigate('/home/app');
+            }, 5000);
           });
       });
   };
@@ -493,15 +502,34 @@ function PayOrder() {
                   <PriceDetail> </PriceDetail>
                 </BoxPrice>
                 <BoxPrice>
+                  <PriceDetail>
+                    Phụ thu({bookPayOrder.listBan.filter((table) => table.loaiBan === 'Vip').length}{' '}
+                    bàn vip):
+                  </PriceDetail>
+                  <PriceDetail>{`${(
+                    bookPayOrder.listBan.filter((table) => table.loaiBan === 'Vip').length * 100000
+                  ).toLocaleString(`es-US`)}`}</PriceDetail>
+                </BoxPrice>
+                <BoxPrice>
+                  <PriceDetail> </PriceDetail>
+                  <PriceDetail> </PriceDetail>
+                  <PriceDetail> </PriceDetail>
+                  <PriceDetail>+</PriceDetail>
+                  <PriceDetail> </PriceDetail>
+                </BoxPrice>
+                <BoxPrice>
                   <PriceDetail>Thuế VAT(10%): </PriceDetail>
                   <PriceDetail>{` ${(getTotal() * 0.1).toLocaleString(`es-US`)}`}</PriceDetail>
                 </BoxPrice>
                 <Divider sx={{ margin: '10px 0px' }} />
                 <BoxPrice>
                   <PriceDetail>Tổng tiền còn lại: </PriceDetail>
-                  <PriceDetail>{` ${(getTotal() + getTotal() * 0.1 - getDeposit()).toLocaleString(
-                    `es-US`
-                  )} vnđ`}</PriceDetail>
+                  <PriceDetail>{` ${(
+                    getTotal() +
+                    getTotal() * 0.1 -
+                    getDeposit() +
+                    bookPayOrder.listBan.filter((table) => table.loaiBan === 'Vip').length * 100000
+                  ).toLocaleString(`es-US`)} vnđ`}</PriceDetail>
                 </BoxPrice>
               </Grid>
             </Grid>
@@ -552,12 +580,33 @@ function PayOrder() {
           </BoxRight>
         </BoxContent>
         <Box> </Box>
+        <div style={{ display: 'none' }}>
+          <ModalOrderToPrint
+            book={bookPayOrder}
+            totalBefore={getTotal}
+            deposit={getDeposit}
+            vip={bookPayOrder.listBan.filter((table) => table.loaiBan === 'Vip').length}
+            totalAfter={
+              getTotal() +
+              getTotal() * 0.1 -
+              getDeposit() +
+              bookPayOrder.listBan.filter((table) => table.loaiBan === 'Vip').length * 100000
+            }
+            printRef={printRef}
+          />
+        </div>
       </Scrollbar>
+
       {modalPayOrder && (
         <ModalPayOrder
           open={modalConfirm}
           close={() => setModalConfirm(false)}
-          getTotal={getTotal() + getTotal() * 0.1 - getDeposit()}
+          getTotal={
+            getTotal() +
+            getTotal() * 0.1 -
+            getDeposit() +
+            bookPayOrder.listBan.filter((table) => table.loaiBan === 'Vip').length * 100000
+          }
           confirm={confirm}
         />
       )}
