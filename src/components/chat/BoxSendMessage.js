@@ -12,7 +12,12 @@ import { actionChatAddMessage, actionChatUpdateMessage } from '../../redux/actio
 import BoxEmoji from './BoxEmoji';
 import { actionUserSnackbar } from '../../redux/actions/userAction';
 import { storage } from '../../firebase-config';
-import { readMessageSocket, sendMessageSocket } from '../../utils/wssConnection';
+import {
+  deleteInputtingSocket,
+  inputtingSocket,
+  readMessageSocket,
+  sendMessageSocket
+} from '../../utils/wssConnection';
 
 const fadeUp = keyframes`
     from {
@@ -135,6 +140,7 @@ function BoxSendMessage({ index }) {
         socketIds.push(br.socketId);
       }
     });
+    deleteInputtingSocket({ socketIds, userInputting: user });
     if (!image && !file && contentText !== '') {
       const message = {
         noiDungText: contentText,
@@ -319,6 +325,26 @@ function BoxSendMessage({ index }) {
     setShowFile(false);
     setFile();
   };
+  const handleChangeContentText = (text) => {
+    if (text !== '' && text.length === 1 && contentText.length === 0) {
+      const socketIds = [];
+      broadcast.forEach((br) => {
+        if (br.type === 'admin' && br.userId !== user.id) {
+          socketIds.push(br.socketId);
+        }
+      });
+      inputtingSocket({ socketIds, userInputting: user });
+    } else if (text === '') {
+      const socketIds = [];
+      broadcast.forEach((br) => {
+        if (br.type === 'admin' && br.userId !== user.id) {
+          socketIds.push(br.socketId);
+        }
+      });
+      deleteInputtingSocket({ socketIds, userInputting: user });
+    }
+    setContentText(text);
+  };
   return (
     <RootStyle>
       <ButtonOption
@@ -339,12 +365,11 @@ function BoxSendMessage({ index }) {
             sx={{
               marginBottom: '20px',
               borderRadius: '5px',
-              minWidth: '400px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               background: '#fff',
-              padding: '10px 0px'
+              padding: '10px 20px'
             }}
           >
             <Box
@@ -401,7 +426,13 @@ function BoxSendMessage({ index }) {
       )}
       <Input
         value={contentText}
-        onChange={(e) => setContentText(e.target.value)}
+        autoFocus
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            handleSend();
+          }
+        }}
+        onChange={(e) => handleChangeContentText(e.target.value)}
         placeholder="Aa"
         fullWidth
       />

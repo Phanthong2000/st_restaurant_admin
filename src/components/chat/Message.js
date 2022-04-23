@@ -453,7 +453,44 @@ function Message({ message, index }) {
                   <Box sx={{ display: 'flex' }}>
                     <ContentText sx={{ color: '#fff' }}>{message.noiDungText}</ContentText>
                   </Box>
-                  {message.noiDungFile !== '' && <MessageImage src={message.noiDungFile} />}
+                  {message.noiDungFile !== '' && message.loaiTinNhan === 'image' && (
+                    <MessageImage src={message.noiDungFile} />
+                  )}
+                  {message.noiDungFile !== '' && message.loaiTinNhan === 'file' && (
+                    <MessageFile>
+                      <Box
+                        sx={{
+                          width: '35px',
+                          height: '35px',
+                          border: `1px solid #fff`,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          borderRadius: '35px',
+                          color: '#fff'
+                        }}
+                      >
+                        <Icon
+                          style={{ width: '30px', height: '30px' }}
+                          icon="ic:baseline-attach-file"
+                        />
+                      </Box>
+                      <Typography
+                        sx={{
+                          fontWeight: 'bold',
+                          fontSize: '12px',
+                          fontFamily: 'sans-serif',
+                          marginLeft: '5px',
+                          color: '#fff'
+                        }}
+                      >
+                        {ref(storage, message.noiDungFile).name.substring(
+                          13,
+                          ref(storage, message.noiDungFile).name.length
+                        )}
+                      </Typography>
+                    </MessageFile>
+                  )}
                 </MessageOther>
               )}
               <BoxInfoMessage>
@@ -499,7 +536,44 @@ function Message({ message, index }) {
                 <Box sx={{ display: 'flex' }}>
                   <ContentText sx={{ color: '#fff' }}>{message.noiDungText}</ContentText>
                 </Box>
-                {message.noiDungFile !== '' && <MessageImage src={message.noiDungFile} />}
+                {message.noiDungFile !== '' && message.loaiTinNhan === 'image' && (
+                  <MessageImage src={message.noiDungFile} />
+                )}
+                {message.noiDungFile !== '' && message.loaiTinNhan === 'file' && (
+                  <MessageFile>
+                    <Box
+                      sx={{
+                        width: '35px',
+                        height: '35px',
+                        border: `1px solid #fff`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRadius: '35px',
+                        color: '#fff'
+                      }}
+                    >
+                      <Icon
+                        style={{ width: '30px', height: '30px' }}
+                        icon="ic:baseline-attach-file"
+                      />
+                    </Box>
+                    <Typography
+                      sx={{
+                        fontWeight: 'bold',
+                        fontSize: '12px',
+                        fontFamily: 'sans-serif',
+                        marginLeft: '5px',
+                        color: '#fff'
+                      }}
+                    >
+                      {ref(storage, message.noiDungFile).name.substring(
+                        13,
+                        ref(storage, message.noiDungFile).name.length
+                      )}
+                    </Typography>
+                  </MessageFile>
+                )}
               </MessageOther>
               <BoxInfoMessage>
                 <Time>NHÂN VIÊN</Time>

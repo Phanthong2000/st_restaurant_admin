@@ -689,10 +689,6 @@ function CreateFoods() {
       <Scrollbar style={{ padding: '10px' }} alwaysShowTracks>
         <BoxTitle>
           <Title>Thêm món ăn mới</Title>
-          <ButtonClear>
-            <Icon icon="ant-design:reload-outlined" />
-            <Typography sx={{ fontWeight: 'bold', marginLeft: '5px' }}>Làm mới</Typography>
-          </ButtonClear>
         </BoxTitle>
         <BoxContent container>
           <BoxLeft item xs={12} sm={12} md={12} lg={6} xl={6}>

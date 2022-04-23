@@ -19,7 +19,9 @@ import {
 } from '../redux/actions/orderAction';
 import {
   actionChatAddMessage,
+  actionChatAddUsersInputting,
   actionChatDeleteMessage,
+  actionChatDeleteUsersInputting,
   actionChatUpdateMessage
 } from '../redux/actions/chatAction';
 
@@ -83,6 +85,14 @@ export const connectWithSocket = () => {
         })
       );
   });
+  socket.on('inputting-message', (data) => {
+    console.log('inputting-message', data);
+    store.dispatch(actionChatAddUsersInputting(data.userInputting));
+  });
+  socket.on('delete-inputting-message', (data) => {
+    console.log('delete-inputting-message', data);
+    store.dispatch(actionChatDeleteUsersInputting(data.userInputting));
+  });
 };
 export const registerUser = (data) => {
   socket.emit('register-new-user', data);
@@ -101,6 +111,12 @@ export const stopMeetingSocket = (roomId) => {
 };
 export const updateMessageStopMeetingSocket = ({ socketIds, message }) => {
   socket.emit('update-message-stop-meeting', { socketIds, message });
+};
+export const inputtingSocket = ({ socketIds, userInputting }) => {
+  socket.emit('inputting-message', { socketIds, userInputting });
+};
+export const deleteInputtingSocket = ({ socketIds, userInputting }) => {
+  socket.emit('delete-inputting-message', { socketIds, userInputting });
 };
 export const logoutSocket = () => {
   socket.disconnect();

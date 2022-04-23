@@ -11,7 +11,9 @@ import {
   ACTION_CHAT_USER_HOST,
   ACTION_CHAT_MESSAGE_HOST,
   ACTION_CHAT_ADD_MESSAGE_MEETING,
-  ACTION_CHAT_BOX_CHAT_MEETING
+  ACTION_CHAT_BOX_CHAT_MEETING,
+  ACTION_CHAT_DELETE_USERS_INPUTTING,
+  ACTION_CHAT_ADD_USERS_INPUTTING
 } from './types';
 
 export const actionChatGetAllMessages = (data) => ({
@@ -56,6 +58,14 @@ export const actionChatAddMessageMeeting = (data) => ({
 });
 export const actionChatBoxChatMeeting = (data) => ({
   type: ACTION_CHAT_BOX_CHAT_MEETING,
+  payload: data
+});
+export const actionChatAddUsersInputting = (data) => ({
+  type: ACTION_CHAT_ADD_USERS_INPUTTING,
+  payload: data
+});
+export const actionChatDeleteUsersInputting = (data) => ({
+  type: ACTION_CHAT_DELETE_USERS_INPUTTING,
   payload: data
 });
 export const actionGetAllMessages = () => async (dispatch) => {

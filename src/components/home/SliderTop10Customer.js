@@ -180,7 +180,7 @@ function SliderTop10Customer() {
             <Customer
               page={page}
               index={index}
-              key={item.id}
+              key={index}
               customer={item.khachHang}
               count={item.count}
             />

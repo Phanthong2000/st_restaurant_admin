@@ -9,7 +9,9 @@ import {
   ACTION_CHAT_USER_HOST,
   ACTION_CHAT_MESSAGE_HOST,
   ACTION_CHAT_ADD_MESSAGE_MEETING,
-  ACTION_CHAT_BOX_CHAT_MEETING
+  ACTION_CHAT_BOX_CHAT_MEETING,
+  ACTION_CHAT_ADD_USERS_INPUTTING,
+  ACTION_CHAT_DELETE_USERS_INPUTTING
 } from '../actions/types';
 
 const defaultState = {
@@ -18,7 +20,8 @@ const defaultState = {
   userHost: {},
   messageHost: {},
   allMessagesMeeting: [],
-  boxChat: null
+  boxChat: null,
+  usersInputting: []
 };
 
 // eslint-disable-next-line default-param-last
@@ -96,6 +99,16 @@ const chatReducer = (state = defaultState, action) => {
       return {
         ...state,
         boxChat: action.payload
+      };
+    case ACTION_CHAT_ADD_USERS_INPUTTING:
+      return {
+        ...state,
+        usersInputting: [...state.usersInputting, action.payload]
+      };
+    case ACTION_CHAT_DELETE_USERS_INPUTTING:
+      return {
+        ...state,
+        usersInputting: state.usersInputting.filter((user) => user.id !== action.payload.id)
       };
     default:
       return state;

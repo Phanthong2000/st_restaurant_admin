@@ -143,7 +143,16 @@ function ButtonSort({ sort, value, label, handleSort }) {
     fontFamily: theme.typography.fontFamily.primary,
     fontSize: '12px'
   }));
-  return <ChipSort onClick={() => handleSort(value)}>{label}</ChipSort>;
+  return (
+    <ChipSort
+      onClick={(e) => {
+        e.stopPropagation();
+        handleSort(value);
+      }}
+    >
+      {label}
+    </ChipSort>
+  );
 }
 function BoxFeedback() {
   const dispatch = useDispatch();

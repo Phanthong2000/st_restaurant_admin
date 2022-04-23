@@ -28,7 +28,7 @@ import {
   actionGetTotalNow,
   actionNewBooks
 } from '../redux/actions/orderAction';
-import { actionGetAllAreas } from '../redux/actions/areaAction';
+import { actionGetAllAreas, actionGetAreasByName } from '../redux/actions/areaAction';
 import {
   actionBookDateNow,
   actionBookMonthNow,
@@ -107,6 +107,7 @@ function UtilRedux() {
     dispatch(actionColumnRevenueMonth(new Date().getFullYear()));
     dispatch(actionGetAllMessages());
     dispatch(actionGetAllGhimMessage());
+    dispatch(actionGetAreasByName(''));
     if (loggedIn) dispatch(actionGetUser(JSON.parse(localStorage.getItem('admin')).id));
     return function () {
       return null;

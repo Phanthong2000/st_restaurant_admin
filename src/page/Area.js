@@ -22,7 +22,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Scrollbar } from 'smooth-scrollbar-react';
 import axios from 'axios';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
-import { actionAreaModalAdd, actionGetAllAreas } from '../redux/actions/areaAction';
+import {
+  actionAreaModalAdd,
+  actionGetAllAreas,
+  actionGetAreasByName
+} from '../redux/actions/areaAction';
 import ModalAddArea from '../components/area/ModalAddArea';
 import { actionUserBackdrop, actionUserSnackbar } from '../redux/actions/userAction';
 import { storage } from '../firebase-config';
@@ -143,11 +147,13 @@ function Area() {
   const user = useSelector((state) => state.user.user);
   const modalAddArea = useSelector((state) => state.area.modalAddArea);
   const modalEditArea = useSelector((state) => state.area.modalEditArea);
-  const allAreas = useSelector((state) => state.area.allAreas);
+  const allAreas = useSelector((state) => state.area.areasByName);
+  // const areasByName = useSelector((state) => state.area.areasByName);
   const [view, setView] = useState('grid');
   const [page, setPage] = useState(0);
   const [areas, setAreas] = useState([]);
   const dispatch = useDispatch();
+  const [search, setSearch] = useState('');
   const getAreasByPage = (page) => {
     const start = page * 5;
     const end = start + 5;
@@ -166,6 +172,10 @@ function Area() {
       return null;
     };
   }, [allAreas]);
+  const searchArea = (text) => {
+    setSearch(text);
+    dispatch(actionGetAreasByName(text));
+  };
   const header = [
     {
       name: '',
@@ -359,7 +369,12 @@ function Area() {
     <RootStyle>
       <Scrollbar alwaysShowTracks>
         <BoxSearch>
-          <InputBase fullWidth placeholder="Tìm kiếm khu vực..." />
+          <InputBase
+            value={search}
+            onChange={(e) => searchArea(e.target.value)}
+            fullWidth
+            placeholder="Tìm kiếm khu vực..."
+          />
           <BoxButtonSearch>
             <Icon
               style={{ width: '30px', height: '30px', color: '#fff' }}

@@ -2,7 +2,8 @@ import {
   ACTION_AREA_MODAL_ADD_AREA,
   ACTION_AREA_GET_ALL_AREAS,
   ACTION_AREA_MODAL_EDIT_AREA,
-  ACTION_AREA_GET_ALL_TABLES
+  ACTION_AREA_GET_ALL_TABLES,
+  ACTION_AREA_GET_AREAS_BY_NAME
 } from '../actions/types';
 
 const defaultState = {
@@ -12,7 +13,8 @@ const defaultState = {
   modalEditArea: {
     status: false,
     area: {}
-  }
+  },
+  areasByName: []
 };
 
 // eslint-disable-next-line default-param-last
@@ -37,6 +39,11 @@ const areaReducer = (state = defaultState, action) => {
       return {
         ...state,
         allTables: action.payload
+      };
+    case ACTION_AREA_GET_AREAS_BY_NAME:
+      return {
+        ...state,
+        areasByName: action.payload
       };
     default:
       return state;
