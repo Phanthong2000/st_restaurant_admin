@@ -26,6 +26,7 @@ import FoodDetail from './page/FoodDetail';
 import Chat from './page/Chat';
 import Meeting from './page/Meeting';
 import Meeting2 from './page/Meeting2';
+import CreateCustomer from './components/customer/CreateCustomer';
 
 export default function Router() {
   return useRoutes([
@@ -53,6 +54,7 @@ export default function Router() {
         },
         { path: 'customer', element: <Customer /> },
         { path: 'customer-detail/:id', element: <CustomerDetail /> },
+        { path: 'add-customer', element: <CreateCustomer /> },
         // { path: 'employee', element: <Employee /> },
         { path: 'employee', element: <Employee2 /> },
         { path: 'chat', element: <Chat /> },
