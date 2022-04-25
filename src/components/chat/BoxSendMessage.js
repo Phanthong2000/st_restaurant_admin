@@ -136,7 +136,7 @@ function BoxSendMessage({ index }) {
     handleCloseEmoji();
     const socketIds = [];
     broadcast.forEach((br) => {
-      if (br.type === 'admin' && br.userId !== user.id) {
+      if ((br.type === 'admin' || br.type === 'employee') && br.userId !== user.id) {
         socketIds.push(br.socketId);
       }
     });
@@ -329,7 +329,7 @@ function BoxSendMessage({ index }) {
     if (text !== '' && text.length === 1 && contentText.length === 0) {
       const socketIds = [];
       broadcast.forEach((br) => {
-        if (br.type === 'admin' && br.userId !== user.id) {
+        if ((br.type === 'admin' || br.type === 'employee') && br.userId !== user.id) {
           socketIds.push(br.socketId);
         }
       });
@@ -337,7 +337,7 @@ function BoxSendMessage({ index }) {
     } else if (text === '') {
       const socketIds = [];
       broadcast.forEach((br) => {
-        if (br.type === 'admin' && br.userId !== user.id) {
+        if ((br.type === 'admin' || br.type === 'employee') && br.userId !== user.id) {
           socketIds.push(br.socketId);
         }
       });

@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { Box, Divider, styled, Typography } from '@mui/material';
 import sidebarHomeConfig from './SidebarHomeConfig';
 import MenuItem from '../../components/home/MenuItem';
-import UtilRedux from '../../utils/UtilRedux';
 
 const heightScreen = window.innerHeight - 1;
 const RootStyle = styled(Box)(({ theme }) => ({
@@ -33,7 +32,6 @@ const Admin = styled(Typography)(({ theme }) => ({
 function SidebarHome() {
   return (
     <RootStyle>
-      <UtilRedux />
       <BoxLogo>
         <Logo>ST Restaurant</Logo>
         <Admin>Quản lý</Admin>

@@ -53,7 +53,7 @@ function Message({ message }) {
       <RootStyle>
         <BoxMessageUser>
           <Box>
-            <Username>{message.sender.hoTen}</Username>
+            <Username sx={{ width: '100%', textAlign: 'right' }}>{message.sender.hoTen}</Username>
             <MessageUser>{message.contentText}</MessageUser>
             <Time>{moment(message.createAt).format(`hh:mm A DD/MM/YYYY`)}</Time>
           </Box>

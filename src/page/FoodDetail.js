@@ -157,6 +157,11 @@ function FoodDetail() {
                 </Typography>
               )}
             </Box>
+            <Box>
+              <Typography sx={{ color: 'gray', fontWeight: 'bold', marginLeft: '5px' }}>
+                {`Trạng thái: ${food.trangThai}`}
+              </Typography>
+            </Box>
             <BoxDescription>
               <Typography
                 sx={{ color: 'gray', fontSize: '16px', width: '20%', fontWeight: 'bold' }}

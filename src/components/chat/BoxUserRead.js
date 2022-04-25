@@ -53,7 +53,11 @@ function BoxUserRead({ message }) {
   };
   return (
     <RootStyle
-      sx={message.nguoiQuanLy.id === user.id ? { marginRight: '10px' } : { marginLeft: '10px' }}
+      sx={
+        message.nguoiQuanLy && message.nguoiQuanLy.id === user.id
+          ? { marginRight: '10px' }
+          : { marginLeft: '10px' }
+      }
     >
       {checkUserRead().map((item, index) => (
         <Reader key={index} index={index} user={item} />

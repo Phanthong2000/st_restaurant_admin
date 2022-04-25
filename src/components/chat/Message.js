@@ -123,7 +123,7 @@ function Message({ message, index }) {
   const handleDeleteMessage = () => {
     const socketIds = [];
     broadcast.forEach((br) => {
-      if (br.type === 'admin' && br.userId !== user.id) {
+      if ((br.type === 'admin' || br.type === 'employee') && br.userId !== user.id) {
         socketIds.push(br.socketId);
       }
     });
@@ -532,49 +532,57 @@ function Message({ message, index }) {
               <Box sx={{ display: 'flex' }}>
                 <Username>{message.nhanVien.hoTen}</Username>
               </Box>
-              <MessageOther>
-                <Box sx={{ display: 'flex' }}>
-                  <ContentText sx={{ color: '#fff' }}>{message.noiDungText}</ContentText>
-                </Box>
-                {message.noiDungFile !== '' && message.loaiTinNhan === 'image' && (
-                  <MessageImage src={message.noiDungFile} />
-                )}
-                {message.noiDungFile !== '' && message.loaiTinNhan === 'file' && (
-                  <MessageFile>
-                    <Box
-                      sx={{
-                        width: '35px',
-                        height: '35px',
-                        border: `1px solid #fff`,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        borderRadius: '35px',
-                        color: '#fff'
-                      }}
-                    >
-                      <Icon
-                        style={{ width: '30px', height: '30px' }}
-                        icon="ic:baseline-attach-file"
-                      />
-                    </Box>
-                    <Typography
-                      sx={{
-                        fontWeight: 'bold',
-                        fontSize: '12px',
-                        fontFamily: 'sans-serif',
-                        marginLeft: '5px',
-                        color: '#fff'
-                      }}
-                    >
-                      {ref(storage, message.noiDungFile).name.substring(
-                        13,
-                        ref(storage, message.noiDungFile).name.length
-                      )}
-                    </Typography>
-                  </MessageFile>
-                )}
-              </MessageOther>
+              {message.daXoa ? (
+                <MessageOther sx={{ background: 'lightgrey' }}>
+                  <Box sx={{ display: 'flex' }}>
+                    <ContentText sx={{ color: 'red' }}>Tin nhắn đã thu hồi</ContentText>
+                  </Box>
+                </MessageOther>
+              ) : (
+                <MessageOther>
+                  <Box sx={{ display: 'flex' }}>
+                    <ContentText sx={{ color: '#fff' }}>{message.noiDungText}</ContentText>
+                  </Box>
+                  {message.noiDungFile !== '' && message.loaiTinNhan === 'image' && (
+                    <MessageImage src={message.noiDungFile} />
+                  )}
+                  {message.noiDungFile !== '' && message.loaiTinNhan === 'file' && (
+                    <MessageFile>
+                      <Box
+                        sx={{
+                          width: '35px',
+                          height: '35px',
+                          border: `1px solid #fff`,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          borderRadius: '35px',
+                          color: '#fff'
+                        }}
+                      >
+                        <Icon
+                          style={{ width: '30px', height: '30px' }}
+                          icon="ic:baseline-attach-file"
+                        />
+                      </Box>
+                      <Typography
+                        sx={{
+                          fontWeight: 'bold',
+                          fontSize: '12px',
+                          fontFamily: 'sans-serif',
+                          marginLeft: '5px',
+                          color: '#fff'
+                        }}
+                      >
+                        {ref(storage, message.noiDungFile).name.substring(
+                          13,
+                          ref(storage, message.noiDungFile).name.length
+                        )}
+                      </Typography>
+                    </MessageFile>
+                  )}
+                </MessageOther>
+              )}
               <BoxInfoMessage>
                 <Time>NHÂN VIÊN</Time>
                 <Icon icon="ci:dot-02-s" />

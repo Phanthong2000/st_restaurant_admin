@@ -42,19 +42,52 @@ function MenuItem({ menu }) {
     if (menu.path === '/home/chat' && allMessages.length > 0) {
       const message = allMessages.at(0);
       if (
+        message.nguoiQuanLy &&
         message.nguoiQuanLy.id !== user.id &&
         message.listNguoiQuanLyDaDoc.filter((item) => item.id === user.id).length === 0
       ) {
         socketRef.current = socket;
         const socketIds = [];
         broadcast.forEach((br) => {
-          if (br.type === 'admin' && br.userId !== user.id) {
+          if ((br.type === 'admin' || br.type === 'employee') && br.userId !== user.id) {
             socketIds.push(br.socketId);
           }
         });
-        console.log({
-          ...message,
-          listNguoiQuanLyDaDoc: [...message.listNguoiQuanLyDaDoc, user]
+        axios
+          .put(
+            `${api}tinNhan/edit`,
+            {
+              ...message,
+              listNguoiQuanLyDaDoc: [...message.listNguoiQuanLyDaDoc, user]
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+              }
+            }
+          )
+          .then((res) => {
+            // dispatch(
+            //   actionChatUpdateMessage({
+            //     message: res.data
+            //   })
+            // );
+            console.log(res.data);
+            readMessageSocket({
+              socketIds,
+              message: res.data
+            });
+          });
+      } else if (
+        message.nhanVien &&
+        message.listNguoiQuanLyDaDoc.filter((item) => item.id === user.id).length === 0
+      ) {
+        socketRef.current = socket;
+        const socketIds = [];
+        broadcast.forEach((br) => {
+          if ((br.type === 'admin' || br.type === 'employee') && br.userId !== user.id) {
+            socketIds.push(br.socketId);
+          }
         });
         axios
           .put(

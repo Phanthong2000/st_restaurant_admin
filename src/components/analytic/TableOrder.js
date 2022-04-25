@@ -129,11 +129,16 @@ function TableRowOrder({ order, index }) {
       total + order.donDatBan.listBan.filter((table) => table.loaiBan === 'Vip').length * 100000
     );
   };
+  const checkUserCreate = () => {
+    if (order.nhanVien) return `${order.nhanVien.hoTen} - Nhân viên`;
+    return `${order.nguoiQuanLy.hoTen} - Quản lý`;
+  };
   return (
     <Row>
       <Cell>{index + 1}</Cell>
       <Cell>{order.donDatBan.khachHang.hoTen}</Cell>
       <Cell>{order.donDatBan.khachHang.soDienThoai}</Cell>
+      <Cell>{checkUserCreate()}</Cell>
       <Cell>{moment(order.donDatBan.createAt).format(`DD-MM-YYYY`)}</Cell>
       <Cell>{moment(order.createAt).format(`DD-MM-YYYY`)}</Cell>
       <Cell>{getTotal().toLocaleString(`es-US`)}</Cell>
@@ -167,16 +172,20 @@ function TableOrder() {
       width: '15%'
     },
     {
+      name: 'Người lập hoá đơn',
+      width: '15%'
+    },
+    {
       name: 'Thời gian đặt bàn',
-      width: '20%'
+      width: '15%'
     },
     {
       name: 'Thời gian lập hoá đơn',
-      width: '20%'
+      width: '15%'
     },
     {
       name: 'Tổng tiền',
-      width: '20%'
+      width: '15%'
     }
   ];
   const handleChangeStatus = (status) => {

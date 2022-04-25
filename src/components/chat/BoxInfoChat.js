@@ -112,7 +112,7 @@ function BoxInfoChat({ handleShowGhim }) {
   const handleCreateMeeting = () => {
     const socketIds = [];
     broadcast.forEach((br) => {
-      if (br.type === 'admin' && br.userId !== user.id) {
+      if ((br.type === 'admin' || br.type === 'employee') && br.userId !== user.id) {
         socketIds.push(br.socketId);
       }
     });
