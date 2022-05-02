@@ -56,10 +56,13 @@ function BoxProfile() {
     <RootStyle>
       <ArrowToProfile icon="ant-design:caret-right-filled" />
       <List>
-        <ListItemButton onClick={() => navigate('/home/profile')}>
+        <ListItemButton
+          sx={{ background: '#fff', '&:hover': { background: '#fff' } }}
+          onClick={() => navigate('/home/profile')}
+        >
           <Avatar src={user.anhDaiDien} />
           <Typography
-            sx={{ fontWeight: 'bold', fontSize: '16px', color: '#fff', marginLeft: '10px' }}
+            sx={{ fontWeight: 'bold', fontSize: '16px', color: '#000', marginLeft: '10px' }}
           >
             Thông tin người dùng
           </Typography>

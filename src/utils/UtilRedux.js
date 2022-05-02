@@ -57,6 +57,7 @@ import {
 } from '../redux/actions/analyticAction';
 import { actionGetAllTables } from '../redux/actions/tableActions';
 import { actionGetAllGhimMessage, actionGetAllMessages } from '../redux/actions/chatAction';
+import { actionGetAllNews } from '../redux/actions/newsAction';
 
 function UtilRedux() {
   const dispatch = useDispatch();
@@ -108,6 +109,7 @@ function UtilRedux() {
     dispatch(actionGetAllMessages());
     dispatch(actionGetAllGhimMessage());
     dispatch(actionGetAreasByName(''));
+    dispatch(actionGetAllNews());
     if (loggedIn) dispatch(actionGetUser(JSON.parse(localStorage.getItem('admin')).id));
     return function () {
       return null;

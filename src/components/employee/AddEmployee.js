@@ -61,11 +61,13 @@ const BoxContent = styled(Box)(({ theme }) => ({
 }));
 const BoxAvatar = styled(Box)(({ theme }) => ({
   width: '100%',
-  textAlign: 'center'
+  textAlign: 'center',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center'
 }));
 const AvatarEmployee = styled(Avatar)(({ theme }) => ({
   width: '100px',
-  marginLeft: '40%',
   height: '100px',
   border: `1px solid ${theme.palette.main}`
 }));

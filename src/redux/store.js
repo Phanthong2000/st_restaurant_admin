@@ -11,6 +11,7 @@ import userReducer from './reducers/userReducer';
 import analyticReduce from './reducers/analyticReduce';
 import tableReducer from './reducers/tableReducer';
 import chatReducer from './reducers/chatReducer';
+import newsReducer from './reducers/newsReducer';
 
 const rootReducer = combineReducers({
   user: userReducer,
@@ -23,7 +24,8 @@ const rootReducer = combineReducers({
   socket: socketReducer,
   analytic: analyticReduce,
   table: tableReducer,
-  chat: chatReducer
+  chat: chatReducer,
+  news: newsReducer
 });
 const store = createStore(rootReducer, applyMiddleware(thunk));
 export default store;

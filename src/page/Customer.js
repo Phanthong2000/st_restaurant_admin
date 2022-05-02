@@ -311,7 +311,7 @@ function Customer() {
             value={search}
             onChange={(e) => searchCustomer(e.target.value)}
             fullWidth
-            placeholder="Tìm kiếm khách hàng"
+            placeholder="Tìm kiếm khách hàng (tên, sđt, email, cmnd khách hàng)..."
           />
           <BoxButtonSearch>
             <Icon

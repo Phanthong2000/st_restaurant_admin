@@ -373,7 +373,7 @@ function Area() {
             value={search}
             onChange={(e) => searchArea(e.target.value)}
             fullWidth
-            placeholder="Tìm kiếm khu vực..."
+            placeholder="Tìm kiếm khu vực (tên khu vực)..."
           />
           <BoxButtonSearch>
             <Icon

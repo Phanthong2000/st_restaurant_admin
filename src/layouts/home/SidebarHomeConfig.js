@@ -40,6 +40,11 @@ const sidebarHomeConfig = [
     icon: 'ic:outline-table-bar'
   },
   {
+    name: 'Tin tức',
+    path: '/home/news',
+    icon: 'system-uicons:newspaper'
+  },
+  {
     name: 'Số liệu',
     path: '/home/analytic',
     icon: 'carbon:analytics'

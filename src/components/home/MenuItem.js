@@ -13,7 +13,7 @@ const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
   display: 'flex',
   alignItems: 'center',
-  marginTop: '30px',
+  marginTop: '25px',
   cursor: 'pointer'
 }));
 const IconMenu = styled(Icon)(({ theme }) => ({

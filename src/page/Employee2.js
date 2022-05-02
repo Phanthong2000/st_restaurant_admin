@@ -43,8 +43,7 @@ const BoxTitle = styled(Box)(({ theme }) => ({
 }));
 const Title = styled(Typography)(({ theme }) => ({
   fontWeight: 'bold',
-  fontSize: '20px',
-  fontFamily: theme.typography.fontFamily.primary
+  fontSize: '18px'
 }));
 const ButtonAddEmployee = styled(Button)(({ theme }) => ({
   padding: theme.spacing(1, 3),
@@ -321,7 +320,7 @@ function Employee2() {
                     value={search}
                     onChange={(e) => searchEmployees(e.target.value)}
                     fullWidth
-                    placeholder="Tìm kiếm nhân viên"
+                    placeholder="Tìm kiếm nhân viên (tên, sđt, email, cmnd)..."
                   />
                 </BoxSearch>
                 <BoxSort>

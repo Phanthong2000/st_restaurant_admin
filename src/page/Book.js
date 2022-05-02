@@ -296,7 +296,7 @@ function Book() {
             value={search}
             onChange={(e) => searchBooks(e.target.value)}
             fullWidth
-            placeholder="Tìm kiếm đơn đặt bàn..."
+            placeholder="Tìm kiếm đơn đặt bàn (tên, sđt, email, cmnd khách hàng)..."
           />
           <BoxButtonSearch>
             <Icon

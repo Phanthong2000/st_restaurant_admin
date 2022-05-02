@@ -408,7 +408,7 @@ function Food() {
             value={search}
             onChange={(e) => searchFood(e.target.value)}
             fullWidth
-            placeholder="Tìm kiếm món ăn"
+            placeholder="Tìm kiếm món ăn (tên món ăn)..."
           />
           <BoxButtonSearch>
             <Icon
@@ -420,7 +420,7 @@ function Food() {
         <BoxSort />
         <Box sx={{ marginTop: '20px' }}>
           <BoxListFood>
-            <Typography sx={{ fontWeight: 'bold', fontSize: '20px' }}>Danh sách món ăn</Typography>
+            <Typography sx={{ fontWeight: 'bold', fontSize: '18px' }}>Danh sách món ăn</Typography>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               {view === 'grid' ? (
                 <ButtonOptionChosen>

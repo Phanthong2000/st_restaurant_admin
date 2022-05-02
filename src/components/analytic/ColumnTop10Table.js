@@ -28,7 +28,7 @@ function ColumnTop10Table() {
         },
         title: {
           align: 'left',
-          text: `Top 10 món ăn được thích nhiều nhất`,
+          text: `Top 10 bàn được đặt nhiều nhất`,
           style: {
             fontSize: '12px',
             fontFamily: 'san-serif'

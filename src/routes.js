@@ -27,6 +27,9 @@ import Chat from './page/Chat';
 import Meeting from './page/Meeting';
 import Meeting2 from './page/Meeting2';
 import CreateCustomer from './components/customer/CreateCustomer';
+import News from './page/News';
+import CreateNews from './components/news/CreateNews';
+import NewsDetail from './components/news/NewsDetail';
 
 export default function Router() {
   return useRoutes([
@@ -72,7 +75,10 @@ export default function Router() {
         { path: 'order-choose-many-food', element: <OrderChooseManyFood /> },
         { path: 'profile', element: <Profile /> },
         { path: 'area', element: <Area /> },
-        { path: 'table', element: <Table /> }
+        { path: 'table', element: <Table /> },
+        { path: 'news', element: <News /> },
+        { path: 'news-create', element: <CreateNews /> },
+        { path: 'news-detail/:id', element: <NewsDetail /> }
       ]
     }
   ]);
