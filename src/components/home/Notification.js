@@ -54,7 +54,7 @@ function Notification({ notification, indexNoti }) {
         page: parseInt(page, 10)
       })
     );
-    navigate('/home/book');
+    navigate('/home/order');
     dispatch(actionUserSupportChooseNotification());
     if (notification.trangThai === 'Chưa đọc') {
       dispatch(actionUserDeleteBadgeNotification());

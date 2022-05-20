@@ -96,6 +96,10 @@ function NewsItem({ news }) {
           <IconDate icon="ant-design:calendar-twotone" />
           <Date>Ngày đăng: {moment(news.createAt).format(`DD/MM/YYYY`)}</Date>
         </BoxDate>
+        <BoxDate>
+          <IconDate icon="la:user-edit" />
+          <Date>Người đăng: {news.nguoiQuanLy.hoTen}</Date>
+        </BoxDate>
         <ButtonWatch onClick={handleWatch}>Xem chi tiết</ButtonWatch>
       </BoxContent>
     </RootStyle>

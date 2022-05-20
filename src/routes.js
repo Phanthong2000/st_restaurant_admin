@@ -49,8 +49,8 @@ export default function Router() {
       children: [
         { path: '', element: <Navigate to="/home/app" /> },
         { path: 'app', element: <Home /> },
-        { path: 'order', element: <Order /> },
-        { path: 'book', element: <Book /> },
+        { path: 'order-booking', element: <Order /> },
+        { path: 'order', element: <Book /> },
         {
           path: 'food',
           element: <Food />

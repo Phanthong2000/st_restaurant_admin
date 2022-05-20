@@ -412,7 +412,7 @@ function CustomerDetail() {
                               ...customer
                             })
                           );
-                          navigate('/home/order');
+                          navigate('/home/order-booking');
                         }}
                         sx={{ marginTop: '10px', cursor: 'pointer' }}
                       >

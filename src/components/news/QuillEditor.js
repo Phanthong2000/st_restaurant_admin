@@ -92,7 +92,7 @@ function QuillEditor({ image, title }) {
             tieuDe: title,
             hinhAnh: downloadURL,
             noiDung: content,
-            nguoiQuanLyDTO: {
+            nguoiQuanLy: {
               ...user
             },
             luotXem: 0

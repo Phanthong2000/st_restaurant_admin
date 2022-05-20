@@ -313,7 +313,10 @@ function ModalAddTable({ add }) {
                 label="Số người tối thiểu"
               /> */}
             </Box>
-            <ButtonAdd onClick={handleAddTable} disabled={Boolean(!max || !area)}>
+            <ButtonAdd
+              onClick={handleAddTable}
+              disabled={Boolean(!max || !area || parseInt(max, 10) === 0)}
+            >
               Thêm bàn
             </ButtonAdd>
           </Scrollbar>

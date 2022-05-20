@@ -244,7 +244,7 @@ function Book() {
     }
   ];
   const order = () => {
-    navigate('/home/order');
+    navigate('/home/order-booking');
   };
   const goToStartTable = () => {
     dispatch(
