@@ -1,0 +1,10 @@
+.custom-date {
+  padding: 10px;
+  background-color: #fff;
+}
+.react-daterange-picker__clear-button .react-daterange-picker__button{
+    display: none;
+}
+.test{
+    background-color: red;
+}
