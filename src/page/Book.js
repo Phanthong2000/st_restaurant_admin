@@ -15,17 +15,20 @@ import {
   Card,
   TableFooter,
   IconButton,
-  Tooltip
+  Tooltip,
+  Radio
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Scrollbar } from 'smooth-scrollbar-react';
+import DatePicker from 'react-datepicker';
 import { useLocation, useNavigate } from 'react-router-dom';
 import TableRowBook from '../components/order/TableRowBook';
 import { actionGetBooksByKeyword } from '../redux/actions/orderAction';
 import ModalEditBook from '../components/order/ModalEditBook';
 import BoxSort from '../components/order/BoxSort';
 import { actionUserChooseNotification } from '../redux/actions/userAction';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -106,6 +109,32 @@ const CountPage = styled(Typography)(({ theme }) => ({
   width: '30px',
   textAlign: 'center'
 }));
+const FilterBy = styled(Typography)(({ theme }) => ({
+  fontWeight: 'bold',
+  fontSize: '18px'
+}));
+const TitleFilterByRadio = styled(Typography)(({ theme }) => ({
+  fontFamily: theme.typography.fontFamily.primary
+}));
+const ButtonFilter = styled(Button)(({ theme }) => ({
+  textTransform: 'none',
+  fontWeight: 'bold',
+  fontFamily: theme.typography.fontFamily.primary,
+  background: theme.palette.main,
+  color: theme.palette.white,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  width: '150px',
+  ':hover': {
+    background: theme.palette.mainHover
+  }
+}));
+const IconFilter = styled(Icon)(({ theme }) => ({
+  width: '30px',
+  height: '30px',
+  color: theme.palette.white
+}));
 function Book() {
   const booksByKeyword = useSelector((state) => state.order.booksByKeyword);
   const modalEditBook = useSelector((state) => state.order.modalEditBook);
@@ -119,6 +148,9 @@ function Book() {
   const chooseNotification = useSelector((state) => state.user.chooseNotification);
   const supportChooseNotification = useSelector((state) => state.user.supportChooseNotification);
   const { pathname } = useLocation();
+  const [date, setDate] = useState([null, null]);
+  const [filterBy, setFilterBy] = useState('đặt bàn');
+  const [isFiltering, setIsFiltering] = useState(false);
   const getBooksByPage = (page) => {
     const notPages = [];
     for (let i = 0; i < booksByKeyword.length; i += 1) {
@@ -264,19 +296,18 @@ function Book() {
       })
     );
     // const index = booksByKeyword.findIndex((item) => item.id === book.id);
-    const page = ((booksByKeyword.length - 1) / 5)
+    const page = ((quantity - 1) / 5)
       .toString()
-      .substring(0, ((booksByKeyword.length - 1) / 5).toFixed(1).toString().indexOf('.'));
-    console.log(typeof page);
+      .substring(0, ((quantity - 1) / 5).toFixed(1).toString().indexOf('.'));
     setPage(parseInt(page, 10));
     getBooksByPage(parseInt(page, 10));
   };
   const handleNext = () => {
     if (
-      ((booksByKeyword.length - 1) / 5)
+      ((quantity - 1) / 5)
         .toString()
-        .substring(0, ((booksByKeyword.length - 1) / 5).toFixed(1).toString().indexOf('.')) !==
-      `${page}`
+        .substring(0, ((quantity - 1) / 5).toFixed(1).toString().indexOf('.')) !== `${page}` &&
+      quantity > 0
     ) {
       getBooksByPage(page + 1);
       setPage(page + 1);
@@ -286,6 +317,17 @@ function Book() {
     if (page > 0) {
       getBooksByPage(page - 1);
       setPage(page - 1);
+    }
+  };
+  const handleChangeFilterBy = (value) => {
+    setFilterBy(value);
+    setDate([null, null]);
+  };
+  const handleFilter = (status) => {
+    if (status === 'filter') {
+      setIsFiltering(true);
+    } else {
+      setIsFiltering(false);
     }
   };
   return (
@@ -305,6 +347,67 @@ function Book() {
             />
           </BoxButtonSearch>
         </BoxSearch>
+        <Box
+          style={{
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: '10px'
+          }}
+        >
+          <Card style={{ padding: '10px 20px', background: '#fff', display: 'block' }}>
+            <Box style={{ display: 'flex', alignItems: 'center' }}>
+              <FilterBy>Lọc theo: </FilterBy>
+              <Radio
+                checked={filterBy === 'đặt bàn'}
+                onChange={() => handleChangeFilterBy('đặt bàn')}
+              />
+              <TitleFilterByRadio>Ngày đặt bàn</TitleFilterByRadio>
+              <Radio
+                checked={filterBy === 'nhận bàn'}
+                onChange={() => handleChangeFilterBy('nhận bàn')}
+              />
+              <TitleFilterByRadio>Ngày đặt bàn</TitleFilterByRadio>
+            </Box>
+            <Box style={{ display: 'flex', alignItems: 'center' }}>
+              <Icon
+                style={{ width: '30px', height: '30px', color: 'gray', marginRight: '10px' }}
+                icon="uiw:date"
+              />
+              <DatePicker
+                selectsRange
+                maxDate={new Date()}
+                dateFormat="dd/MM/yyyy"
+                placeholderText={`Chọn khoảng ngày ${filterBy}`}
+                customInput={<InputBase />}
+                startDate={date[0]}
+                endDate={date[1]}
+                onChange={(value) => {
+                  setDate(value);
+                }}
+                onCalendarClose={() => {
+                  if (!date[0] || !date[1]) setDate([null, null]);
+                }}
+                isClearable
+              />
+              {!isFiltering ? (
+                <ButtonFilter onClick={() => handleFilter('filter')}>
+                  <IconFilter icon="carbon:filter-edit" />
+                  Lọc
+                </ButtonFilter>
+              ) : (
+                <ButtonFilter
+                  onClick={() => handleFilter('unFilter')}
+                  style={{ background: 'red' }}
+                >
+                  <IconFilter icon="carbon:filter-remove" />
+                  <span>Bỏ lọc</span>
+                </ButtonFilter>
+              )}
+            </Box>
+          </Card>
+        </Box>
         <BoxSort />
         <Box>
           <BoxListFood>
@@ -338,15 +441,11 @@ function Book() {
                 <TableRow>
                   <TableCell colSpan={13}>
                     <BoxPage>
-                      <CountPage>{page * 5 + 1}</CountPage>
+                      <CountPage>{quantity === 0 ? 0 : page * 5 + 1}</CountPage>
                       <Typography sx={{ fontWeight: 'bold', fontSize: '13px' }}>-</Typography>
-                      <CountPage>
-                        {page * 5 + 5 >= booksByKeyword.length
-                          ? booksByKeyword.length
-                          : page * 5 + 5}
-                      </CountPage>
+                      <CountPage>{page * 5 + 5 >= quantity ? quantity : page * 5 + 5}</CountPage>
                       <Typography sx={{ fontWeight: 'bold', fontSize: '13px' }}>/</Typography>
-                      <CountPage>{booksByKeyword.length}</CountPage>
+                      <CountPage>{quantity}</CountPage>
                       <ButtonChangePage
                         sx={{ background: page === 0 && 'red', marginRight: '10px' }}
                         onClick={goToStartTable}
@@ -377,21 +476,21 @@ function Book() {
                       <ButtonChangePage
                         sx={{
                           background:
-                            ((booksByKeyword.length - 1) / 5)
+                            (((quantity - 1) / 5)
                               .toString()
                               .substring(
                                 0,
-                                ((booksByKeyword.length - 1) / 5).toFixed(1).toString().indexOf('.')
-                              ) === `${page}` && 'red'
+                                ((quantity - 1) / 5).toFixed(1).toString().indexOf('.')
+                              ) === `${page}` ||
+                              quantity === 0) &&
+                            'red'
                         }}
                         onClick={handleNext}
                       >
-                        {((booksByKeyword.length - 1) / 5)
+                        {((quantity - 1) / 5)
                           .toString()
-                          .substring(
-                            0,
-                            ((booksByKeyword.length - 1) / 5).toFixed(1).toString().indexOf('.')
-                          ) === `${page}` ? (
+                          .substring(0, ((quantity - 1) / 5).toFixed(1).toString().indexOf('.')) ===
+                          `${page}` || quantity === 0 ? (
                           <Icon
                             style={{ width: '25px', height: '25px', color: '#fff' }}
                             icon="bx:x"
@@ -403,22 +502,22 @@ function Book() {
                       <ButtonChangePage
                         sx={{
                           background:
-                            ((booksByKeyword.length - 1) / 5)
+                            (((quantity - 1) / 5)
                               .toString()
                               .substring(
                                 0,
-                                ((booksByKeyword.length - 1) / 5).toFixed(1).toString().indexOf('.')
-                              ) === `${page}` && 'red',
+                                ((quantity - 1) / 5).toFixed(1).toString().indexOf('.')
+                              ) === `${page}` ||
+                              quantity === 0) &&
+                            'red',
                           marginLeft: '10px'
                         }}
                         onClick={goToEndTable}
                       >
-                        {((booksByKeyword.length - 1) / 5)
+                        {((quantity - 1) / 5)
                           .toString()
-                          .substring(
-                            0,
-                            ((booksByKeyword.length - 1) / 5).toFixed(1).toString().indexOf('.')
-                          ) === `${page}` ? (
+                          .substring(0, ((quantity - 1) / 5).toFixed(1).toString().indexOf('.')) ===
+                          `${page}` || quantity === 0 ? (
                           <Icon
                             style={{ width: '25px', height: '25px', color: '#fff' }}
                             icon="bx:x"
