@@ -1475,7 +1475,7 @@ function UpdateFoodsForBook() {
             type: 'success'
           })
         );
-        navigate('/home/book');
+        navigate('/home/order');
       });
   };
   if (updateFoodsForBook.id === undefined) return null;
