@@ -866,7 +866,7 @@ function OrderChooseFood() {
             type: 'success'
           })
         );
-        navigate('/home/book');
+        navigate('/home/order');
       })
       .catch((err) => console.log(err));
   };
