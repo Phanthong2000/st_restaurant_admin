@@ -27,7 +27,8 @@ import {
   ACTION_ORDER_MODAL_CHOOSE_AREA,
   ACTION_ODER_MODAL_PAY_ORDER,
   ACTION_ORDER_MODAL_MAP_RESTAURANT,
-  ACTION_ORDER_MODAL_ORDER_TO_PRINT
+  ACTION_ORDER_MODAL_ORDER_TO_PRINT,
+  ACTION_ORDER_GET_ORDERS_BY_CREATE_AT
 } from './types';
 
 export const actionOrderGetOrder = (data) => ({
@@ -136,6 +137,10 @@ export const actionOrderModalMapRestaurant = (data) => ({
 });
 export const actionOrderModalOrderToPrint = (data) => ({
   type: ACTION_ORDER_MODAL_ORDER_TO_PRINT,
+  payload: data
+});
+export const actionOrderGetOrdersByCreateAt = (data) => ({
+  type: ACTION_ORDER_GET_ORDERS_BY_CREATE_AT,
   payload: data
 });
 export const actionGetBooksByKeyword = (keyword) => (dispatch) => {
@@ -288,12 +293,23 @@ export const actionGetAreasForOrder = (checkin, use) => async (dispatch) => {
       tableUsing.push(...book.listBan);
     }
   });
-  console.log('using', tableUsing);
-  console.log('dont use', tableDontUse);
   dispatch(
     actionOrderGetAreasForOrder({
       using: tableUsing,
       dontUse: tableDontUse
     })
   );
+};
+
+export const actionGetOrderByCreateAt = (from, to) => async (dispatch) => {
+  const data = await axios.get(`${api}donDatBan/list/dateToDate`, {
+    params: {
+      from,
+      to
+    },
+    headers: {
+      Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+    }
+  });
+  dispatch(actionOrderGetOrdersByCreateAt(data.data));
 };

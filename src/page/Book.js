@@ -22,9 +22,10 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Scrollbar } from 'smooth-scrollbar-react';
 import DatePicker from 'react-datepicker';
+import moment from 'moment';
 import { useLocation, useNavigate } from 'react-router-dom';
 import TableRowBook from '../components/order/TableRowBook';
-import { actionGetBooksByKeyword } from '../redux/actions/orderAction';
+import { actionGetBooksByKeyword, actionGetOrderByCreateAt } from '../redux/actions/orderAction';
 import ModalEditBook from '../components/order/ModalEditBook';
 import BoxSort from '../components/order/BoxSort';
 import { actionUserChooseNotification } from '../redux/actions/userAction';
@@ -149,7 +150,6 @@ function Book() {
   const supportChooseNotification = useSelector((state) => state.user.supportChooseNotification);
   const { pathname } = useLocation();
   const [date, setDate] = useState([null, null]);
-  const [filterBy, setFilterBy] = useState('đặt bàn');
   const [isFiltering, setIsFiltering] = useState(false);
   const getBooksByPage = (page) => {
     const notPages = [];
@@ -319,15 +319,19 @@ function Book() {
       setPage(page - 1);
     }
   };
-  const handleChangeFilterBy = (value) => {
-    setFilterBy(value);
-    setDate([null, null]);
-  };
   const handleFilter = (status) => {
     if (status === 'filter') {
       setIsFiltering(true);
+      dispatch(
+        actionGetOrderByCreateAt(
+          moment(date[0]).format('MM/DD/YYYY'),
+          moment(date[1]).format('MM/DD/YYYY')
+        )
+      );
     } else {
       setIsFiltering(false);
+      setDate([null, null]);
+      dispatch(actionGetBooksByKeyword(''));
     }
   };
   return (
@@ -358,17 +362,7 @@ function Book() {
         >
           <Card style={{ padding: '10px 20px', background: '#fff', display: 'block' }}>
             <Box style={{ display: 'flex', alignItems: 'center' }}>
-              <FilterBy>Lọc theo: </FilterBy>
-              <Radio
-                checked={filterBy === 'đặt bàn'}
-                onChange={() => handleChangeFilterBy('đặt bàn')}
-              />
-              <TitleFilterByRadio>Ngày đặt bàn</TitleFilterByRadio>
-              <Radio
-                checked={filterBy === 'nhận bàn'}
-                onChange={() => handleChangeFilterBy('nhận bàn')}
-              />
-              <TitleFilterByRadio>Ngày đặt bàn</TitleFilterByRadio>
+              <FilterBy>Lọc theo ngày đặt bàn: </FilterBy>
             </Box>
             <Box style={{ display: 'flex', alignItems: 'center' }}>
               <Icon
@@ -379,7 +373,7 @@ function Book() {
                 selectsRange
                 maxDate={new Date()}
                 dateFormat="dd/MM/yyyy"
-                placeholderText={`Chọn khoảng ngày ${filterBy}`}
+                placeholderText="Chọn khoảng ngày đặt bàn"
                 customInput={<InputBase />}
                 startDate={date[0]}
                 endDate={date[1]}
@@ -389,10 +383,13 @@ function Book() {
                 onCalendarClose={() => {
                   if (!date[0] || !date[1]) setDate([null, null]);
                 }}
-                isClearable
+                isClearable={false}
               />
               {!isFiltering ? (
-                <ButtonFilter onClick={() => handleFilter('filter')}>
+                <ButtonFilter
+                  disabled={!date[0] || !date[1]}
+                  onClick={() => handleFilter('filter')}
+                >
                   <IconFilter icon="carbon:filter-edit" />
                   Lọc
                 </ButtonFilter>

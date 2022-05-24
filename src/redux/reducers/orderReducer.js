@@ -24,7 +24,8 @@ import {
   ACTION_ORDER_GET_AREAS_FOR_ORDER,
   ACTION_ODER_MODAL_PAY_ORDER,
   ACTION_ORDER_MODAL_MAP_RESTAURANT,
-  ACTION_ORDER_MODAL_ORDER_TO_PRINT
+  ACTION_ORDER_MODAL_ORDER_TO_PRINT,
+  ACTION_ORDER_GET_ORDERS_BY_CREATE_AT
 } from '../actions/types';
 
 const defaultState = {
@@ -230,6 +231,11 @@ const orderReducer = (state = defaultState, action) => {
       return {
         ...state,
         modalOrderToPrint: action.payload
+      };
+    case ACTION_ORDER_GET_ORDERS_BY_CREATE_AT:
+      return {
+        ...state,
+        booksByKeyword: action.payload
       };
     default:
       return state;
