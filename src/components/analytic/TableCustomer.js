@@ -329,23 +329,10 @@ function TableCustomer() {
               )}
             </BoxSearch>
           </BoxSort>
-          <ReactHtmlTableToExcel
-            table="tb"
-            filename={
-              status !== 'setting' || !from || !to
-                ? `Danh-sach-tat-ca-khach-hang-${moment(new Date()).format('hh:mmaDD/MM/YY')}`
-                : `Danh-sach-khach-hang-tu-${moment(from).format('DD/MM/YY')}-den-${moment(
-                    to
-                  ).format('DD/MM/YY')}-${moment(new Date()).format('hh:mmaDD/MM/YY')}`
-            }
-            sheet="Sheet"
-            buttonText={
-              <ButtonDownload>
-                <Icon style={{ marginRight: '5px' }} icon="uil:export" />
-                Xuất báo cáo
-              </ButtonDownload>
-            }
-          />
+          <ButtonDownload>
+            <Icon style={{ marginRight: '5px' }} icon="uil:export" />
+            Xuất báo cáo
+          </ButtonDownload>
         </BoxTitle>
         <Box
           sx={{
@@ -395,11 +382,7 @@ function TableCustomer() {
                 <TableCell colSpan={8} sx={{ height: '120px', fontWeight: 'bold' }}>
                   <Typography>
                     Người xuất file:
-                    {`             Họ và tên: ${user.hoTen} - Số điện thoại: ${
-                      user.soDienThoai
-                    } - Chức vụ: ${
-                      user.taiKhoan.vaiTro.tenVaiTro === 'EMPLOYEE' ? 'Nhân viên' : 'Quản lý'
-                    }`}
+                    {`Họ và tên: ${user.hoTen} - Số điện thoại: ${user.soDienThoai}`}
                   </Typography>
                 </TableCell>
               </TableRow>

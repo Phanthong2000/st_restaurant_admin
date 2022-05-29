@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Box,
+  Button,
   FormControlLabel,
+  Popper,
   Radio,
   RadioGroup,
   styled,
@@ -20,6 +22,8 @@ import moment from 'moment';
 import ReactHtmlTableToExcel from 'react-html-table-to-excel';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { useReactToPrint } from 'react-to-print';
+import PrinterBook from './PrinterBook';
 
 const RootStyle = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -111,6 +115,16 @@ const IconTime = styled(Icon)(({ theme }) => ({
   color: 'gray',
   marginLeft: '5px'
 }));
+const ButtonType = styled(Button)(({ theme }) => ({
+  textTransform: 'none',
+  background: theme.palette.main,
+  color: theme.palette.white,
+  fontWeight: 'bold',
+  marginRight: '10px',
+  ':hover': {
+    background: theme.palette.mainHover
+  }
+}));
 function TableRowBook({ book, index }) {
   const Row = styled(TableRow)(({ theme }) => ({
     width: '100%'
@@ -159,12 +173,14 @@ function TableRowBook({ book, index }) {
   );
 }
 function TableBook() {
+  const printRef = useRef();
   const booksByKeyword = useSelector((state) => state.order.booksByKeyword);
   const [from, setFrom] = useState();
   const [bookTable, setBookTable] = useState([]);
   const [to, setTo] = useState();
   const user = useSelector((state) => state.user.user);
   const [status, setStatus] = useState('all');
+  const [anchorEl, setAnchorEl] = React.useState(null);
   useEffect(() => {
     setBookTable(booksByKeyword);
     return function () {
@@ -239,6 +255,9 @@ function TableBook() {
       setTo(newValue);
     }
   };
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current
+  });
   return (
     <RootStyle>
       <BoxTitle>
@@ -317,23 +336,10 @@ function TableBook() {
             )}
           </BoxSearch>
         </BoxSort>
-        <ReactHtmlTableToExcel
-          table="tb"
-          filename={
-            status !== 'setting' || !from || !to
-              ? `Danh-sach-tat-ca-don-dat-ban-${moment(new Date()).format('hh:mmaDD/MM/YY')}`
-              : `Danh-sach-don-dat-ban-tu-${moment(from).format('DD/MM/YY')}-den-${moment(
-                  to
-                ).format('DD/MM/YY')}-${moment(new Date()).format('hh:mmaDD/MM/YY')}`
-          }
-          sheet="Sheet"
-          buttonText={
-            <ButtonDownload>
-              <Icon style={{ marginRight: '5px' }} icon="uil:export" />
-              Xuất báo cáo
-            </ButtonDownload>
-          }
-        />
+        <ButtonDownload onClick={handlePrint}>
+          <Icon style={{ marginRight: '5px' }} icon="uil:export" />
+          Xuất báo cáo
+        </ButtonDownload>
       </BoxTitle>
       <Box
         sx={{
@@ -344,60 +350,7 @@ function TableBook() {
         }}
       >
         <TableContainer sx={{ maxHeight: '400px' }}>
-          <Table id="tb" stickyHeader>
-            <TableRow sx={{ display: 'none' }}>
-              <TableCell rowSpan={6} colSpan={3} sx={{ height: '120px', fontWeight: 'bold' }}>
-                <img
-                  style={{ width: '100px', height: '100px' }}
-                  src="https://cdn2.iconfinder.com/data/icons/building-vol-2/512/restaurant-120.png"
-                  alt="imagerestaurant"
-                />
-              </TableCell>
-            </TableRow>
-            <TableRow sx={{ display: 'none' }}>
-              <TableCell colSpan={8} sx={{ height: '120px', fontWeight: 'bold' }}>
-                <Typography>Nhà hàng ST Restaurant</Typography>
-              </TableCell>
-            </TableRow>
-            <TableRow sx={{ display: 'none' }}>
-              <TableCell colSpan={8} sx={{ height: '120px', fontWeight: 'bold' }}>
-                <Typography>
-                  Địa chỉ: 1/11/46 Đặng Thuỳ Trâm, phường 13, quận Bình Thạnh, Thành phố Hồ Chí Minh
-                </Typography>
-              </TableCell>
-            </TableRow>
-            <TableRow sx={{ display: 'none' }}>
-              <TableCell colSpan={8} sx={{ height: '120px', fontWeight: 'bold' }}>
-                <Typography>
-                  Danh sách đơn đặt bàn
-                  {status === 'all'
-                    ? ` từ đầu đến nay (${moment(new Date().getTime()).format(`DD/MM/YYYY`)})`
-                    : ` từ ${moment(from).format('DD/MM/YYYY')} đến ${moment(to).format(
-                        'DD/MM/YYYY'
-                      )}`}
-                </Typography>
-              </TableCell>
-            </TableRow>
-            <TableRow sx={{ display: 'none' }}>
-              <TableCell colSpan={8} sx={{ height: '120px', fontWeight: 'bold' }}>
-                <Typography>
-                  Người xuất file:
-                  {`             Họ và tên: ${user.hoTen} - Số điện thoại: ${
-                    user.soDienThoai
-                  } - Chức vụ: ${
-                    user.taiKhoan.vaiTro.tenVaiTro === 'EMPLOYEE' ? 'Nhân viên' : 'Quản lý'
-                  }`}
-                </Typography>
-              </TableCell>
-            </TableRow>
-            <TableRow sx={{ display: 'none' }}>
-              <TableCell colSpan={8} sx={{ height: '120px', fontWeight: 'bold' }}>
-                <Typography>
-                  Xuất file vào lúc:
-                  {moment(new Date().getTime()).format(` hh:mm a DD/MM/YYYY`)}
-                </Typography>
-              </TableCell>
-            </TableRow>
+          <Table stickyHeader>
             <TableHead>
               <TableRow>
                 {header.map((item, index) => (
@@ -415,6 +368,9 @@ function TableBook() {
           </Table>
         </TableContainer>
       </Box>
+      <div style={{ display: 'none' }}>
+        <PrinterBook status={status} from={from} to={to} printRef={printRef} books={bookTable} />
+      </div>
     </RootStyle>
   );
 }
