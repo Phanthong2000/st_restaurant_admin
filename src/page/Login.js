@@ -81,8 +81,8 @@ const ButtonLogin = styled(Button)(({ theme }) => ({
 }));
 function Login() {
   const navigate = useNavigate();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('thongadmin');
+  const [password, setPassword] = useState('123456');
   const [error, setError] = useState('');
   const loggedIn = useSelector((state) => state.auth.loggedIn);
   useEffect(() => {
