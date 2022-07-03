@@ -3,8 +3,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import Peer from 'simple-peer';
-import Timer from 'react-timer-wrapper';
-import Timecode from 'react-timecode';
 import {
   Box,
   Button,
@@ -517,11 +515,7 @@ function Meeting2() {
               }}
             >
               <Username>Trưởng phòng - {userHost.hoTen}</Username>
-              <Timer active duration={null}>
-                <Timecode />
-              </Timer>
             </Box>
-
             {hostVideo && (
               <VideoGhim
                 hidden={turnOffVideoRoom.includes(userHost.id)}
