@@ -2,7 +2,6 @@ import React from 'react';
 import { Box, Card, styled, Typography } from '@mui/material';
 import { Icon } from '@iconify/react';
 import { useSelector } from 'react-redux';
-import AnimatedNumber from 'react-animated-number/build/AnimatedNumber';
 import { fShortenNumber } from '../../utils/formatNumber';
 
 const RootStyle = styled(Box)(({ theme }) => ({
@@ -43,18 +42,9 @@ function TotalMoneyDay() {
         <Icon style={{ width: '30px', height: '30px', color: '' }} icon="healthicons:money-bag" />
       </WrapperIcon>
       <Total>
-        <AnimatedNumber
-          component="text"
-          frameStyle={(perc) => (perc === 100 ? {} : { backgroundColor: '#D0F2FF' })}
-          value={totalNow}
-          stepPrecision={0}
-          style={{
-            transition: '0.8s ease-out',
-            background: '#fff'
-          }}
-          duration={500}
-          formatValue={(n) => fShortenNumber(n)}
-        />
+        <Typography style={{ fontSize: '25px', fontFamily: 'sans-serif', fontWeight: 'bold' }}>
+          {fShortenNumber(totalNow.length)}
+        </Typography>
       </Total>
       <Title>Doanh thu trong ngày</Title>
     </RootStyle>

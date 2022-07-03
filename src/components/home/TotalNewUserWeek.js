@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Card, styled, Typography } from '@mui/material';
 import { Icon } from '@iconify/react';
-import AnimatedNumber from 'react-animated-number/build/AnimatedNumber';
 import { useSelector } from 'react-redux';
 import { fShortenNumber } from '../../utils/formatNumber';
 
@@ -52,18 +51,9 @@ function TotalNewUserWeek() {
         <Icon style={{ width: '30px', height: '30px', color: '' }} icon="gridicons:user" />
       </WrapperIcon>
       <Total>
-        <AnimatedNumber
-          component="text"
-          frameStyle={(perc) => (perc === 100 ? {} : { backgroundColor: '#C8FACD' })}
-          value={total}
-          stepPrecision={0}
-          style={{
-            transition: '0.8s ease-out',
-            background: '#fff'
-          }}
-          duration={500}
-          formatValue={(n) => fShortenNumber(n)}
-        />
+        <Typography style={{ fontSize: '25px', fontFamily: 'sans-serif', fontWeight: 'bold' }}>
+          {fShortenNumber(total)}
+        </Typography>
       </Total>
       <Title>Người dùng mới trong tuần</Title>
     </RootStyle>
