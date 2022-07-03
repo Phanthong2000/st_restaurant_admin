@@ -1,7 +1,6 @@
 import { Icon } from '@iconify/react';
 import { Box, styled, Typography } from '@mui/material';
 import React from 'react';
-import AnimatedNumber from 'react-animated-number/build/AnimatedNumber';
 import { useSelector } from 'react-redux';
 import { fShortenNumber } from '../../utils/formatNumber';
 
@@ -43,18 +42,9 @@ function BoxUserJoin() {
         <Icon style={{ width: '30px', height: '30px', color: '' }} icon="ri:user-shared-fill" />
       </WrapperIcon>
       <Total>
-        <AnimatedNumber
-          component="text"
-          frameStyle={(perc) => (perc === 100 ? {} : { backgroundColor: '#eac5fa' })}
-          value={usersJoin.length}
-          stepPrecision={0}
-          style={{
-            transition: '0.8s ease-out',
-            background: '#fff'
-          }}
-          duration={500}
-          formatValue={(n) => fShortenNumber(n)}
-        />
+        <Typography style={{ fontSize: '25px', fontFamily: 'sans-serif', fontWeight: 'bold' }}>
+          {fShortenNumber(usersJoin.length)}
+        </Typography>
       </Total>
       <Title>Đang truy cập vào website</Title>
     </RootStyle>
