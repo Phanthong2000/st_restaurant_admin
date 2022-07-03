@@ -19,7 +19,6 @@ import {
 import { Icon } from '@iconify/react';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
-import ReactHtmlTableToExcel from 'react-html-table-to-excel';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useReactToPrint } from 'react-to-print';
