@@ -3,7 +3,6 @@ import { Box, Button, Card, Grid, IconButton, styled, TextField, Typography } fr
 import { Scrollbar } from 'smooth-scrollbar-react';
 import { Icon } from '@iconify/react';
 import { useDispatch } from 'react-redux';
-import QuillEditor from './QuillEditor';
 import { actionUserSnackbar } from '../../redux/actions/userAction';
 
 const RootStyle = styled(Box)(({ theme }) => ({
@@ -119,9 +118,7 @@ function CreateNews() {
               </WrapperLeft>
             </BoxLeft>
             <BoxRight item xs={12} sm={12} md={9} lg={9} xl={9}>
-              <WrapperRight>
-                <QuillEditor image={image} title={title} />
-              </WrapperRight>
+              <WrapperRight>{/* <QuillEditor image={image} title={title} /> */}</WrapperRight>
             </BoxRight>
           </BoxContent>
         </Box>
