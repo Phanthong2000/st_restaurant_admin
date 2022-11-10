@@ -170,7 +170,7 @@ function BoxInfo({ icon, value, label }) {
     color: theme.palette.main,
     borderRadius: '30px',
     border: `1px solid lightgrey`,
-    width: '50px',
+    minWidth: '50px',
     height: '50px',
     display: 'flex',
     alignItems: 'center',

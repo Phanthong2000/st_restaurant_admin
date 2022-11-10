@@ -223,7 +223,7 @@ function Message({ message, index }) {
                     Đang diễn ra
                   </Typography>
                 )}
-                <Time>Bắt đầu lúc: {moment(message.createAt).format(`hh:mm A DD/MM/YYYY`)}</Time>
+                <Time>Bắt đầu lúc: {moment(message.createAt).format(`HH:mm DD/MM/YYYY`)}</Time>
                 {!message.daXoa && <ButtonJoin onClick={joinMeeting}>Tham gia</ButtonJoin>}
               </Box>
             </Box>
@@ -400,7 +400,7 @@ function Message({ message, index }) {
             )}
             <BoxInfoMessage sx={{ justifyContent: 'end' }}>
               {index === 0 && <BoxUserRead message={message} />}
-              <Time>{moment(message.createAt).format(`hh:mm A DD/MM/YYYY`)}</Time>
+              <Time>{moment(message.createAt).format(`HH:mm DD/MM/YYYY`)}</Time>
               <Icon icon="ci:dot-02-s" />
               <Time>QUẢN LÝ</Time>
             </BoxInfoMessage>
@@ -496,7 +496,7 @@ function Message({ message, index }) {
               <BoxInfoMessage>
                 <Time>QUẢN LÝ</Time>
                 <Icon icon="ci:dot-02-s" />
-                <Time>{moment(message.createAt).format(`hh:mm A DD/MM/YYYY`)}</Time>
+                <Time>{moment(message.createAt).format(`HH:mm DD/MM/YYYY`)}</Time>
                 {index === 0 && <BoxUserRead message={message} />}
               </BoxInfoMessage>
             </Box>
@@ -586,7 +586,7 @@ function Message({ message, index }) {
               <BoxInfoMessage>
                 <Time>NHÂN VIÊN</Time>
                 <Icon icon="ci:dot-02-s" />
-                <Time>{moment(message.createAt).format(`hh:mm A DD/MM/YYYY`)}</Time>
+                <Time>{moment(message.createAt).format(`HH:mm DD/MM/YYYY`)}</Time>
                 {index === 0 && <BoxUserRead message={message} />}
               </BoxInfoMessage>
             </Box>

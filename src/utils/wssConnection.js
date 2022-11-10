@@ -27,7 +27,7 @@ import {
 
 let socket;
 export const connectWithSocket = () => {
-  socket = io('https://strestaurantserver.herokuapp.com/');
+  socket = io('https://st-restaurant-server-socket.herokuapp.com/');
   store.dispatch(actionSocketGetSocket(socket));
   socket.on('broadcast', (data) => {
     store.dispatch(actionSocketBroadcastSocket(data));
